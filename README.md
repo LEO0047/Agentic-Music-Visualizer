@@ -37,6 +37,9 @@ tools/fake_td.py                     # 沒有 TD 時的合成特徵源（145 BPM
 amv/director.py                      # RuleDirector、GPTDirector(fallback)、enforce_variety、DirectorLoop、Hotkeys
 tools/fake_codex.py                  # 假 codex 二進位：AMV_FAKE_CODEX_MODE=ok|fail|hang|garbage，無額度測容錯
 tools/projectm_check.py              # Phase 5：projectM / OBS / Syphon / NDI / BlackHole 安裝狀態與安裝提示
+tools/preflight.py                   # Phase 6：SPEC §8 上場前檢查（環境、loopback、路由、codex、fallback 演練、磁碟、sessions）
+tools/dry_run.py                     # Phase 6：N 分鐘 dry run，輸出決策/延遲/節奏/反重複/額度預估 Markdown 報表
+tools/codex_sessions.py              # Phase 6：只列/歸檔/清理本專案產生的 ~/.codex/sessions 檔
 td/build_network.py                  # 在 TD Textport 執行，一鍵建出 /project1/amv 反射層網路
 td/parspec.py                        # schema → TD Custom Parameters（純 Python）
 td/osc_in_callbacks.py               # OSC In DAT callbacks：/director/* 路由、30 s 凍結、離散參數待 kick
@@ -67,9 +70,9 @@ td/midi_override.py                  # Phase 6：MIDI CC → 參數（人手寫�
 | 1 | 音訊路由 | 喇叭有聲、TD CHOP 波形在動 | 🟡 sidecar 側完成：`tools/audio_check.py loopback` PASS；多重輸出裝置與 TD 端待使用者操作，見 [docs/phase1-audio-routing.md](docs/phase1-audio-routing.md) |
 | 2 | 反射層 | 不開 Director 也能 60 fps 反應 | 🟡 網路即程式碼完成（`td/build_network.py`，211 tests 以 td_stub 驗證）；本機無 TouchDesigner，35 個 `# VERIFY` 待在 TD 內確認，見 [td/README.md](td/README.md) |
 | 3 | 特徵匯流 | build/drop/breakdown 時間戳與耳朵一致 | ✅ sidecar + `tools/fake_td.py` 端到端：6 個轉換全在 ±0.2 s（真曲驗聽待 TD 上線） |
-| 4 | 導演層 | 連跑 60 分鐘；拔網路 30 s 內 fallback | ✅ 真實 gpt-6-astra 3 次決策 10.6–13.4 s；fake_codex fail/hang 模式 rule 立即接管、節奏不變（60 分鐘 dry run 待 Phase 6） |
+| 4 | 導演層 | 連跑 60 分鐘；拔網路 30 s 內 fallback | ✅ 真實 gpt-6-astra：3 分鐘 dry run 10 決策，延遲 mean 11.2 s / p95 11.7 s，0 重複；fake_codex fail/hang 模式 rule 立即接管、節奏不變；60 分鐘版留給演出前跑 `tools/dry_run.py --minutes 60` |
 | 5 | projectM 側鏈 | projectm_mix 0→1 fps 不掉 | 🟡 網路即程式碼完成（Syphon / NDI / 黑底三選一 Switch → Fit → Level → Composite，`Projectmsource` 參數）；本機無 projectM/OBS/TD，fps 驗收待實機，見 [docs/phase5-projectm.md](docs/phase5-projectm.md) |
-| 6 | 演出強化 | 反重複、on_drop、錄影、MIDI 覆寫 | ⬜ |
+| 6 | 演出強化 | 反重複、on_drop、錄影、MIDI 覆寫 | ✅ `tools/preflight.py`（SPEC §8）、`tools/dry_run.py`（額度/反重複報表）、`tools/codex_sessions.py`、啟動 smoke test 降級、TD 端 MIDI 覆寫；真實 codex 3 分鐘 dry run 見 [docs/dry-run-2026-09-08-real-codex-3min.md](docs/dry-run-2026-09-08-real-codex-3min.md)；60 分鐘 dry run 與 TD 實機驗收留給演出前 |
 
 ## 安全
 

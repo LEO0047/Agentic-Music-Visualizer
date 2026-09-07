@@ -32,6 +32,24 @@ Keys beginning with ``_`` (``_source``, ``_latency_s``) are this module's own
 bookkeeping. They travel with the decision through the loop and are stripped by
 :func:`strip_private` before anything is sent to TD or written to the log's
 ``decision`` field.
+
+**Before the first tick, call :meth:`DirectorLoop.startup_check`** (SPEC §7,
+「啟動先 smoke test，失敗直接進 rule 模式並警示」). ``codex-cli`` changes flags
+between releases, and the failure that costs a show is the one where ``gpt``
+mode looks fine on stage and every single decision has silently been the
+fallback. ``startup_check`` runs ``client.version()`` — free, no quota — and,
+with ``smoke=True``, one throwaway :meth:`decide`; on any failure it prints a
+warning and moves ``mode`` to ``rule`` so the operator learns it at load-in
+rather than at the first drop::
+
+    loop = DirectorLoop(td, GPTDirector(CodexClient(), RuleDirector()))
+    loop.startup_check(timeout_s=20.0)              # free
+    loop.startup_check(timeout_s=40.0, smoke=True)  # ~25k tokens, SPEC §2
+
+It is deliberately *not* wired into :mod:`amv.sidecar`: ``--director gpt``
+already degrades to rule when the binary is missing, and a smoke test that
+spends quota on every process start is not something a CLI should do behind the
+operator's back. ``tools/preflight.py`` is where the paid version belongs.
 """
 
 from __future__ import annotations
@@ -623,6 +641,82 @@ class DirectorLoop:
     def request_stop(self) -> None:
         """Ask the sidecar loop to end at the next tick (the ``q`` hotkey)."""
         self.stop_requested = True
+
+    # -- startup smoke test -------------------------------------------------
+
+    def _demote(self, reason: str) -> str:
+        """Say why gpt mode is off, loudly, then switch to rule."""
+        print(
+            f"{_clock_stamp()}  ⚠️  startup check failed: {reason}\n"
+            f"{' ' * 10}  → rule 模式接手（SPEC §7）。修好之後熱鍵 g 可以切回 gpt。",
+            file=self.out,
+            flush=True,
+        )
+        self.set_mode("rule")
+        return self.mode
+
+    def startup_check(self, timeout_s: float = 20.0, smoke: bool = False) -> str:
+        """Prove the GPT path works *before* the set, or fall back to rule.
+
+        SPEC §7 lists「Codex 版本改 flag」as a risk whose mitigation is
+        「啟動先 smoke test，失敗直接進 rule 模式並警示」. The failure this
+        prevents is the quiet one: ``gpt`` mode where every decision has
+        actually come from the fallback since load-in.
+
+        Two levels, because they cost differently:
+
+        * always — ``client.version()``. A subprocess that exits 0, no tokens.
+          It catches a missing binary, a broken install, and a CLI that no
+          longer starts.
+        * ``smoke=True`` — one real :meth:`decide` through the whole path
+          (argv, schema, parse, clamp). This is the only thing that catches a
+          renamed flag or a changed ``--output-schema`` contract, and it costs
+          about 25k tokens (SPEC §2), so the caller asks for it explicitly.
+
+        The smoke decision is thrown away: it is not published, not logged, and
+        not added to :attr:`history`, so the first real decision of the night
+        still sees an empty history.
+
+        Args:
+            timeout_s: Ceiling for each call. Applied by temporarily lowering
+                the client's own ``timeout`` and restoring it afterwards, so a
+                slow check cannot hold up load-in.
+            smoke: Also make one real decision.
+
+        Returns:
+            The mode after the check — ``"rule"`` if anything went wrong.
+        """
+        if self.mode != "gpt":
+            return self.mode
+
+        client = getattr(self.director, "client", None)
+        if client is None:
+            # mode says gpt but there is no client behind it: the sidecar
+            # already fell back at build time, or a rule director was passed
+            # directly. Either way the label is a lie, so fix the label.
+            return self._demote("gpt 模式但導演沒有 codex client")
+
+        original = getattr(client, "timeout", None)
+        try:
+            if original is not None and timeout_s and float(timeout_s) < float(original):
+                client.timeout = float(timeout_s)
+            version = client.version()
+            if smoke:
+                prompt = build_prompt({}, "steady", History(), self.bpm, 0.0)
+                decision = validate_and_clamp(strip_private(client.decide(prompt)))
+        except BaseException as exc:  # noqa: BLE001 - the whole point is to survive it
+            if isinstance(exc, (KeyboardInterrupt, SystemExit)):
+                raise
+            return self._demote(f"{type(exc).__name__}: {str(exc)[:200]}")
+        finally:
+            if original is not None:
+                client.timeout = original
+
+        detail = f"{version or 'version unknown'}"
+        if smoke:
+            detail += f", smoke → {decision['scene']}/{decision['palette']}"
+        print(f"{_clock_stamp()}  startup check ok: {detail}", file=self.out, flush=True)
+        return self.mode
 
     # -- triggering ---------------------------------------------------------
 
