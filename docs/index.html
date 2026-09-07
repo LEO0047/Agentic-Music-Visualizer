@@ -97,6 +97,30 @@ ul.check li::before{content:"";position:absolute;left:2px;top:13px;width:13px;he
 </div>
 
 <div class="col">
+<h2>實作進度（2026-09-08 深夜）</h2>
+<p>方案已經蓋成 repo：<a href="https://github.com/LEO0047/Agentic-Music-Visualizer">LEO0047/Agentic-Music-Visualizer</a>（本頁同步發在 <a href="https://leo0047.github.io/Agentic-Music-Visualizer/">GitHub Pages</a>）。分工：Opus 5 寫碼，Fable 5.1 逐階段審查、實測、commit。每個階段一個 commit，共 8 個。</p>
+<div class="tblwrap"><table>
+<tr><th>#</th><th>階段</th><th>狀態</th><th>驗收證據</th></tr>
+<tr><td>0</td><td>環境準備</td><td>✅</td><td>schema、Codex OAuth client、check_env；真實 <code>codex exec</code> smoke 12.0 s 合規 JSON</td></tr>
+<tr><td>1</td><td>音訊路由</td><td>🟡</td><td>sidecar 側完成：BlackHole loopback 440 Hz 誤差 0.00 Hz PASS；多重輸出裝置要你在 Audio MIDI Setup 建</td></tr>
+<tr><td>2</td><td>反射層</td><td>🟡</td><td>TD 網路以程式碼交付（<code>td/build_network.py</code>），315 個以 td_stub 跑的測試；本機沒裝 TouchDesigner，48 個 <code># VERIFY</code> 待實機</td></tr>
+<tr><td>3</td><td>特徵匯流</td><td>✅</td><td>fake_td → sidecar 6960 筆全收，六個段落轉換全在 ±0.2 s</td></tr>
+<tr><td>4</td><td>導演層</td><td>✅</td><td>真實 gpt-6-astra 3 分鐘 dry run：10 決策、延遲 mean 11.2 s / p95 11.7 s、0 重複；fake codex fail / hang 模式 rule 立即接管</td></tr>
+<tr><td>5</td><td>projectM 側鏈</td><td>🟡</td><td>Syphon / NDI / 黑底三選一 Switch → Fit → Composite 已寫進網路；projectM、OBS 未裝，fps 驗收待實機</td></tr>
+<tr><td>6</td><td>演出強化</td><td>✅</td><td>preflight（SPEC §8 可執行版）、dry_run 報表、codex sessions 清理、啟動 smoke 降級、TD 端 MIDI 覆寫</td></tr>
+</table></div>
+<div class="tblwrap"><table>
+<tr><th>實測項目</th><th>結果</th></tr>
+<tr><td>測試總數</td><td class="num">630 passed</td></tr>
+<tr><td>真實決策延遲（10 次，effort low）</td><td class="num">mean 11.2 s · p95 11.7 s</td></tr>
+<tr><td>額度預估（period 18 s）</td><td class="num">≈ 200 決策/h × 25k ≈ 5M tokens/h</td></tr>
+<tr><td>審查退回的實質 bug</td><td class="num">3</td></tr>
+</table></div>
+<p>審查退回的三個 bug 都是沒實機也能抓到的：Ramp TOP 沒有 per-key 參數（色盤會全部一樣）、Math CHOP 不能 clamp（要用 Limit CHOP）、Parameter Execute DAT 繞過 echo 守衛（導演每次寫參數會把自己凍 30 秒）。另有一個 sidecar <code>--duration</code> 用錯時鐘，在 <code>--speed 20</code> 下 0.45 秒就退出。</p>
+<div class="note"><b>還需要你做的。</b>Audio MIDI Setup 建多重輸出裝置；裝 TouchDesigner 後在 Textport 跑 <code>td/build_network.py</code>，對 <code>td/README.md</code> 的 VERIFY 表逐條確認；要 projectM 側鏈就 <code>brew install projectm</code> 加 OBS 或 Syphoner；演出前跑 <code>tools/preflight.py --real-codex</code> 與 <code>tools/dry_run.py --minutes 60</code> 看額度。</div>
+</div>
+
+<div class="col">
 <h2>核心觀念：兩層，兩種時間尺度</h2>
 <p>每一 frame 問 GPT 是死路：60 fps 等於每小時 216,000 次呼叫，延遲也不可能低於一個 beat。正確拆法是把「反應」和「意識」分開：</p>
 <ul>
