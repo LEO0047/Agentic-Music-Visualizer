@@ -1,4 +1,4 @@
-# `td/` · Phase 2 反射層（TouchDesigner）
+# `td/` · 反射層（TouchDesigner）· Phase 2 + Phase 5
 
 > **這份程式沒有在 TouchDesigner 裡跑過。** 本機沒有安裝 TD（SPEC Phase 0 的
 > 「TouchDesigner 2023+」尚未滿足），所以整層是「可審查、可重跑的建構腳本」加上
@@ -82,6 +82,13 @@ import build_network; build_network.build(td_dir='/somewhere/else/td')
                 └ composite (Composite TOP，over projectm_level)
                     └ out (Null TOP) → window (Window COMP)
                                      → record (Movie File Out，record 綁 Record)
+
+  pm_black (Constant TOP，黑 alpha 1) ┐  ← index 0 = none，沒有 projectM 時的保底
+  pm_syphon (Syphon Spout In TOP)     ├ projectm_in (Switch TOP, index = Projectmsource)
+  pm_ndi (NDI In TOP)                 ┘     └ pm_fit (Fit TOP, fill 1280²)
+                                                └ projectm_level (Level TOP)
+                                                   opacity = lag_params['projectm_mix']
+                                                     └ composite 的 input 1
 ```
 
 ### Custom Parameter
@@ -91,9 +98,10 @@ import build_network; build_network.build(td_dir='/somewhere/else/td')
 - **Director**（導演會改的）：`Scene`、`Palette`、`Feedback`、`Symmetry`、
   `Cameraspeed`、`Particlemode`、`Projectmmix`、`Transitionmode`、
   `Transitionbeats`、`Ondrop`、`Intent`
-- **Runtime**（演出狀態）：`Bpm`(145)、`Mode`(gpt/rule/**manual**，預設 rule)、
-  `Section`(build/drop/breakdown/steady)、`Heartbeat`、`Heartbeatage`(唯讀)、
-  `Record`
+- **Runtime**（演出狀態與這台機器的接法）：`Bpm`(145)、
+  `Mode`(gpt/rule/**manual**，預設 rule)、`Section`(build/drop/breakdown/steady)、
+  `Heartbeat`、`Heartbeatage`(唯讀)、`Record`、
+  `Projectmsource`(none/syphon/ndi，預設 none — Phase 5，**沒有 OSC address**)
 
 命名照 TD 規則：只有英數、首字大寫、其餘小寫，所以 `camera_speed` → `Cameraspeed`、
 `projectm_mix` → `Projectmmix`。schema 裡巢狀的 `transition` 攤平成兩個參數；
@@ -178,10 +186,62 @@ import build_network; build_network.build(td_dir='/somewhere/else/td')
 不需要 TD 的部分（OSC 路由、凍結、等 kick 排隊、on_drop 一次性、watchdog 門檻）
 已經被 `uv run pytest -q` 蓋掉了；上面這九步是只有 TD 能回答的部分。
 
+## Phase 5 · projectM 側鏈
+
+設定手冊與完整驗收清單在 **[`docs/phase5-projectm.md`](../docs/phase5-projectm.md)**：
+projectM 怎麼獨立跑、音源怎麼設成 BlackHole、兩條擷取路徑（Syphon ≈1 frame／
+OBS+NDI 2–4 frames）怎麼接、preset 為什麼不歸導演管。
+`uv run python tools/projectm_check.py` 會列出這台機器上還缺什麼（永遠 exit 0）。
+
+### 多出來的 operator
+
+`build_projectm_input(amv)` 取代了 Phase 2 那顆空的 `projectm_in` Null TOP，
+把三條可能的來源**並排**建出來，切換是一個選單而不是重建網路：
+
+| operator | 類別 | 做什麼 |
+|---|---|---|
+| `pm_black` | Constant TOP | 黑、alpha 1、1280²。Switch 的 **index 0**，也是預設 |
+| `pm_syphon` | Syphon Spout In TOP | 接 Syphoner 發佈的 `projectM` server（≈1 frame） |
+| `pm_ndi` | NDI In TOP | 接 OBS + NDI 外掛送出的 `projectM` 來源（2–4 frames） |
+| `projectm_in` | Switch TOP | index = `op('director').par.Projectmsource.menuIndex % 3` |
+| `pm_fit` | Fit TOP | 把任何解析度的 projectM 畫面 fill 到 1280² 畫布 |
+
+`projectm_level`（Level TOP，opacity 綁 `lag_params['projectm_mix']`）與
+`composite`（`operand = over`）維持 Phase 2 的接法，只是輸入從 `projectm_in` 改成 `pm_fit`。
+
+### 三件刻意的設計
+
+1. **`Projectmsource` 在 Runtime 頁，而且沒有 OSC address。** SPEC §3.3 給導演的
+   projectM 控制只有 `/director/projectm_mix` 一條。「畫面從哪條線進來」是這台機器
+   怎麼接的問題，由設定它的人決定；導演只決定看不看得到、看多濃。
+2. **黑底是預設，也是保底。** Syphon / NDI 這兩顆 TOP 在沒裝外掛的 TD 上根本不存在，
+   `create()` 會印 `[amv] SKIP pm_syphon` 留 `None` 佔位，Switch 的那個 input 空著。
+   但 index 0 永遠是真的：什麼都沒裝、projectM 沒開、演出中途被關掉，
+   `projectm_in` 仍然 cook 出一張合法的 1280² 黑底，Composite 永遠良好定義。
+   （反過來說：**沒接來源時 `Projectmmix` 要留在 0**，否則就是把黑底疊上去壓暗畫面。）
+3. **`pm_fit` 不是裝飾。** projectM 的視窗可能是 640×480，直接進 Composite 會變成
+   畫面角落的一小塊長方形；Fit TOP（fill）才是「MilkDrop 圖層」而不是「MilkDrop 貼紙」。
+
+**libprojectM 內嵌 Custom TOP 不做**（SPEC Phase 5 細節 / VISION V3）：macOS 版 TD 走
+Metal，libprojectM 要 OpenGL context。V1 用行程間畫面傳輸換掉這個問題，
+代價是多 1–4 frame 與 preset 不受控。
+
+### 這裡測得到什麼、測不到什麼
+
+`tests/test_td_projectm.py` 用 `tests/test_td_build_compiles.py` 的 `Recorder` harness，
+釘住「腳本向 TD 要了哪些 operator 類別、接線順序、index 運算式、Composite 的接法、
+`Projectmsource` 的選單」——全部不需要 TD。
+
+測不到的是任何一 frame 真的畫出來的畫面：類別名對不對、`fitmode` 存不存在、
+MilkDrop 有沒有真的進到 Composite。那些是下面 VERIFY 表的 #31–#35，
+以及 `docs/phase5-projectm.md` 的手動驗收清單
+（SPEC §6 #5：**`projectm_mix` 0→1 全程 fps 不掉，MilkDrop 圖層與 TD 場景在同一個色盤下不打架**）。
+
 ## `# VERIFY` 清單
 
-TD 不同版本的參數名稱會變，而本機無法查證。`build_network.py` 裡共 **35 處** `# VERIFY`
-（`grep -c '# VERIFY' td/build_network.py` 是 36，其中一處在檔頭 docstring 裡）。
+TD 不同版本的參數名稱會變，而本機無法查證。`build_network.py` 裡共 **40 處** `# VERIFY`
+（`grep -c '# VERIFY' td/build_network.py` 是 41，其中一處在檔頭 docstring 裡）。
+Phase 5 加了 5 處，都在 `build_projectm_input()` 與 Composite 段（表格 #31–#35）。
 所有設定都走 `set_par()` / `set_expr()`，名字不存在只會印一行 `WARN ...; skipped`
 然後繼續，**不會中斷建構**——所以第一次執行後請先把 Textport 的 WARN 全部掃過一遍，
 那就是實際猜錯的清單。
@@ -226,6 +286,11 @@ TD 不同版本的參數名稱會變，而本機無法查證。`build_network.py
 | 28 | `composite.operand` | Composite TOP 的 `over` 選單值 |
 | 29 | `window` | Window COMP 指定顯示 operator 的參數名 |
 | 30 | `record.file` / `record.record` | Movie File Out TOP 的檔名與錄影參數名 |
+| 31 | `pm_syphon` | **operator 類別 `syphonspoutinTOP`**（沒裝 Syphon 外掛的 TD 根本沒有這個類別，會 SKIP） |
+| 32 | `pm_syphon.sender` | Syphon Spout In TOP 的 server 名稱參數（`sender` / `sendername` / `syphonsender`），以及 Syphoner 實際發佈的名字是不是 `projectM` |
+| 33 | `pm_ndi` | **operator 類別 `ndiinTOP`** 與來源名稱參數（`name` / `sourcename` / `ndiname`）；名字要跟 OBS 的 NDI 輸出設定一致 |
+| 34 | `pm_fit` | Fit TOP 類別名、`fit`/`fitmode` 參數與 `fill` 選單值拼法、輸出解析度參數（`outputresolution` vs `resolutionmenu`） |
+| 35 | `pm_black` | Constant TOP 的顏色／alpha 參數名（`colorr` vs `color1r`、`alpha` vs `color1a`） |
 
 （表格把同一類的多個 `# VERIFY` 合併成一列；逐行位置請 `grep`。）
 
@@ -234,7 +299,9 @@ TD 不同版本的參數名稱會變，而本機無法查證。`build_network.py
 - `particle_field` 目前是 Noise → Threshold → Blur 的**替身**，不是真的 Particle GPU；
   `Particlemode` 只餵給 noise 的 seed。Phase 6 才會換成真的粒子系統。
 - `centroid` 送的是常數 0。SPEC §3.1 本來就把它列為選配，Phase 3 用 Script CHOP + numpy 補。
-- `projectm_in` 是空的 Null TOP。Phase 5 才換成 Syphon Spout In / NDI In。
+- `projectm_in` 已經是 Phase 5 的 Switch TOP（black / Syphon / NDI），但**沒有在 TD 裡跑過**，
+  而且本機沒有 projectM、Syphoner、OBS、NDI runtime（`tools/projectm_check.py` 全列 missing）。
+  預設的 `Projectmsource = none` 走黑底那條，所以缺什麼都不影響建構。
 - `Symmetry` 目前只驅動 `ft_mirror` 的 scale / rotate，還不是 GLSL uniform。
   SPEC §3.3 的「整數與字串類參數只在下一個 kick 切換」本身已經實作了（見下一條），
   Phase 6 才把 `Symmetry` 換成真正的 GLSL uniform。

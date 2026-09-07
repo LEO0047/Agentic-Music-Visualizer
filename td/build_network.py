@@ -30,7 +30,8 @@ What it builds (SPEC §1, §3, Phase 2 細節)::
         par_exec          Parameter Execute DAT → manual-mode freeze
       dir_vals ─ lag_params        float targets, lagged beats*60/BPM
       tunnel_* / ft_* / pf_*  ─ scene_switch ─ palette ─ fb_mix ─ composite ─ out ─ window
-                                                                            └─ record
+                                                                    ↑         └─ record
+      pm_black / pm_syphon / pm_ndi ─ projectm_in ─ pm_fit ─ projectm_level
 
 Nothing in this file runs outside TouchDesigner: every TD name (``op``,
 ``baseCOMP``, …) is referenced from inside a function, and the auto-run block
@@ -803,6 +804,85 @@ def _ramp_rows(keys):
 
 
 # --------------------------------------------------------------------------
+# Phase 5: the projectM sidechain
+# --------------------------------------------------------------------------
+
+#: Switch TOP input order for ``projectm_in``, and the menu names of the
+#: ``Projectmsource`` director par. ``parspec.PROJECTM_SOURCES`` is the source
+#: of truth; this copy exists because ``build_projectm_input`` only needs the
+#: *count* and must keep working if the parspec import ever fails.
+PROJECTM_SOURCES = ("none", "syphon", "ndi")
+
+PROJECTM_SOURCE_PAR = "Projectmsource"
+
+PROJECTM_SYPHON_SENDER = "projectM"
+"""Syphon server name Syphoner publishes the projectM window under."""
+
+PROJECTM_NDI_SOURCE = "projectM"
+"""NDI source name OBS's NDI output announces (rename the OBS output to match)."""
+
+PROJECTM_CANVAS = 1280
+"""Non-Commercial TD tops out at 1280×1280; the Fit TOP normalises to this."""
+
+
+def build_projectm_input(amv):
+    """Three possible projectM capture paths → one Switch TOP (SPEC Phase 5).
+
+    projectM runs as a *separate application* (audio in from BlackHole, exactly
+    like TD), so its frames have to be carried across process boundaries. SPEC
+    Phase 5 細節 names two ways and this builds both, side by side, so switching
+    between them at showtime is one menu click and not a rebuild:
+
+    * ``pm_syphon`` — Syphon Spout In TOP, fed by Syphoner pointed at the
+      projectM window. ≈ 1 frame (SPEC §7), zero-copy on the GPU.
+    * ``pm_ndi`` — NDI In TOP, fed by OBS window-capturing projectM with the
+      NDI output plugin. 2–4 frames, but the most robust: OBS will happily
+      keep sending when projectM is on another Space or another machine.
+    * ``pm_black`` — a black Constant TOP. The *default*, and the reason
+      nothing here is fatal: with no projectM running at all, ``projectm_in``
+      still cooks a valid 1280² frame and the Composite TOP downstream stays
+      well defined whatever ``Projectmmix`` says.
+
+    Neither capture TOP exists on a machine without its plugin, so both go
+    through :func:`create`'s tolerant path: a missing class costs one
+    ``[amv] SKIP`` line and leaves the Switch input unconnected, never a
+    half-built network.
+
+    The index comes from the ``Projectmsource`` custom par (Runtime page), not
+    from the director: SPEC §3.3 gives the director exactly one projectM
+    control, ``/director/projectm_mix``. Which cable the pixels arrive on is a
+    property of *this rig*, decided by the human who set it up.
+    """
+    pm_syphon = create(amv, "syphonspoutinTOP", "pm_syphon", 520, 700)
+    # Syphon Spout In TOP: on macOS the mode is always Syphon (Spout is
+    # Windows-only), so only the server name needs setting.
+    set_par(pm_syphon, "sender sendername syphonsender", PROJECTM_SYPHON_SENDER)  # VERIFY
+
+    pm_ndi = create(amv, "ndiinTOP", "pm_ndi", 520, 560)
+    set_par(pm_ndi, "name sourcename ndiname", PROJECTM_NDI_SOURCE)  # VERIFY
+
+    pm_black = create(amv, "constantTOP", "pm_black", 520, 840)
+    set_par(pm_black, "colorr color1r", 0.0)  # VERIFY Constant TOP colour par names
+    set_par(pm_black, "colorg color1g", 0.0)
+    set_par(pm_black, "colorb color1b", 0.0)
+    set_par(pm_black, "alpha color1a", 1.0)
+    set_par(pm_black, "resolutionw", PROJECTM_CANVAS)
+    set_par(pm_black, "resolutionh", PROJECTM_CANVAS)
+
+    projectm_in = create(amv, "switchTOP", "projectm_in", 700, 700)
+    for index, source in enumerate((pm_black, pm_syphon, pm_ndi)):
+        connect(source, projectm_in, index)
+    # ``% len`` for the same reason scene_switch does it: a menu that grows
+    # before this function does must wrap, not dangle on a missing input.
+    set_expr(
+        projectm_in,
+        "index",
+        "op('director').par.%s.menuIndex %% %d" % (PROJECTM_SOURCE_PAR, len(PROJECTM_SOURCES)),
+    )
+    return projectm_in
+
+
+# --------------------------------------------------------------------------
 # post chain
 # --------------------------------------------------------------------------
 
@@ -835,10 +915,21 @@ def build_post(amv, scenes, palette_switch):
     set_expr(fb_mix, "cross", lagged("feedback"))
     set_par(feedback, "top", "fb_mix")  # VERIFY Feedback TOP target par name
 
-    projectm_in = create(amv, "nullTOP", "projectm_in", 850, 700)
-    # Phase 5 replaces this Null with a Syphon Spout In TOP or an NDI In TOP.
+    # --- Phase 5: the projectM sidechain ----------------------------------
+    projectm_in = build_projectm_input(amv)
+
+    # projectM renders at whatever its own window is; the Fit TOP is what makes
+    # a 640×480 SDL window and a full-screen capture both land on the 1280²
+    # canvas instead of compositing as a small rectangle in one corner.
+    pm_fit = create(amv, "fitTOP", "pm_fit", 860, 700)
+    connect(projectm_in, pm_fit)
+    set_par(pm_fit, "fit fitmode", "fill")  # VERIFY Fit TOP fit-mode menu value
+    set_par(pm_fit, "outputresolution resolutionmenu", "custom")  # VERIFY
+    set_par(pm_fit, "resolutionw", PROJECTM_CANVAS)
+    set_par(pm_fit, "resolutionh", PROJECTM_CANVAS)
+
     projectm_level = create(amv, "levelTOP", "projectm_level", 1000, 700)
-    connect(projectm_in, projectm_level)
+    connect(pm_fit, projectm_level)
     set_expr(projectm_level, "opacity", lagged("projectm_mix"))  # VERIFY opacity par
 
     composite = create(amv, "compositeTOP", "composite", 1150, 1000)

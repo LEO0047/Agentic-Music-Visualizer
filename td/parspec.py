@@ -19,8 +19,9 @@ Design notes
   becomes a single string parameter ``Ondrop`` holding the JSON, which
   ``drop_executor.on_kick`` parses on the frame a drop lands.
 * Non-schema parameters (``Bpm``, ``Mode``, ``Heartbeat``, ``Heartbeatage``,
-  ``Record``, ``Section``) live here too, because the reflex layer needs them
-  and the manual/rule modes (SPEC §5) have to work with the director offline.
+  ``Record``, ``Section``, ``Projectmsource``) live here too, because the reflex
+  layer needs them and the manual/rule modes (SPEC §5) have to work with the
+  director offline.
 """
 
 from __future__ import annotations
@@ -41,6 +42,7 @@ __all__ = [
     "DEFAULTS",
     "SECTIONS",
     "MODES",
+    "PROJECTM_SOURCES",
     "par_name",
     "is_valid_par_name",
     "menu_label",
@@ -70,6 +72,14 @@ SECTIONS: tuple[str, ...] = ("build", "drop", "breakdown", "steady")
 
 MODES: tuple[str, ...] = ("gpt", "rule", "manual")
 """SPEC §5. Default is ``rule``: the show must run with the director offline."""
+
+PROJECTM_SOURCES: tuple[str, ...] = ("none", "syphon", "ndi")
+"""Where the projectM layer is captured from (SPEC Phase 5 細節), in Switch TOP
+input order: ``none`` is a black Constant TOP, ``syphon`` a Syphon Spout In TOP
+fed by Syphoner, ``ndi`` an NDI In TOP fed by OBS. This is a *rig* choice, not
+a director decision — the director only ever writes ``Projectmmix`` — so it
+lives on the Runtime page with no OSC address.
+"""
 
 APPEND_METHODS: dict[str, str] = {
     "Menu": "appendMenu",
@@ -101,6 +111,7 @@ DEFAULTS: dict[str, Any] = {
     "Heartbeatage": 0.0,
     "Record": 0,
     "Section": "steady",
+    "Projectmsource": "none",
 }
 
 _ALNUM = frozenset(string.ascii_letters + string.digits)
@@ -337,6 +348,19 @@ def _runtime_specs() -> list[ParSpec]:
             default=DEFAULTS["Record"],
             page=PAGE_RUNTIME,
             help="Drives the Movie File Out TOP record par.",
+        ),
+        ParSpec(
+            name="Projectmsource",
+            style="Menu",
+            label="ProjectM Source",
+            default=DEFAULTS["Projectmsource"],
+            menu_names=PROJECTM_SOURCES,
+            menu_labels=("None (black)", "Syphon", "NDI"),
+            page=PAGE_RUNTIME,
+            help=(
+                "Phase 5 capture path, and the projectm_in Switch TOP index. "
+                "No OSC address on purpose: the director only drives Projectmmix."
+            ),
         ),
     ]
 
