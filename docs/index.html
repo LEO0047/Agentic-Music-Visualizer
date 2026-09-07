@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BlackHole × TouchDesigner × GPT-6</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#0C0B14; --surface:#15131F; --surface2:#1C1929; --line:#2B2740; --line2:#3A3554;
+  --text:#ECE8F6; --muted:#9D96B8; --cyan:#52E3D2; --violet:#B593FF; --amber:#F2B65A;
+  --cyan-soft:rgba(82,227,210,.12); --violet-soft:rgba(181,147,255,.14); --amber-soft:rgba(242,182,90,.14);
+  --code-bg:#100E1A;
+  --display:"Chakra Petch","Noto Sans TC",system-ui,sans-serif;
+  --body:"Noto Sans TC","PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#F7F5FB; --surface:#FFFFFF; --surface2:#EFECF7; --line:#D9D3EA; --line2:#C4BCDD;
+    --text:#1C1730; --muted:#635C7E; --cyan:#0E9E90; --violet:#6E45D9; --amber:#B7741A;
+    --cyan-soft:rgba(14,158,144,.10); --violet-soft:rgba(110,69,217,.10); --amber-soft:rgba(183,116,26,.12);
+    --code-bg:#F0EDF8;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F7F5FB; --surface:#FFFFFF; --surface2:#EFECF7; --line:#D9D3EA; --line2:#C4BCDD;
+  --text:#1C1730; --muted:#635C7E; --cyan:#0E9E90; --violet:#6E45D9; --amber:#B7741A;
+  --cyan-soft:rgba(14,158,144,.10); --violet-soft:rgba(110,69,217,.10); --amber-soft:rgba(183,116,26,.12);
+  --code-bg:#F0EDF8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased}
+main{max-width:1080px;margin:0 auto;padding:40px 24px 96px}
+.col{max-width:72ch;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;letter-spacing:.005em;line-height:1.2;margin:0}
+h1{font-size:clamp(30px,4.6vw,44px);font-weight:700}
+h2{font-size:24px;font-weight:600;margin-top:64px;padding-top:20px;border-top:1px solid var(--line)}
+h3{font-size:17px;font-weight:600;margin-top:32px}
+p{margin:14px 0}
+a{color:var(--violet)}
+.eyebrow{font-family:var(--display);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.lede{font-size:18px;color:var(--muted);margin-top:16px}
+.wide{max-width:1040px;margin:28px auto 0}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:28px}
+.tile{background:var(--surface);border:1px solid var(--line);padding:16px 18px}
+.tile .k{font-family:var(--display);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tile .v{font-family:var(--display);font-size:26px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}
+.tile .d{font-size:13px;color:var(--muted);margin-top:2px}
+.tile.cyan .v{color:var(--cyan)} .tile.violet .v{color:var(--violet)} .tile.amber .v{color:var(--amber)}
+figure{margin:0;background:var(--surface);border:1px solid var(--line);padding:18px}
+figure svg{display:block;width:100%;height:auto;max-width:100%;font-family:var(--body)}
+figcaption{font-size:13.5px;color:var(--muted);margin-top:12px;line-height:1.6}
+.swatch{display:inline-block;width:10px;height:10px;vertical-align:-1px;margin-right:5px;border-radius:1px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:16px 0}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.tblwrap{overflow-x:auto}
+code{font-family:var(--mono);font-size:.88em;background:var(--code-bg);border:1px solid var(--line);padding:1px 5px;border-radius:3px}
+pre{background:var(--code-bg);border:1px solid var(--line);padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.6;margin:14px 0}
+pre code{background:none;border:0;padding:0;font-size:inherit}
+.phase{display:grid;grid-template-columns:64px minmax(0,1fr);gap:0 18px;padding:20px 0;border-bottom:1px solid var(--line)}
+.phase:last-child{border-bottom:0}
+.phase .n{font-family:var(--display);font-size:28px;font-weight:700;color:var(--violet);line-height:1;font-variant-numeric:tabular-nums}
+.phase .n small{display:block;font-size:11px;letter-spacing:.1em;color:var(--muted);margin-top:6px;font-weight:500}
+.phase h3{margin-top:0}
+.phase ul{margin:10px 0 0;padding-left:20px}
+.phase li{margin:4px 0}
+.accept{margin-top:10px;padding:10px 14px;background:var(--cyan-soft);border-left:2px solid var(--cyan);font-size:14px}
+.accept b{font-family:var(--display);letter-spacing:.06em;font-size:12px;text-transform:uppercase;color:var(--cyan);margin-right:8px}
+.note{padding:12px 16px;border-left:2px solid var(--amber);background:var(--amber-soft);font-size:14.5px;margin:18px 0}
+.note b{color:var(--amber)}
+.opt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.opt>div{background:var(--surface);border:1px solid var(--line);padding:14px 16px;font-size:14px}
+.opt .t{font-family:var(--display);font-weight:600;font-size:15px}
+.opt .tag{display:inline-block;font-family:var(--display);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border:1px solid;border-radius:2px;margin-bottom:8px}
+.tag.go{color:var(--cyan);border-color:var(--cyan)} .tag.later{color:var(--violet);border-color:var(--violet)} .tag.no{color:var(--amber);border-color:var(--amber)}
+ul.check{list-style:none;padding:0;margin:12px 0}
+ul.check li{padding:7px 0 7px 28px;position:relative;border-bottom:1px solid var(--line)}
+ul.check li::before{content:"";position:absolute;left:2px;top:13px;width:13px;height:13px;border:1.5px solid var(--line2);border-radius:2px}
+@media (max-width:760px){.tiles,.opt{grid-template-columns:1fr}.phase{grid-template-columns:48px 1fr}}
+@media (prefers-reduced-motion: no-preference){a{transition:color .15s}}
+</style>
+</head>
+<body>
+<main>
+<div class="col">
+  <div class="eyebrow">執行方案 · 2026-09-08 · macOS Apple Silicon</div>
+  <h1>BlackHole × TouchDesigner × GPT-6</h1>
+  <p class="lede">把「音樂可視化」升級成 AI VJ：TouchDesigner 負責 60 fps 的反射神經，GPT-6 Astra 透過 Codex OAuth 當導演，每 15–20 秒下一次創意決策。不用 API key 計費，用你現有的 ChatGPT 訂閱。</p>
+  <div class="tiles">
+    <div class="tile cyan"><div class="k">反射層</div><div class="v">60 fps</div><div class="d">TD 本地 FFT → 視覺，完全不問 GPT</div></div>
+    <div class="tile violet"><div class="k">導演層 · 實測</div><div class="v">13.2 s</div><div class="d">codex exec 一次決策端到端，含冷啟動</div></div>
+    <div class="tile amber"><div class="k">每次決策用量</div><div class="v">25k tok</div><div class="d">大多是 Codex 系統提示，計入 ChatGPT 額度</div></div>
+  </div>
+</div>
+
+<div class="col">
+<h2>核心觀念：兩層，兩種時間尺度</h2>
+<p>每一 frame 問 GPT 是死路：60 fps 等於每小時 216,000 次呼叫，延遲也不可能低於一個 beat。正確拆法是把「反應」和「意識」分開：</p>
+<ul>
+  <li><b>反射層（TouchDesigner，每 frame）</b>：Audio Device In → 頻譜 → bass / mid / high / energy / kick，直接調變幾何、shader、feedback。這層自己就能跑完一整場，GPT 掛了也不會黑畫面。</li>
+  <li><b>導演層（Python sidecar + GPT-6，每 15–20 秒）</b>：看的是 30 秒與 120 秒的趨勢、段落（build / drop / breakdown）、過去兩分鐘的視覺歷史，輸出一包參數 JSON：場景、色盤、對稱數、feedback 量、相機速度、粒子模式，以及「下一個 drop 來時要做什麼」。</li>
+</ul>
+<p>兩層之間只靠 OSC 傳 JSON。導演改的是「目標值」，TD 用 Lag CHOP 花 2–4 個 beat 滑過去，所以 13 秒的決策延遲在畫面上感覺不到，只會覺得畫面「有在想事情」。</p>
+</div>
+
+<div class="wide">
+<figure>
+<svg viewBox="0 0 1040 600" role="img" aria-label="系統架構：Apple Music 經多重輸出裝置同時送到喇叭與 BlackHole；BlackHole 餵給 TouchDesigner 反射層與 projectM；TD 以 10 Hz OSC 把特徵送給 Python Director sidecar，sidecar 用 codex exec 呼叫 gpt-6-astra，每 15 到 20 秒把參數 JSON 用 OSC 送回 TD 的 Director 參數，經 Lag 滑入視覺網路，最後與 projectM 合成輸出。">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+    <marker id="arrV" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--violet)"/></marker>
+    <marker id="arrC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--cyan)"/></marker>
+  </defs>
+  <g fill="none" stroke="currentColor" stroke-width="1.2" font-size="12" style="color:var(--text)">
+    <!-- Row A: audio source chain -->
+    <rect x="40" y="28" width="150" height="48" rx="2" style="fill:var(--surface2)"/>
+    <text x="115" y="57" text-anchor="middle" fill="currentColor" stroke="none">Apple Music</text>
+    <rect x="250" y="28" width="180" height="48" rx="2" style="fill:var(--surface2)"/>
+    <text x="340" y="48" text-anchor="middle" fill="currentColor" stroke="none">多重輸出裝置</text>
+    <text x="340" y="66" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">Audio MIDI Setup</text>
+    <rect x="490" y="28" width="150" height="48" rx="2" style="fill:var(--surface2)"/>
+    <text x="565" y="57" text-anchor="middle" fill="currentColor" stroke="none">BlackHole 2ch</text>
+    <rect x="250" y="104" width="180" height="36" rx="2" style="fill:var(--surface)"/>
+    <text x="340" y="127" text-anchor="middle" fill="currentColor" stroke="none">喇叭 / 監聽（同時出聲）</text>
+    <line x1="190" y1="52" x2="250" y2="52" marker-end="url(#arr)"/>
+    <text x="220" y="44" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">系統輸出</text>
+    <line x1="430" y1="52" x2="490" y2="52" marker-end="url(#arr)"/>
+    <text x="460" y="44" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">PCM 48 kHz</text>
+    <line x1="340" y1="76" x2="340" y2="104" marker-end="url(#arr)"/>
+    <!-- audio bus -->
+    <polyline points="565,76 565,158 126,158 126,238" marker-end="url(#arr)"/>
+    <polyline points="565,158 855,158 855,196" marker-end="url(#arr)"/>
+    <text x="700" y="151" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">CoreAudio 輸入，兩個程式同時讀</text>
+
+    <!-- TD box -->
+    <rect x="40" y="196" width="620" height="384" rx="3" style="stroke:var(--cyan);fill:var(--cyan-soft)" stroke-dasharray="none"/>
+    <text x="56" y="218" fill="currentColor" stroke="none" font-size="12" font-weight="600" style="fill:var(--cyan)">TouchDesigner · 反射層 60 fps · 不問 GPT</text>
+
+    <rect x="56" y="238" width="140" height="42" rx="2" style="fill:var(--surface)"/>
+    <text x="126" y="256" text-anchor="middle" fill="currentColor" stroke="none">Audio Device In</text>
+    <text x="126" y="272" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">CHOP · 裝置選 BlackHole</text>
+    <line x1="126" y1="280" x2="126" y2="306" marker-end="url(#arr)"/>
+    <rect x="56" y="306" width="140" height="42" rx="2" style="fill:var(--surface)"/>
+    <text x="126" y="324" text-anchor="middle" fill="currentColor" stroke="none">Audio Spectrum</text>
+    <text x="126" y="340" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">＋ Analyze / Slope / Lag</text>
+    <line x1="126" y1="348" x2="126" y2="374" marker-end="url(#arr)"/>
+    <rect x="56" y="374" width="140" height="64" rx="2" style="fill:var(--surface)"/>
+    <text x="126" y="396" text-anchor="middle" fill="currentColor" stroke="none">bass · mid · high</text>
+    <text x="126" y="414" text-anchor="middle" fill="currentColor" stroke="none">energy · kick · centroid</text>
+    <text x="126" y="430" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">特徵 CHOP</text>
+    <line x1="126" y1="438" x2="126" y2="470" marker-end="url(#arr)"/>
+    <rect x="56" y="470" width="140" height="36" rx="2" style="fill:var(--surface)"/>
+    <text x="126" y="493" text-anchor="middle" fill="currentColor" stroke="none">OSC Out CHOP · 10 Hz</text>
+
+    <line x1="196" y1="406" x2="270" y2="406" marker-end="url(#arrC)" style="stroke:var(--cyan)"/>
+    <text x="233" y="398" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--cyan)">每 frame 調變</text>
+
+    <rect x="270" y="238" width="200" height="208" rx="2" style="fill:var(--surface)"/>
+    <text x="370" y="262" text-anchor="middle" fill="currentColor" stroke="none" font-weight="600">視覺網路</text>
+    <text x="370" y="292" text-anchor="middle" fill="currentColor" stroke="none">Scene · Shader · Camera</text>
+    <text x="370" y="314" text-anchor="middle" fill="currentColor" stroke="none">Particles · Geometry</text>
+    <text x="370" y="336" text-anchor="middle" fill="currentColor" stroke="none">Feedback · Kaleido</text>
+    <line x1="290" y1="356" x2="450" y2="356" style="stroke:var(--line2)"/>
+    <text x="370" y="380" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">快訊號直接接進參數</text>
+    <text x="370" y="398" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">慢目標值由 Director 參數滑入</text>
+    <text x="370" y="416" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">drop 到達時執行預先排好的 on_drop</text>
+
+    <rect x="270" y="478" width="200" height="44" rx="2" style="fill:var(--surface);stroke:var(--violet)"/>
+    <text x="370" y="496" text-anchor="middle" fill="currentColor" stroke="none" style="fill:var(--violet)">Director 參數 · Base COMP</text>
+    <text x="370" y="512" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">Lag CHOP 2–4 beats 滑入</text>
+    <line x1="370" y1="478" x2="370" y2="446" marker-end="url(#arrV)" style="stroke:var(--violet)"/>
+    <text x="380" y="466" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--violet)">glide</text>
+
+    <line x1="470" y1="314" x2="500" y2="314" marker-end="url(#arr)"/>
+    <rect x="500" y="290" width="140" height="48" rx="2" style="fill:var(--surface)"/>
+    <text x="570" y="319" text-anchor="middle" fill="currentColor" stroke="none">Composite TOP</text>
+    <line x1="570" y1="338" x2="570" y2="380" marker-end="url(#arr)"/>
+    <rect x="500" y="380" width="140" height="48" rx="2" style="fill:var(--surface)"/>
+    <text x="570" y="399" text-anchor="middle" fill="currentColor" stroke="none">Window COMP</text>
+    <text x="570" y="416" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">投影 · Movie File Out 錄影</text>
+
+    <!-- projectM -->
+    <rect x="700" y="196" width="310" height="90" rx="2" style="fill:var(--surface)"/>
+    <text x="716" y="220" fill="currentColor" stroke="none" font-weight="600">projectM（獨立程式，選配）</text>
+    <text x="716" y="244" fill="currentColor" stroke="none">音源：BlackHole 2ch，MilkDrop preset 自動輪播</text>
+    <text x="716" y="266" fill="currentColor" stroke="none" font-size="11.5" style="fill:var(--muted)">輸出：Syphon（Syphoner）或 NDI（OBS）→ Syphon Spout In / NDI In TOP</text>
+    <polyline points="700,241 680,241 680,314 640,314" marker-end="url(#arr)" stroke-dasharray="5 4"/>
+    <text x="660" y="334" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--muted)">1–4 frames</text>
+
+    <!-- Director -->
+    <rect x="700" y="330" width="310" height="240" rx="3" style="stroke:var(--violet);fill:var(--violet-soft)"/>
+    <text x="716" y="352" fill="currentColor" stroke="none" font-weight="600" style="fill:var(--violet)">Director sidecar · Python · 慢層 15–20 s</text>
+    <text x="716" y="382" fill="currentColor" stroke="none">1. 緩衝特徵：1 s / 30 s / 120 s 趨勢，判定段落</text>
+    <text x="716" y="404" fill="currentColor" stroke="none">2. BPM：aubio 直讀 BlackHole（選配，否則手動）</text>
+    <text x="716" y="426" fill="currentColor" stroke="none">3. codex exec -m gpt-6-astra --output-schema</text>
+    <text x="736" y="446" fill="currentColor" stroke="none" font-size="11.5" style="fill:var(--muted)">ChatGPT OAuth · 實測 13.2 s / 次 · 25k tokens</text>
+    <text x="716" y="470" fill="currentColor" stroke="none">4. 驗證、夾限，寫入視覺歷史</text>
+    <text x="716" y="492" fill="currentColor" stroke="none">5. 規則式 fallback：逾時 30 s 或失敗就接管</text>
+    <text x="716" y="522" fill="currentColor" stroke="none" font-size="11.5" style="fill:var(--muted)">輸出：scene · palette · feedback · symmetry ·</text>
+    <text x="716" y="540" fill="currentColor" stroke="none" font-size="11.5" style="fill:var(--muted)">camera_speed · particle_mode · projectm_mix · on_drop</text>
+
+    <line x1="700" y1="500" x2="470" y2="500" marker-end="url(#arrV)" style="stroke:var(--violet)"/>
+    <text x="585" y="490" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--violet)">OSC /director/* JSON · 每 15–20 s</text>
+    <polyline points="126,506 126,556 700,556" marker-end="url(#arrC)" style="stroke:var(--cyan)"/>
+    <text x="413" y="548" text-anchor="middle" fill="currentColor" stroke="none" font-size="10.5" style="fill:var(--cyan)">OSC /feat/* · 10 Hz · localhost:9000</text>
+  </g>
+</svg>
+<figcaption><span class="swatch" style="background:var(--cyan)"></span>青色是每 frame 或 10 Hz 的快路徑，<span class="swatch" style="background:var(--violet)"></span>紫色是每 15–20 秒一次的慢路徑。音訊只走一次 BlackHole，TD 與 projectM 各自從 CoreAudio 讀同一個輸入；Director 從不碰音訊 buffer，只吃 TD 算好的特徵。</figcaption>
+</figure>
+</div>
+
+<div class="col">
+<h2>導演層為什麼走 Codex OAuth</h2>
+<p>你的機器上已經有完整條件：Codex 桌面版帶的 <code>codex-cli 0.153.4</code>（路徑 <code>~/.codex/plugins/.plugin-appserver/codex</code>）、<code>~/.codex/auth.json</code> 是 chatgpt 登入模式、<code>config.toml</code> 預設 model 就是 <code>gpt-6-astra</code>。<code>codex exec</code> 支援 <code>--output-schema</code>，等於免費拿到 structured output，用量算在 ChatGPT 訂閱的 Codex 額度，不會產生 API 帳單。</p>
+<p>今天用下面這個 prompt 實測一次（145 BPM、energy 0.83、上升趨勢、build 段、歷史三筆），結果如下：</p>
+<div class="tblwrap"><table>
+<tr><th>項目</th><th>實測值</th><th>說明</th></tr>
+<tr><td>端到端延遲</td><td class="num">13.2 s</td><td>含 codex 程序冷啟動與 schema 驗證，reasoning effort 設 low</td></tr>
+<tr><td>Token 用量</td><td class="num">25,192</td><td>絕大多數是 Codex 內建系統提示與工具定義，不是你的 prompt</td></tr>
+<tr><td>輸出</td><td class="num">合規 JSON</td><td>fractal_temple / infrared / feedback 0.78 / glide 16 beats，intent 寫「壓住峰值速度留給 drop」</td></tr>
+<tr><td>退出碼</td><td class="num">0</td><td>第一次跑掛住，原因見下方 stdin 陷阱</td></tr>
+</table></div>
+<div class="note"><b>stdin 陷阱。</b>從腳本呼叫 <code>codex exec</code> 時，它會在非 TTY 環境等 stdin 的 EOF，不給就永遠掛著。Python 用 <code>subprocess.run(..., stdin=subprocess.DEVNULL)</code>，shell 加 <code>&lt; /dev/null</code>。這是今天實測踩到的第一個坑。</div>
+
+<h3>三條路，選一條</h3>
+<div class="opt">
+  <div><span class="tag go">現在就用</span><div class="t">A · 每次決策開一個 codex exec</div><p>零 token 處理、完全走官方登入、已實測可行。代價是每次約 13 秒冷啟動，所以決策週期訂在 15–20 秒，drop 反應交給反射層。</p></div>
+  <div><span class="tag later">第二階段</span><div class="t">B · 常駐 codex app-server / mcp-server</div><p>同一個 codex 程序常駐，走 JSON-RPC 或 MCP 送 prompt，省掉冷啟動，理論上可壓到數秒。目前標 experimental，協定會變，等 A 版跑穩再上。</p></div>
+  <div><span class="tag no">不建議</span><div class="t">C · 直接拿 auth.json 的 access_token 打 chatgpt.com 後端</div><p>社群 proxy 的做法。快，但非官方端點、隨時會被擋，也偏離 ChatGPT 登入的使用範圍。演出中斷的風險不值得。</p></div>
+</div>
+<div class="note"><b>額度是未知數。</b>每次 25k tokens，一小時 180 次就是 4.5M tokens，會撞到 Codex 的 5 小時與每週用量窗。正式演出前先做一次 60 分鐘 dry run，看桌面版的額度指示，決定週期要拉到 20 秒還是 30 秒。Fallback 導演一定要在，額度用完畫面照樣走。</div>
+</div>
+
+<div class="col">
+<h2>資料契約</h2>
+<h3>TD → Director：特徵（OSC，10 Hz，UDP 127.0.0.1:9000）</h3>
+<div class="tblwrap"><table>
+<tr><th>Address</th><th>型別</th><th>範圍</th><th>TD 端怎麼算</th></tr>
+<tr><td><code>/feat/bass</code></td><td>float</td><td class="num">0–1</td><td>Audio Spectrum 20–150 Hz 區段平均 → Lag 0.05 s → 正規化</td></tr>
+<tr><td><code>/feat/mid</code></td><td>float</td><td class="num">0–1</td><td>150–2 kHz</td></tr>
+<tr><td><code>/feat/high</code></td><td>float</td><td class="num">0–1</td><td>2–16 kHz</td></tr>
+<tr><td><code>/feat/energy</code></td><td>float</td><td class="num">0–1</td><td>Analyze CHOP RMS power，滑動視窗 1 s，除以 set 最大值自適應</td></tr>
+<tr><td><code>/feat/kick</code></td><td>int</td><td class="num">0 / 1</td><td>bass 的 Slope 超過門檻 → Logic CHOP，脈衝寬 1 frame</td></tr>
+<tr><td><code>/feat/centroid</code></td><td>float</td><td class="num">Hz</td><td>Script CHOP 用 numpy 算頻譜重心；沒時間就先省略</td></tr>
+</table></div>
+
+<h3>Director 決策 JSON（實測用的 schema，加上 on_drop）</h3>
+<pre><code>{
+  "scene":         "fractal_temple | tunnel | particle_field | kaleido_mesh | projectm_blend",
+  "palette":       "violet_cyan | acid_lime | amber_dusk | mono_white | infrared",
+  "feedback":      0.00 – 0.98,
+  "symmetry":      1 – 16,
+  "camera_speed":  0.0 – 1.0,
+  "particle_mode": "spiral | burst | rain | orbit | none",
+  "projectm_mix":  0.0 – 1.0,
+  "transition":    { "mode": "cut | glide | on_next_kick", "beats": 1 – 16 },
+  "on_drop":       { "scene": "...", "palette": "...", "particle_mode": "..." },
+  "intent":        "≤120 字，寫進 log，事後檢討用"
+}</code></pre>
+<p><code>on_drop</code> 是這個架構最關鍵的一欄：GPT 提前決定「下一個 drop 來時切什麼」，TD 的反射層在偵測到 drop 的那一 frame 直接執行。導演負責預判，執行零延遲。實測那次用的是不含 on_drop 的版本，加欄位後 schema 檔要同步更新。</p>
+
+<h3>Director → TD：OSC address map（UDP 127.0.0.1:9001）</h3>
+<div class="tblwrap"><table>
+<tr><th>Address</th><th>型別</th><th>TD 端接法</th></tr>
+<tr><td><code>/director/scene</code></td><td>string</td><td>Switch TOP 的 index，依 transition.mode 決定 cut 或等下一個 kick</td></tr>
+<tr><td><code>/director/palette</code></td><td>string</td><td>Lookup TOP 的 ramp 切換，顏色本身用 Cross TOP 滑</td></tr>
+<tr><td><code>/director/feedback</code></td><td>float</td><td>Feedback TOP 混合量 → Lag CHOP，lag 秒數 = beats × 60 / BPM</td></tr>
+<tr><td><code>/director/symmetry</code></td><td>int</td><td>Kaleido / GLSL uniform，整數不滑，等下一個 kick 才換</td></tr>
+<tr><td><code>/director/camera_speed</code></td><td>float</td><td>Camera COMP 的 rotate 速度 → Lag</td></tr>
+<tr><td><code>/director/particle_mode</code></td><td>string</td><td>Particle GPU 的 force preset 切換</td></tr>
+<tr><td><code>/director/projectm_mix</code></td><td>float</td><td>Composite TOP 對 projectM 圖層的 opacity → Lag</td></tr>
+<tr><td><code>/director/on_drop</code></td><td>json string</td><td>存進 Text DAT，kick 偵測器判定 drop 時讀出執行</td></tr>
+<tr><td><code>/director/heartbeat</code></td><td>int</td><td>每次決策遞增；TD 超過 45 秒沒收到就顯示警示並維持現狀</td></tr>
+</table></div>
+</div>
+
+<div class="col">
+<h2>執行方案</h2>
+<p>六個階段，每一階段都有可以獨立驗收的產出。第二階段完成時就已經是一台能上場的音樂視覺機，之後每一階段都只是加一層。</p>
+
+<div class="phase"><div class="n">0<small>半天</small></div><div>
+<h3>環境準備</h3>
+<ul>
+  <li>BlackHole 2ch：<code>brew install blackhole-2ch</code>，裝完要登出或重開</li>
+  <li>TouchDesigner 2023 以上（Non-Commercial 版輸出上限 1280×1280，投影前確認夠用）</li>
+  <li>Python 3.11 以上建 venv（系統的 3.9.6 太舊）：<code>python-osc numpy sounddevice</code>，選配 <code>aubio</code></li>
+  <li>Codex：已登入，確認 <code>codex exec</code> 可執行；把二進位路徑寫進 director 的設定</li>
+  <li>選配：<code>brew install projectm</code>，或下載 projectM SDL 前端</li>
+</ul>
+<div class="accept"><b>驗收</b><code>codex exec -m gpt-6-astra --output-schema schema.json -o out.json "..." &lt; /dev/null</code> 回傳合規 JSON</div>
+</div></div>
+
+<div class="phase"><div class="n">1<small>1 小時</small></div><div>
+<h3>音訊路由</h3>
+<ul>
+  <li>Audio MIDI Setup → 左下「+」→ 建立多重輸出裝置，勾選你的喇叭或介面，再勾 BlackHole 2ch</li>
+  <li>主裝置設成喇叭，BlackHole 那列勾 Drift Correction；把多重輸出裝置設為系統輸出</li>
+  <li>Apple Music 播放，TD 開 Audio Device In CHOP，Device 選 BlackHole 2ch，取樣率跟系統一致（48 kHz）</li>
+</ul>
+<div class="accept"><b>驗收</b>喇叭有聲、CHOP 波形在動、Trail CHOP 看得到 kick 的尖峰</div>
+</div></div>
+
+<div class="phase"><div class="n">2<small>1–2 天</small></div><div>
+<h3>反射層：TD 自己就能演</h3>
+<ul>
+  <li>分析鏈：Audio Spectrum → 三段 Select → Analyze → Lag → Math 正規化；bass 走 Slope + Logic 做 kick 脈衝</li>
+  <li>建一個 <code>/director</code> Base COMP，把 schema 裡每個欄位做成 Custom Parameter，全部視覺網路只引用這裡</li>
+  <li>至少三個場景（tunnel、fractal_temple、particle_field）掛在 Switch TOP 上；每個場景都要吃 bass/mid/high</li>
+  <li>Feedback TOP、Kaleido、Lookup 色盤做成共用後製鏈</li>
+  <li>OSC In DAT 監聽 9001，callback 只做一件事：把值寫進 Custom Parameter</li>
+</ul>
+<div class="accept"><b>驗收</b>不開 Director，手動拖 Custom Parameter，畫面 60 fps 反應且參數會滑，不會跳</div>
+</div></div>
+
+<div class="phase"><div class="n">3<small>半天</small></div><div>
+<h3>特徵匯流</h3>
+<ul>
+  <li>OSC Out CHOP 把六個特徵以 10 Hz 送到 9000（Sample Rate 設 10 即可，不要用 60）</li>
+  <li>sidecar 先只做接收與記錄：1 秒、30 秒、120 秒的滑動平均與斜率，段落判定（energy 低於 0.35 超過 4 秒 = breakdown；連續上升 20 秒 = build；breakdown 後 bass 突然回到 0.7 以上 = drop）</li>
+  <li>把段落判定結果也送回 TD 一份 <code>/feat/section</code>，反射層自己也能用</li>
+</ul>
+<div class="accept"><b>驗收</b>播一首完整的曲子，log 裡的 build / drop / breakdown 時間戳跟你耳朵聽到的一致</div>
+</div></div>
+
+<div class="phase"><div class="n">4<small>1 天</small></div><div>
+<h3>導演層：先規則，再 GPT</h3>
+<ul>
+  <li>先寫規則式導演：section 狀態機直接輸出同一份 JSON。這份之後就是 fallback，不會白做</li>
+  <li>再加 GPT 路徑：每 15–20 秒（或段落切換當下）組 prompt，<code>codex exec</code> 拿 JSON，驗證後夾限，寫入視覺歷史，送 OSC</li>
+  <li>prompt 只放「現在」與「趨勢」的摘要，不放原始序列；視覺歷史給最近 8 筆，附時長</li>
+  <li>鍵盤熱鍵切換 GPT / 規則 / 手動三種模式，演出時你永遠有否決權</li>
+</ul>
+<div class="accept"><b>驗收</b>連跑 60 分鐘不中斷；拔掉網路，30 秒內 fallback 接手且畫面不閃</div>
+</div></div>
+
+<div class="phase"><div class="n">5<small>半天–1 天</small></div><div>
+<h3>projectM 側鏈</h3>
+<ul>
+  <li>projectM 獨立跑，音訊輸入選 BlackHole 2ch，preset 讓它自己輪播</li>
+  <li>畫面進 TD：Syphon 走 Syphoner 抓 projectM 視窗 → Syphon Spout In TOP，延遲約 1 frame；或 OBS 視窗擷取 + NDI 外掛 → NDI In TOP，延遲 2–4 frames 但最穩</li>
+  <li>導演只控 <code>projectm_mix</code> 與 Composite 的 blend mode，不去控 projectM 的 preset；要換 preset 就靠它自己的 hotkey 輪播</li>
+  <li>libprojectM 塞進 Custom TOP 這條先不碰：macOS 版 TD 已走 Metal，libprojectM 要 OpenGL context，工程量與 A 版整套差不多</li>
+</ul>
+<div class="accept"><b>驗收</b>projectm_mix 從 0 滑到 1 的過程中 fps 不掉，MilkDrop 圖層與 TD 場景在同一個色盤下不打架</div>
+</div></div>
+
+<div class="phase"><div class="n">6<small>持續</small></div><div>
+<h3>演出強化</h3>
+<ul>
+  <li>反重複：Director 拿到的歷史裡標出「上次用同組合的時間」，prompt 規則寫死 60 秒內不重複</li>
+  <li>Drop 預判：on_drop 一定要填，TD 端 drop 偵測器命中就執行，不等下一輪決策</li>
+  <li>錄影：Movie File Out TOP 同步存檔，sidecar 的 log 帶時間戳，事後對照哪些決策好</li>
+  <li>MIDI 覆寫：一台小控制器接 TD，任何參數你手動一動就凍結該欄位 30 秒</li>
+  <li>第二階段再評估 codex app-server 常駐，把 13 秒壓下去</li>
+</ul>
+</div></div>
+</div>
+
+<div class="col">
+<h2>程式碼骨架</h2>
+<h3>director.py（sidecar 主迴圈）</h3>
+<pre><code>import json, subprocess, time, collections, os
+from pythonosc import udp_client, dispatcher, osc_server
+import threading
+
+CODEX = os.path.expanduser("~/.codex/plugins/.plugin-appserver/codex")
+SCHEMA = "director_schema.json"
+td = udp_client.SimpleUDPClient("127.0.0.1", 9001)
+feat = collections.defaultdict(lambda: collections.deque(maxlen=1200))  # 120 s @ 10 Hz
+history = collections.deque(maxlen=8)
+
+def on_feat(addr, *args):
+    feat[addr.split("/")[-1]].append((time.time(), args[0]))
+
+def summarize():
+    def avg(k, sec):
+        now = time.time(); xs = [v for t, v in feat[k] if now - t &lt;= sec]
+        return round(sum(xs) / len(xs), 2) if xs else 0.0
+    e30, e120 = avg("energy", 30), avg("energy", 120)
+    trend = "rising" if e30 &gt; e120 + 0.05 else "falling" if e30 &lt; e120 - 0.05 else "flat"
+    return dict(bass=avg("bass", 1), mid=avg("mid", 1), high=avg("high", 1),
+                energy=avg("energy", 1), energy_trend_30s=trend, section=current_section())
+
+def ask_gpt(summary):
+    prompt = (SYSTEM_PROMPT + "\nNow: " + json.dumps(summary)
+              + "\nVisual history (newest first): " + json.dumps(list(history)))
+    out = "director_out.json"
+    r = subprocess.run(
+        [CODEX, "exec", "-m", "gpt-6-astra", "-c", 'model_reasoning_effort="low"',
+         "-s", "read-only", "--skip-git-repo-check", "-C", "/tmp/director-cwd",
+         "--output-schema", SCHEMA, "-o", out, prompt],
+        stdin=subprocess.DEVNULL, capture_output=True, timeout=30)   # 沒有 DEVNULL 會掛死
+    if r.returncode != 0: raise RuntimeError(r.stderr[-400:])
+    return clamp(json.load(open(out)))
+
+def rule_director(summary):
+    ...  # section 狀態機，輸出同一份 JSON 結構
+
+def publish(d):
+    for k in ("scene","palette","feedback","symmetry","camera_speed","particle_mode","projectm_mix"):
+        td.send_message(f"/director/{k}", d[k])
+    td.send_message("/director/on_drop", json.dumps(d["on_drop"]))
+    td.send_message("/director/heartbeat", int(time.time()))
+    history.appendleft({"scene": d["scene"], "palette": d["palette"], "t": int(time.time())})
+
+def loop(period=18):
+    while True:
+        s = summarize()
+        try:    d = ask_gpt(s); src = "gpt"
+        except Exception as e:
+            d = rule_director(s); src = f"rule ({e.__class__.__name__})"
+        publish(d); print(time.strftime("%H:%M:%S"), src, d.get("intent", ""))
+        time.sleep(max(0, period - 13))   # 扣掉 exec 本身的耗時</code></pre>
+
+<h3>TD 端：OSC In DAT 的 callback</h3>
+<pre><code>def onReceiveOSC(dat, rowIndex, message, bytes, timeStamp, address, args, peer):
+    d = op('/project1/director')            # 放 Custom Parameter 的 Base COMP
+    key = address.split('/')[-1]
+    if key == 'on_drop':
+        op('on_drop_dat').text = args[0]    # kick 偵測器命中 drop 時再讀
+    elif key == 'heartbeat':
+        d.store('last_heartbeat', absTime.seconds)
+    elif hasattr(d.par, key.capitalize()):
+        getattr(d.par, key.capitalize()).val = args[0]   # Lag CHOP 在下游負責滑
+    return</code></pre>
+
+<h3>導演的系統提示（放在 director.py 的 SYSTEM_PROMPT）</h3>
+<pre><code>你是一場 Psytrance 現場的視覺導演，管理整場演出的構圖節奏。只輸出符合 schema 的 JSON。
+規則：
+- 同一組 scene+palette 60 秒內不重複；連續三次決策至少換一次 scene。
+- section=build 時逐步加 feedback 與 symmetry、壓低 camera_speed，把峰值留給 drop。
+- section=breakdown 時降低複雜度：particle_mode=none 或 rain，projectm_mix ≤ 0.2。
+- 每次都要填 on_drop，且不能跟上一次的 on_drop 相同策略。
+- transition：段落內用 glide 8–16 beats；段落切換用 on_next_kick。
+- intent 用 120 字內說明這次決策為什麼，會被記錄。</code></pre>
+</div>
+
+<div class="col">
+<h2>延遲、額度與風險</h2>
+<div class="tblwrap"><table>
+<tr><th>路徑</th><th>延遲</th><th>備註</th></tr>
+<tr><td>Apple Music → BlackHole → TD CHOP</td><td class="num">≈ 1 buffer</td><td>CoreAudio 本身的緩衝，數毫秒</td></tr>
+<tr><td>TD 特徵 → 視覺</td><td class="num">1 frame</td><td>16.7 ms @ 60 fps</td></tr>
+<tr><td>OSC localhost</td><td class="num">&lt; 1 ms</td><td>雙向皆是</td></tr>
+<tr><td>codex exec 一次決策</td><td class="num">13.2 s</td><td>今日實測，effort low；決策週期因此訂 15–20 s</td></tr>
+<tr><td>projectM → Syphon → TD</td><td class="num">≈ 1 frame</td><td>需 Syphoner 之類的視窗轉 Syphon 工具</td></tr>
+<tr><td>projectM → OBS → NDI → TD</td><td class="num">2–4 frames</td><td>最穩，但多一個 OBS 要顧</td></tr>
+</table></div>
+<div class="tblwrap"><table>
+<tr><th>風險</th><th>對策</th></tr>
+<tr><td>Codex 額度在演出中用完</td><td>規則式 fallback 常駐；dry run 先量一小時用量；週期可即時拉長到 30 s</td></tr>
+<tr><td>codex exec 掛住</td><td>stdin=DEVNULL、timeout 30 s、每輪獨立程序，掛了就下一輪</td></tr>
+<tr><td>GPT 決策風格單調</td><td>歷史帶時長進 prompt，反重複規則寫死，每 10 次強制換一次 scene</td></tr>
+<tr><td>參數跳變閃畫面</td><td>所有 float 都經 Lag CHOP；整數與字串類只在下一個 kick 切</td></tr>
+<tr><td>~/.codex/sessions 堆滿</td><td>每次 exec 都留 session 檔，一小時 180 個；演出後用 <code>codex archive</code> 或定期清</td></tr>
+<tr><td>Codex 版本更新改了 flag</td><td>director 啟動時先跑一次 smoke test，失敗就直接進規則模式並警示</td></tr>
+</table></div>
+</div>
+
+<div class="col">
+<h2>上場前檢查</h2>
+<ul class="check">
+  <li>多重輸出裝置為系統輸出，喇叭有聲，TD 波形在動</li>
+  <li>TD 在不開 Director 的情況下能獨立演完一首歌</li>
+  <li><code>codex exec</code> smoke test 通過，Codex 額度指示還有空間</li>
+  <li>拔網路測過：30 秒內 fallback 接管，畫面無閃爍</li>
+  <li>熱鍵可在 GPT / 規則 / 手動三種模式間切換</li>
+  <li>on_drop 有填且 drop 偵測器命中時有反應</li>
+  <li>Movie File Out 錄影與 Director log 同時啟動</li>
+  <li>projectM 側鏈若啟用，projectm_mix 由 0 到 1 全程 fps 穩定</li>
+</ul>
+</div>
+</main>
+</body>
+</html>
