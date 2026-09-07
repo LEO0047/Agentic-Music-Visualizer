@@ -1,54 +1,57 @@
-# 實機接續驗收 · 2026-09-08
+# 實機驗收 · 2026-09-08
 
-目前不能宣稱「視覺機已完成」。原有 630 個測試在本次重跑全部通過，
-但 TouchDesigner 網路仍未在引擎內執行，沒有可供檢視的真實輸出。
+已在 macOS 的 TouchDesigner 2025.33230 Non-Commercial 內建構並渲染。
+這是可播放的原生視覺 MVP，仍不是完成 60 分鐘演出驗收的版本。
 
-## 本次完成
+## 已確認
 
-- 透過 Homebrew 安裝官方 TouchDesigner 2025.33230 Apple Silicon 版。
-- 啟動時的 Apple 已檢查下載 App 提示已確認開啟。
-- 程序接著等待 macOS 管理員授權。SecurityAgent 密碼視窗不允許桌面工具操作，需使用者完成。
-- 修正導演的過期結果：推理期間已換段，或超過一個決策週期，就以當前音樂摘要走規則導演。
-- 修正推理中的手動接管／模式切換／結束：舊回覆不再發送。
-- 歷史時間戳改為實際發布時間，避免把 10 多秒前的請求時間當作視覺開始時間。
-- Codex 呼叫加入 `--ephemeral`，不用每次決策留下 session 再額外清理。
-- 一次真實 gpt-6-astra／low 決策通過，合規 JSON，耗時 10.4 秒（單次資料，非延遲保證）。
-- 修正後全套測試：638 passed，7.17 秒；`git diff --check` 通過。
-- BlackHole 48 kHz 真實 loopback：輸入 440 Hz、讀回 440 Hz，誤差 0 Hz，RMS 0.177617。
-  這證明驅動可收發，不代表 Apple Music 已接入或 TD 已跟拍。
-- 核對 TD 安裝包內官方文件，修正 Trim CHOP 的 `startunit`／`endunit`／`relative=abs`，
-  以及 Analyze CHOP 的 `function=rmspower`。這兩項尚待引擎實測。
-- 提供 `td/verify_runtime.py` 保存真實 TOP 像素、節點錯誤、警告、特徵值；不會把快照自動判為 PASS。
+- Apple Music 選這台 Mac → AMV 多重輸出 → AirPods Pro 2 + BlackHole 2ch。
+  使用者確認 AirPods 有聲音；BlackHole 48 kHz 連續 40 個區塊無靜音、無 overflow，
+  RMS 0.08672–0.137328。TD 同時收到 bass / mid / high / energy 變化。
+- 裝置使用 `BlackHole2ch_UID` 並啟用 missing-device error，避免無效選項偷偷落回麥克風。
+- 修正頻谱線性頻率、Trim sample 單位與 timeslice、RMS 選項、立體聲合併。
+- 5 個 GLSL 場景實際渲染，1280 × 720。包含隧道、徑向幾何、程式粒子及混合變化。
+  粒子是 shader 內計算的位置，不是物理模擬；`projectm_blend` 在沒有外部來源时使用原生混合圖形。
+- 五個場景及色盤截圖已目視檢查；無缺圖、shader 編譯錯誤或 unintended black output。
+- 修正 feedback 缺少輸入、Transform 參數、Composite 前後景順序；projectM 未啟用時不再蓋黑底。
+- MIDI 預設停用且 Device Table 留空，不再引用不存在的 `1`。
+- OSC Out DAT 用牆鐘節流且保留短 kick pulse。靜態執行實測 10.008 Hz；
+  同步截圖與切場時約 8.815 Hz，截圖 readback 會卡主執行緒，不能當作固定 10 Hz 保證。
+- 65 秒真實 GPT sidecar 測試：4,080 個特徵訊息，3 次發布，1 次 GPT 成功（11.363 秒），
+  2 次推理期間音樂換段而改走當前規則。無 sidecar 錯誤。TD 實際參數及 heartbeat 已改變。
+- 手動模式、30 秒欄位保留、失效決策抑制由既有測試保護；638 個測試通過。
+- 不錄影、不截圖的 20 秒取樣：平均 59.08 fps，p95 幀間隔 18.76 ms，最大 121.90 ms。
+- 五場景切換加同步截圖：15 秒平均 53.51 fps，最長一幀 431 ms。
+  MJPEG 錄影：10 秒平均 46.88 fps，沒有節點或腳本錯誤。這些不是穩定 60 fps 證據。
+- 免費版不支援 GPU H.264/H.265 編碼；改用原生 MJPEG，另轉出小型 MP4 預覽。
+  預覽無音軌；轉檔調整時間軸以對應錄製牆鐘時間。
 
-## 授權完成後的實際操作
+本機證據在 `artifacts/td-runtime/`，不進公開 Git：包含實際 TOP 圖像、特徵值、
+OSC 頻率、導演決策與錄影。`verify_runtime.capture()` 仍明確標成需人工檢查，
+不會因為圖片存在就自動給 PASS。
 
-1. 完成 TD 登入／啟用，開新專案。
-2. 在 Textport 執行：
+## 本次實際修正
 
-   ```python
-   exec(open('/Users/leohuang/Repos/Agentic-Music-Visualizer/td/build_network.py').read())
-   ```
+原始建構碼的 stub 測試無法發現 TD menu token、cook 時序與缺少 input 的問題。
+本次按引擎實際值修正這些問題，並把三個 placeholder noise 場景換成五個 GLSL 場景。
+顏色直接在 shader 內計算，執行網路不再建立用不到的 Ramp bank。
 
-3. 先修正 Textport 與節點顯示的實際錯誤，確認 `out` 有畫面。不要只看建構腳本有沒有退出。
-4. 在 Audio MIDI Setup 建立喇叭 + BlackHole 的多重輸出，確認真實音樂進入 TD。
-5. 網路運行後保存證據：
+CoreAudio 的 `stacked=0` 在本機產生了 2-in/4-out 聚集裝置，並非鏡像輸出。
+本機驗證 `stacked=1` 才產生 0-in/2-out 的多重輸出；不能只依 header 註解判斷路由已成功。
 
-   ```python
-   import verify_runtime
-   verify_runtime.capture(op('/project1/amv'))
-   ```
+## 使用限制與仍待驗收
 
-   本機 `artifacts/td-runtime/<時間>/` 會包含 `output.png` 與 `report.json`。
-   此目錄不進 Git；沒有捕獲成功就沒有可交付的效果截圖。
+- 多重輸出沒有 macOS 主音量控制。使用 Apple Music 自己的音量滑桿，或在 Audio MIDI Setup
+  調整 AirPods 個別裝置；停止後以 `Restore AirPods.command` 還原系統輸出。
+- Bluetooth 聽覺延遲與畫面同步尚未做時間校準；目前未補償 AirPods 延遲。
+- kick 是低頻上升沿啟發式，不是準確 BPM／鼓點辨識；真實音樂可能過度觸發，需要校準。
+- centroid 仍為保留通道 0，不能稱為已計算頻譜重心。
+- projectM／Syphon／NDI 外部來源、實體 MIDI、長時間穩定性與 60 分鐘演出未驗收。
+- GPU 粒子與圖形已可見，但不宣稱達成 VISION 的 3D 物理模擬或 V2/V3 全部願景。
 
-6. 檢查三個場景、五個色盤、參數滑動、音訊同步、實際 FPS，再接規則導演與 GPT。
+## 全螢幕回退
 
-## 尚未驗證或尚未完成
-
-- TD 實際建構、畫面、音訊反應、長時間 FPS 與斷網演練。
-- 多重輸出裝置的系統路由（BlackHole 已安裝，但未接到 Apple Music）。
-- 真粒子、真正的多向對稱、兩個仍映射到其他場景的選項。
-- OSC 實際發送頻率；Resample 的 sample rate 不能作為 cook rate 實測證據。
-- projectM 側鏈、MIDI 實體控制器、錄影、60 分鐘演出驗收。
-
-這些項目不能由 stub 測試、單次 GPT 成功、程序已啟動或建構腳本存在來代替。
+使用者要求全螢幕後曾將 Window COMP 設為 fill 並關閉 borders；這在本機遮住其他操作，
+且 Escape 沒有成功恢復。已透過 TD 原生 Quit 選單結束程序，保留已存檔與音訊路由。
+交付檔已回退為 960 × 540、有標題列及關閉按鈕的一般視窗，不自動進全螢幕。
+因此全螢幕控制尚未驗收通過，不能把設定值寫入成功當作操作成功。
