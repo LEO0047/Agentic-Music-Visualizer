@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AMVDirectorDecision",
+  "description": "Agentic Music Visualizer director decision (SPEC.md 3.2). Strict mode: every field required, no extra properties.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scene",
+    "palette",
+    "feedback",
+    "symmetry",
+    "camera_speed",
+    "particle_mode",
+    "projectm_mix",
+    "transition",
+    "on_drop",
+    "intent"
+  ],
+  "properties": {
+    "scene": {
+      "type": "string",
+      "description": "Which visual scene the reflex layer should switch to.",
+      "enum": [
+        "fractal_temple",
+        "tunnel",
+        "particle_field",
+        "kaleido_mesh",
+        "projectm_blend"
+      ]
+    },
+    "palette": {
+      "type": "string",
+      "description": "Lookup TOP colour ramp.",
+      "enum": [
+        "violet_cyan",
+        "acid_lime",
+        "amber_dusk",
+        "mono_white",
+        "infrared"
+      ]
+    },
+    "feedback": {
+      "type": "number",
+      "description": "Feedback TOP mix amount, 0-0.98.",
+      "minimum": 0,
+      "maximum": 0.98
+    },
+    "symmetry": {
+      "type": "integer",
+      "description": "Kaleidoscope symmetry count, 1-16. Switches only on the next kick.",
+      "minimum": 1,
+      "maximum": 16
+    },
+    "camera_speed": {
+      "type": "number",
+      "description": "Camera COMP rotation speed, 0-1.",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "particle_mode": {
+      "type": "string",
+      "description": "Particle GPU force preset.",
+      "enum": ["spiral", "burst", "rain", "orbit", "none"]
+    },
+    "projectm_mix": {
+      "type": "number",
+      "description": "Opacity of the projectM sidechain layer, 0-1.",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "transition": {
+      "type": "object",
+      "description": "How the reflex layer should move to the new target values.",
+      "additionalProperties": false,
+      "required": ["mode", "beats"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["cut", "glide", "on_next_kick"]
+        },
+        "beats": {
+          "type": "integer",
+          "description": "Glide length in beats, 1-16.",
+          "minimum": 1,
+          "maximum": 16
+        }
+      }
+    },
+    "on_drop": {
+      "type": "object",
+      "description": "Pre-decided look the reflex layer executes on the frame a drop is detected.",
+      "additionalProperties": false,
+      "required": ["scene", "palette", "particle_mode"],
+      "properties": {
+        "scene": {
+          "type": "string",
+          "enum": [
+            "fractal_temple",
+            "tunnel",
+            "particle_field",
+            "kaleido_mesh",
+            "projectm_blend"
+          ]
+        },
+        "palette": {
+          "type": "string",
+          "enum": [
+            "violet_cyan",
+            "acid_lime",
+            "amber_dusk",
+            "mono_white",
+            "infrared"
+          ]
+        },
+        "particle_mode": {
+          "type": "string",
+          "enum": ["spiral", "burst", "rain", "orbit", "none"]
+        }
+      }
+    },
+    "intent": {
+      "type": "string",
+      "description": "Short human-readable reason for this decision, at most 120 characters.",
+      "maxLength": 120
+    }
+  }
+}

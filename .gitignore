@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.log
+out/
+.DS_Store
+director_out*.json
+*.egg-info/
+
+# TouchDesigner
+*.toe.*
+Backup/
