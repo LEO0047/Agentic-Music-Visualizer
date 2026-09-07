@@ -27,6 +27,8 @@ uv sync --group dev --extra audio    # 安裝依賴（見下方 aubio 註記）
 uv run python tools/check_env.py     # 環境檢查表
 uv run pytest -q                     # 單元測試，不會呼叫真的 codex
 scripts/smoke_codex.sh               # Phase 0 驗收：跑一次真實 codex exec
+tools/audio_check.py                 # Phase 1 驗收：devices / loopback / meter
+amv/audio_features.py                # 純 numpy 頻帶能量、Normalizer、KickDetector
 ```
 
 `scripts/smoke_codex.sh` 會消耗 ChatGPT 訂閱的 Codex 額度（一次約 25k tokens），不要拿來輪詢。
@@ -48,7 +50,7 @@ scripts/smoke_codex.sh               # Phase 0 驗收：跑一次真實 codex ex
 | # | 階段 | 驗收 | 狀態 |
 |---|---|---|---|
 | 0 | 環境準備 | `codex exec` 回傳合規 JSON | ✅ |
-| 1 | 音訊路由 | 喇叭有聲、TD CHOP 波形在動 | ⬜ |
+| 1 | 音訊路由 | 喇叭有聲、TD CHOP 波形在動 | 🟡 sidecar 側完成：`tools/audio_check.py loopback` PASS；多重輸出裝置與 TD 端待使用者操作，見 [docs/phase1-audio-routing.md](docs/phase1-audio-routing.md) |
 | 2 | 反射層 | 不開 Director 也能 60 fps 反應 | ⬜ |
 | 3 | 特徵匯流 | build/drop/breakdown 時間戳與耳朵一致 | ⬜ |
 | 4 | 導演層 | 連跑 60 分鐘；拔網路 30 s 內 fallback | ⬜ |
