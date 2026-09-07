@@ -34,6 +34,8 @@ amv/sections.py                      # SectionDetector：steady/build/drop/break
 amv/osc_io.py                        # FeatureReceiver（/feat/* 進）、TDClient（/director/* 出）
 amv/sidecar.py                       # python -m amv.sidecar：Phase 3 接收、判段、記 log、回送 /feat/section
 tools/fake_td.py                     # 沒有 TD 時的合成特徵源（145 BPM 劇本，--speed 加速）
+amv/director.py                      # RuleDirector、GPTDirector(fallback)、enforce_variety、DirectorLoop、Hotkeys
+tools/fake_codex.py                  # 假 codex 二進位：AMV_FAKE_CODEX_MODE=ok|fail|hang|garbage，無額度測容錯
 td/build_network.py                  # 在 TD Textport 執行，一鍵建出 /project1/amv 反射層網路
 td/parspec.py                        # schema → TD Custom Parameters（純 Python）
 td/osc_in_callbacks.py               # OSC In DAT callbacks：/director/* 路由、30 s 凍結、離散參數待 kick
@@ -63,7 +65,7 @@ td/td_stub.py                        # 沒有 TD 時用來跑測試的最小 td 
 | 1 | 音訊路由 | 喇叭有聲、TD CHOP 波形在動 | 🟡 sidecar 側完成：`tools/audio_check.py loopback` PASS；多重輸出裝置與 TD 端待使用者操作，見 [docs/phase1-audio-routing.md](docs/phase1-audio-routing.md) |
 | 2 | 反射層 | 不開 Director 也能 60 fps 反應 | 🟡 網路即程式碼完成（`td/build_network.py`，211 tests 以 td_stub 驗證）；本機無 TouchDesigner，35 個 `# VERIFY` 待在 TD 內確認，見 [td/README.md](td/README.md) |
 | 3 | 特徵匯流 | build/drop/breakdown 時間戳與耳朵一致 | ✅ sidecar + `tools/fake_td.py` 端到端：6 個轉換全在 ±0.2 s（真曲驗聽待 TD 上線） |
-| 4 | 導演層 | 連跑 60 分鐘；拔網路 30 s 內 fallback | ⬜ |
+| 4 | 導演層 | 連跑 60 分鐘；拔網路 30 s 內 fallback | ✅ 真實 gpt-6-astra 3 次決策 10.6–13.4 s；fake_codex fail/hang 模式 rule 立即接管、節奏不變（60 分鐘 dry run 待 Phase 6） |
 | 5 | projectM 側鏈 | projectm_mix 0→1 fps 不掉 | ⬜ |
 | 6 | 演出強化 | 反重複、on_drop、錄影、MIDI 覆寫 | ⬜ |
 

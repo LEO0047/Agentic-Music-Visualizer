@@ -35,6 +35,8 @@ import time
 from pathlib import Path
 from typing import Callable, Sequence, TextIO
 
+from .codex_client import CodexClient, CodexError
+from .director import DirectorLoop, GPTDirector, Hotkeys, RuleDirector
 from .features import FeatureBuffer
 from .osc_io import FeatureReceiver, TDClient, parse_endpoint
 from .sections import SectionDetector
@@ -285,7 +287,69 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument(
         "--window", type=float, default=120.0, help="feature history in seconds (default 120)"
     )
+    parser.add_argument(
+        "--director",
+        choices=("off", "rule", "gpt", "manual"),
+        default="off",
+        help=(
+            "director mode (default off): rule = the deterministic fallback, "
+            "gpt = codex exec with that fallback, manual = heartbeat only"
+        ),
+    )
+    parser.add_argument(
+        "--period",
+        type=float,
+        default=18.0,
+        help="seconds between decisions, on the --speed clock (default 18)",
+    )
+    parser.add_argument(
+        "--min-interval",
+        type=float,
+        default=6.0,
+        help="floor between a section-triggered decision and the last one (default 6)",
+    )
+    parser.add_argument(
+        "--decisions-log", default=None, help="append one JSON line per decision here"
+    )
+    parser.add_argument(
+        "--codex-timeout",
+        type=float,
+        default=30.0,
+        help="seconds before one codex exec is abandoned to the fallback (default 30)",
+    )
     return parser.parse_args(argv)
+
+
+def _build_director(args: argparse.Namespace, td: TDClient, clock: Callable[[], float]):
+    """Assemble the Phase 4 loop, or ``None`` when ``--director off``.
+
+    A missing or broken codex binary is not fatal: SPEC §7 says a director that
+    cannot reach Codex starts in rule mode with a warning rather than refusing
+    to run, because the alternative during a set is a black screen.
+    """
+    if args.director == "off":
+        return None
+    rule = RuleDirector()
+    director: object = rule
+    mode = args.director
+    if mode in ("gpt", "manual"):
+        # Built for manual too, so the hotkeys can switch into gpt mid-set.
+        try:
+            director = GPTDirector(CodexClient(timeout=args.codex_timeout), rule)
+        except CodexError as exc:
+            print(f"director: no codex ({exc}); rule mode only", flush=True)
+            director = rule
+            if mode == "gpt":
+                mode = "rule"
+    return DirectorLoop(
+        td,
+        director,
+        mode=mode,
+        period_s=args.period,
+        min_interval_s=args.min_interval,
+        clock=clock,
+        log_path=args.decisions_log,
+    )
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -297,31 +361,48 @@ def main(argv: Sequence[str] | None = None) -> int:
     buffer = FeatureBuffer(window_s=args.window, rate_hz=10, clock=clock)
     receiver = FeatureReceiver(listen_host, listen_port, buffer)
     td = TDClient(td_host, td_port)
+    loop = _build_director(args, td, clock)
     sidecar = Sidecar(
         buffer,
         SectionDetector(),
         td,
         log_path=args.log,
         status_hz=args.rate,
+        on_tick=loop.on_tick if loop is not None else None,
         clock=clock,
     )
 
     receiver.start()
+    hotkeys = Hotkeys(loop).start() if loop is not None else None
     print(
         f"listening on {receiver.host}:{receiver.port} → TD {td_host}:{td_port}"
         + (f"  (x{args.speed:g})" if args.speed != 1.0 else "")
-        + (f"  log {args.log}" if args.log else ""),
+        + (f"  log {args.log}" if args.log else "")
+        + (
+            f"  director {loop.mode} (every {args.period:g}s"
+            + (", g/r/m/q" if hotkeys is not None and hotkeys.active else "")
+            + ")"
+            if loop is not None
+            else ""
+        )
+        + (f"  decisions {args.decisions_log}" if loop is not None and args.decisions_log else ""),
         flush=True,
     )
     try:
         count = sidecar.run(duration=args.duration, sleep=clock.sleep)
     finally:
+        if hotkeys is not None:
+            hotkeys.stop()
+        if loop is not None:
+            loop.close()
         receiver.stop()
         td.close()
     print(
         f"stopped — {receiver.received} feature messages, {count} section transitions",
         flush=True,
     )
+    if loop is not None:
+        print(f"director — {json.dumps(loop.stats(), ensure_ascii=False)}", flush=True)
     return 0
 
 
