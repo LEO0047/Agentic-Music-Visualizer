@@ -10,3 +10,4 @@ director_out*.json
 # TouchDesigner
 *.toe.*
 Backup/
+artifacts/

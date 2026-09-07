@@ -240,21 +240,42 @@ def test_nothing_asks_a_math_chop_to_clamp(recorder):
     assert "postclamp" not in (TD_DIR / "build_network.py").read_text(encoding="utf-8")
 
 
-# -- finding 3: the 10 Hz feature rate comes from a Resample CHOP -----------
+# A CHOP sample rate does not throttle UDP packets. The DAT callback does.
 
-
-def test_a_resample_chop_sets_the_osc_send_rate(recorder):
-    build_network = recorder.build_network
-    build_network.build_audio(recorder.amv)
-    assert recorder.optype_of("feat_rate") == "resampleCHOP"
-    assert recorder.par("feat_rate", "rate") == build_network.FEATURE_RATE == 10
-    assert recorder.downstream_of("feat_names") == ["feat_rate"]
-    assert recorder.downstream_of("feat_rate") == ["osc_out"]
-
-
-def test_the_osc_out_rate_attempt_is_kept_as_a_harmless_extra(recorder):
+def test_features_use_a_frame_callback_and_osc_dat(recorder):
     recorder.build_network.build_audio(recorder.amv)
-    assert recorder.par("osc_out", "rate samplerate") == recorder.build_network.FEATURE_RATE
+    assert recorder.optype_of("osc_out") == "oscoutDAT"
+    assert recorder.optype_of("feature_sender") == "executeDAT"
+    assert recorder.par("feature_sender", "framestart") is True
+
+
+def test_sender_throttles_and_latches_kicks(monkeypatch):
+    import build_network
+    from types import SimpleNamespace
+    now = [0.01]
+    monkeypatch.setattr("time.monotonic", lambda: now[0])
+    channels = {name: [0.] for name in ("bass", "mid", "high", "energy", "kick", "centroid")}
+    sent = []
+    out = SimpleNamespace(sendOSC=lambda address, values: sent.append((address, values)))
+    env = {"op": lambda name: channels if name == "features" else out}
+    exec(build_network.FEATURE_SEND_BODY, env)
+    tick = env["onFrameStart"]
+    tick(0)
+    assert len(sent) == 6
+    channels["kick"][0] = 1.
+    now[0] = .03
+    tick(1)
+    channels["kick"][0] = 0.
+    now[0] = .08
+    tick(2)
+    assert len(sent) == 6
+    now[0] = .11
+    tick(3)
+    assert len(sent) == 12
+    assert dict(sent[6:])["/feat/kick"] == [1.]
+    now[0] = .21
+    tick(4)
+    assert dict(sent[12:])["/feat/kick"] == [0.]
 
 
 # -- finding 1: Ramp TOP gradients live in a Table DAT ----------------------
@@ -326,9 +347,9 @@ def test_the_reviewed_parameter_candidates_are_used(recorder, node, candidates):
     assert candidates in recorder.par_names_for(node)
 
 
-def test_the_noise_and_execute_dat_candidates_are_used():
+def test_the_glsl_and_execute_dat_candidates_are_used():
     source = (TD_DIR / "build_network.py").read_text(encoding="utf-8")
-    assert '"harmon harmonics"' in source
+    assert '"glslTOP"' in source
     assert '"chops chop"' in source
 
 
@@ -369,13 +390,13 @@ def test_optype_returns_none_instead_of_raising():
 
 
 def test_the_summary_lists_what_it_could_not_create(monkeypatch, capsys):
-    rec = Recorder(monkeypatch, missing={"resampleCHOP"})
+    rec = Recorder(monkeypatch, missing={"oscoutDAT"})
     rec.build_network.build_audio(rec.amv)
     capsys.readouterr()
     rec.build_network.summary()
     printed = capsys.readouterr().out
     assert "SKIPPED 1 operators" in printed
-    assert "feat_rate (tried resampleCHOP)" in printed
+    assert "osc_out (tried oscoutDAT)" in printed
 
 
 def test_a_complete_build_reports_no_skips(recorder, capsys):

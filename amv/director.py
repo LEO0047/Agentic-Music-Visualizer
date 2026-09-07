@@ -610,11 +610,16 @@ class DirectorLoop:
         self._thread: threading.Thread | None = None
         self._lock = threading.Lock()
         self._log: TextIO | None = None
+        self._mode_revision = 0
+        self._section_revision = 0
+        self._latest_summary: dict = {}
+        self._closed = False
 
     # -- lifecycle ----------------------------------------------------------
 
     def close(self, timeout: float = 5.0) -> None:
         """Wait for an in-flight decision and close the log. Safe to call twice."""
+        self._closed = True
         thread, self._thread = self._thread, None
         if thread is not None and thread.is_alive():
             thread.join(timeout)
@@ -634,6 +639,7 @@ class DirectorLoop:
         if name not in MODES:
             raise ValueError(f"mode must be one of {MODES}, got {name!r}")
         if name != self.mode:
+            self._mode_revision += 1
             self.mode = name
             print(f"{_clock_stamp()}  mode → {name}", file=self.out, flush=True)
         return self.mode
@@ -744,7 +750,12 @@ class DirectorLoop:
         """
         if self.stop_requested:
             raise KeyboardInterrupt
+        if self._closed:
+            return False
         now = self.clock()
+        self._latest_summary = dict(summary)
+        if section != self.last_section:
+            self._section_revision += 1
         fire = self.should_fire(section, now)
         self.last_section = section
         if not fire:
@@ -758,13 +769,15 @@ class DirectorLoop:
         if self.worker:
             self._thread = threading.Thread(
                 target=self._run_decision,
-                args=(dict(summary), section, now),
+                args=(dict(summary), section, now,
+                      self._mode_revision, self._section_revision),
                 name="amv-director",
                 daemon=True,
             )
             self._thread.start()
         else:
-            self._run_decision(dict(summary), section, now)
+            self._run_decision(dict(summary), section, now,
+                               self._mode_revision, self._section_revision)
         return True
 
     # -- deciding -----------------------------------------------------------
@@ -774,11 +787,28 @@ class DirectorLoop:
         kicks = float(summary.get("kicks_per_min") or 0.0)
         return kicks if 60.0 <= kicks <= 220.0 else self.bpm
 
-    def _run_decision(self, summary: dict, section: str, now: float) -> None:
+    def _run_decision(self, summary: dict, section: str, now: float,
+                      mode_revision: int, section_revision: int) -> None:
         try:
+            if (self._closed or self.stop_requested or self.mode == "manual"
+                    or mode_revision != self._mode_revision):
+                return
             director = self._director_for_mode()
             decision = director.decide(summary, section, self.history, now, self._bpm(summary))
-            self._publish(decision, section, now)
+            finished = self.clock()
+            # An in-flight response must not override a later manual takeover,
+            # mode change, or shutdown. Audio keeps running independently.
+            if self._closed or self.stop_requested or mode_revision != self._mode_revision:
+                return
+            if director is not self.rule and (
+                    section_revision != self._section_revision
+                    or finished - now > self.period_s):
+                summary = self._latest_summary
+                section = self.last_section or section
+                decision = self.rule.decide(
+                    summary, section, self.history, finished, self._bpm(summary))
+                decision["_source"] = "rule (stale decision)"
+            self._publish(decision, section, finished)
         except BaseException as exc:  # noqa: BLE001 - a worker thread must not die silently
             if isinstance(exc, (KeyboardInterrupt, SystemExit)):
                 raise
