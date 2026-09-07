@@ -28,6 +28,8 @@ What it builds (SPEC §1, §3, Phase 2 細節)::
         watchdog          Execute DAT → drop_executor.heartbeat_watchdog
         kick_exec         CHOP Execute DAT on kick → drop_executor.on_kick
         par_exec          Parameter Execute DAT → manual-mode freeze
+        midi_exec         CHOP Execute DAT on ../midi_in → midi_override
+      midi_in             MIDI In CHOP, channel 1 (Phase 6 override)
       dir_vals ─ lag_params        float targets, lagged beats*60/BPM
       tunnel_* / ft_* / pf_*  ─ scene_switch ─ palette ─ fb_mix ─ composite ─ out ─ window
                                                                     ↑         └─ record
@@ -607,6 +609,11 @@ def build_director(amv, specs, td_dir):
     set_par(par_exec, "op ops", ".")        # VERIFY Parameter Execute source par
     set_par(par_exec, "pars", "*")
     set_par(par_exec, "valuechange", True)
+
+    # SPEC Phase 6: the MIDI controller. Built here rather than in build(),
+    # because it belongs to the same cluster of Execute DATs as the watchdog
+    # and par_exec above — and it only works if par_exec exists.
+    build_midi_override(amv, td_dir)
     return director
 
 
@@ -640,7 +647,99 @@ def offToOn(channel, sampleIndex, val, prev):
 
 PAR_EXEC_BODY = '''
 def onValueChange(par, prev):
-    osc_in_callbacks.note_touch(par.owner, par.name)
+    # Must go through the module-level handler: it claims the director's own
+    # script writes (echo marker) so only a human touch starts the 30 s freeze.
+    osc_in_callbacks.onValueChange(par, prev)
+    return
+'''
+
+
+# --------------------------------------------------------------------------
+# MIDI override (SPEC §6 Phase 6)
+# --------------------------------------------------------------------------
+
+MIDI_DEVICE = 1
+"""Row of TD's **MIDI Device Mapper** (Dialogs → MIDI Device Mapper) to listen
+on, *not* the controller's name. Row 1 is the first mapped device; open the
+mapper once, map the controller to a row, and put that row number here."""
+
+MIDI_IN_CHANNEL = 1
+"""MIDI channel to accept. Matches ``midi_override.MIDI_CHANNEL``, which is
+what makes the CHOP channel names come out as ``ch1c*`` / ``ch1n*``."""
+
+
+def build_midi_override(amv, td_dir=None):
+    """A MIDI In CHOP and the CHOP Execute DAT that turns it into par writes.
+
+    SPEC §6 Phase 6: *"MIDI 覆寫：一台小控制器接 TD，任何參數你手動一動就凍結該
+    欄位 30 秒"*.
+
+    Two operators, and the interesting part is what is *missing* between them::
+
+        midi_in (MIDI In CHOP, channel 1)      ← at the amv level, like audio_in
+          └ midi_exec (CHOP Execute DAT)       ← inside director, like kick_exec
+                onValueChange → midi_override.on_cc / on_note
+
+    ``midi_override.on_cc`` writes the custom parameter **without** the
+    ``script_write`` echo marker every other writer leaves behind (td/README.md
+    依賴的 TD 行為 #6). So ``par_exec`` — the Parameter Execute DAT built just
+    above — sees an unclaimed change, calls ``note_touch``, and SPEC §5's 30 s
+    freeze starts on that field exactly as if the knob had been the mouse.
+    There is no MIDI-specific freeze code anywhere: turning a knob *is* a
+    manual touch.
+
+    ``midi_in`` sits next to ``audio_in`` at the ``amv`` level because it is a
+    device input; ``midi_exec`` sits inside ``director`` next to ``kick_exec``
+    because that is where the parameters are, which is why its source CHOP is
+    the relative path ``../midi_in`` (same shape as ``kick_exec``'s
+    ``../kick``).
+
+    Nothing here is fatal: no controller plugged in means a MIDI In CHOP with
+    no channels, no ``onValueChange`` and a show that behaves exactly as it did
+    in Phase 5. *td_dir* is only needed for the generated DAT's ``sys.path``
+    header; it is resolved the usual way when the caller does not pass one.
+    """
+    td_dir = find_td_dir(td_dir)
+    midi_in = create(amv, "midiinCHOP", "midi_in", 0, 340)  # VERIFY operator class name
+    # VERIFY: the MIDI In CHOP takes a *device index* (its Device par is a
+    # menu backed by the MIDI Device Mapper), not a device name string. If this
+    # build spells the par 'id' instead, the second candidate catches it.
+    set_par(midi_in, "device id", MIDI_DEVICE)          # VERIFY par name + index vs name
+    set_par(midi_in, "channel channels", MIDI_IN_CHANNEL)  # VERIFY channel filter par
+    set_par(midi_in, "active", True)
+
+    director = amv.op("director")
+    if director is None:  # pragma: no cover - build_director always runs first
+        log("WARN no director COMP yet; midi_exec goes on %s instead" % getattr(amv, "path", amv))
+    parent_comp = amv if director is None else director
+    source_chop = "midi_in" if director is None else "../midi_in"
+
+    midi_exec = create(parent_comp, "chopexecuteDAT chopexecDAT", "midi_exec", 250, 400)
+    set_text(midi_exec, bootstrap_code(td_dir, "midi_override") + MIDI_EXEC_BODY)
+    set_par(midi_exec, "chops chop", source_chop)  # VERIFY CHOP Execute source par
+    # A CC knob and a note pad both arrive as a channel whose value changed, so
+    # one callback covers both and Off→On would only double-fire the notes.
+    set_par(midi_exec, "valuechange", True)   # VERIFY CHOP Execute callback toggles
+    set_par(midi_exec, "offtoon", False)      # VERIFY
+    return midi_in, midi_exec
+
+
+MIDI_EXEC_BODY = '''
+def _director():
+    """This DAT lives inside the director COMP, so me.parent() is it; the
+    op('director') fallback is there for when someone drags the DAT out."""
+    comp = me.parent()
+    if comp is not None and hasattr(comp.par, 'Scene'):
+        return comp
+    return op('director')
+
+
+def onValueChange(channel, sampleIndex, val, prev):
+    kind, number = midi_override.parse_channel(channel.name)
+    if kind == 'cc':
+        midi_override.on_cc(_director(), number, val)
+    elif kind == 'note':
+        midi_override.on_note(_director(), number, val)
     return
 '''
 

@@ -1,4 +1,4 @@
-# `td/` · 反射層（TouchDesigner）· Phase 2 + Phase 5
+# `td/` · 反射層（TouchDesigner）· Phase 2 + Phase 5 + Phase 6
 
 > **這份程式沒有在 TouchDesigner 裡跑過。** 本機沒有安裝 TD（SPEC Phase 0 的
 > 「TouchDesigner 2023+」尚未滿足），所以整層是「可審查、可重跑的建構腳本」加上
@@ -11,12 +11,14 @@
 |---|---|---|
 | `parspec.py` | 純 Python / TD | `director_schema.json` → TD Custom Parameter 規格；`lag_seconds()` |
 | `osc_in_callbacks.py` | TD 的 OSC In DAT callback（也可單獨 import） | 把 `/director/*`、`/feat/section` 寫進 Custom Parameter；30 s 凍結；整數/字串排隊等 kick |
+| `midi_override.py` | TD 的 CHOP Execute DAT（也可單獨 import） | Phase 6：MIDI CC/note → Custom Parameter 的**人類寫入**，靠不留 echo 記號來觸發 30 s 凍結 |
 | `drop_executor.py` | TD 的 CHOP Execute / Execute DAT | `on_kick()` 執行 `on_drop` 並套用排隊中的整數/字串；`flush_pending()` 2 s 保險；`heartbeat_watchdog()` 45 s 警示 |
 | `build_network.py` | **只在 TD 裡跑** | 建出整個 `/project1/amv`，可重複執行 |
 | `td_stub.py` | 只給測試用 | TD Python 介面的極小假物件（`Par` / `Comp` / `TextDAT`） |
 
 對應測試：`tests/test_td_parspec.py`、`tests/test_td_callbacks.py`、
-`tests/test_td_drop_executor.py`、`tests/test_td_build_compiles.py`。
+`tests/test_td_drop_executor.py`、`tests/test_td_build_compiles.py`、
+`tests/test_td_projectm.py`、`tests/test_td_midi.py`。
 `uv run pytest -q` 不需要 TD 也不需要音訊裝置。
 
 ## 在 TouchDesigner 裡建網路
@@ -70,6 +72,9 @@ import build_network; build_network.build(td_dir='/somewhere/else/td')
     watchdog (Execute DAT，每 60 frame 呼叫 flush_pending + heartbeat_watchdog)
     kick_exec (CHOP Execute DAT，kick Off→On 呼叫 on_kick)
     par_exec (Parameter Execute DAT，手動一動就開始 30 s 凍結)
+    midi_exec (CHOP Execute DAT，看 ../midi_in，Phase 6 的 MIDI 覆寫)
+
+  midi_in (MIDI In CHOP, channel 1)   ← Phase 6，沒接控制器就是一顆沒有 channel 的 CHOP
 
   dir_vals (Constant CHOP，值 = director 的 float 參數)
     └ lag_params (Lag CHOP，lag 秒 = Transitionbeats * 60 / Bpm)
@@ -237,11 +242,132 @@ MilkDrop 有沒有真的進到 Composite。那些是下面 VERIFY 表的 #31–#
 以及 `docs/phase5-projectm.md` 的手動驗收清單
 （SPEC §6 #5：**`projectm_mix` 0→1 全程 fps 不掉，MilkDrop 圖層與 TD 場景在同一個色盤下不打架**）。
 
+## Phase 6 · MIDI 覆寫
+
+SPEC §6 Phase 6：**「MIDI 覆寫：一台小控制器接 TD，任何參數你手動一動就凍結該欄位 30 秒」**——
+也就是 SPEC §5 的凍結規則，只是把手從 Parameter 視窗換到硬體旋鈕上。
+
+多出來的 operator 只有兩顆：
+
+| operator | 類別 | 位置 | 做什麼 |
+|---|---|---|---|
+| `midi_in` | MIDI In CHOP | `amv` 底下（跟 `audio_in` 同層，都是裝置輸入） | 收 channel 1 的 CC 與 note，一個 MIDI 訊息一條 CHOP channel |
+| `midi_exec` | CHOP Execute DAT | `director` 底下（跟 `kick_exec` 同層，參數在這裡） | `onValueChange` → `midi_override.parse_channel()` → `on_cc()` / `on_note()` |
+
+所以 `midi_exec` 的來源 CHOP 是相對路徑 `../midi_in`，跟 `kick_exec` 的 `../kick` 同一個形狀。
+沒接控制器時 `midi_in` 就是一顆沒有 channel 的 CHOP：不會有 `onValueChange`，
+整場演出跟 Phase 5 一模一樣。
+
+### 預設對照表
+
+定義在 `td/midi_override.py` 的 `DEFAULT_CC_MAP` 與 `DEFAULT_NOTE_MAP`；
+MIDI channel 固定 1。在 Textport 打
+`import midi_override; print(midi_override.describe_map())` 就會把這張表印出來。
+
+| CC | CHOP channel | 參數 | 旋鈕從左轉到右 |
+|---|---|---|---|
+| 1 | `ch1c1` | `Feedback` | 0 → **0.98**（schema 上限，不是 1.0） |
+| 2 | `ch1c2` | `Cameraspeed` | 0 → 1 |
+| 3 | `ch1c3` | `Projectmmix` | 0 → 1 |
+| 4 | `ch1c4` | `Symmetry` | 1 → 16（線性後四捨五入） |
+| 5 | `ch1c5` | `Scene` | 五個場景平分 128 格，每個約 25 格 |
+| 6 | `ch1c6` | `Palette` | 五個色盤 |
+| 7 | `ch1c7` | `Particlemode` | 五個 preset |
+
+| note | CHOP channel | 按下去 |
+|---|---|---|
+| 60（中央 C） | `ch1n60` | `Mode = gpt` |
+| 61 | `ch1n61` | `Mode = rule` |
+| 62 | `ch1n62` | `Mode = manual`（＝所有 `/director/*` 全部不落地） |
+
+三件跟 OSC 寫入不一樣的地方：
+
+- **範圍來自 schema，不是 0–1。** `cc_to_par_value()` 讀 `parspec` 的 min/max
+  （`parspec` import 不到時就讀 TD 參數本身），所以旋鈕轉到底就是 schema 的上限，
+  永遠送不出越界值。
+- **選單參數不等下一個 kick。** OSC 進來的 `Scene` / `Palette` / `Symmetry` /
+  `Particlemode` 會排隊等 kick（SPEC §3.3），但手轉旋鈕不是「導演在拍子上的決定」，
+  是「人現在就要」，所以 `on_cc()` 直接寫下去，當場切。
+- **`Ondrop` 與 `Intent` 沒有 CC。** 旋鈕沒辦法寫 JSON 或句子；真的把
+  `"0.42"` 塞進 on_drop 比不理它還糟，所以 `cc_to_par_value()` 對字串參數直接
+  丟 `ValueError`，`on_cc()` 印一行就算了。
+- **note off 不動作。** 放開 pad 是 velocity 0，忽略；不然按一下會切兩次。
+
+### 怎麼改對照表
+
+每台控制器出廠的 CC 號碼都不一樣。做法：把控制器接上，點開 `midi_in` 的 Viewer，
+轉一下旋鈕看它冒出哪一條 channel（`ch1c74`…），把號碼填進
+`td/midi_override.py` 的 `DEFAULT_CC_MAP`，存檔，在 Textport 重跑
+`build_network.py`（或 reload `midi_exec` 那顆 DAT）。
+
+不想改檔案的話，`on_cc(comp, cc, value, cc_map={...})` 的 `cc_map` 參數收任何
+`{CC: 參數名}`，在 `midi_exec` 的內文裡傳進去就是這一台機器的臨時對照。
+
+### 凍結是怎麼發生的（這裡沒有任何新的凍結程式碼）
+
+`osc_in_callbacks.write_par()` 與 `drop_executor._write()` 每次寫參數前都會留一個
+「這是我寫的，值是 X」的 `script_write` 記號（見上面「依賴的 TD 行為」#6），
+`onValueChange` 比對值後吃掉它，所以導演自己的寫入不會把自己凍住。
+
+`midi_override.on_cc()` **故意不留那個記號**。這就是全部的機制：
+
+```
+轉旋鈕 → on_cc() 寫 director.par.Feedback
+       → TD 照常觸發 par_exec 的 onValueChange
+       → claim_script_write() 找不到記號可以吃
+       → note_touch()：Feedback 進入 30 s 凍結（SPEC §5，三種模式都算）
+       → 導演下一則 /director/feedback 被跳過，其他欄位照常落地
+       → 30 秒後自動解凍，導演拿回這個欄位
+```
+
+所以千萬別「順手補上」`note_script_write()`——補了之後導演會立刻把旋鈕蓋掉，
+Phase 6 就等於沒做。`tests/test_td_midi.py` 有一條 AST 測試盯著這件事
+（順便也盯著「不准自己呼叫 `note_touch()` 抄捷徑」：那樣會蓋掉 `par_exec` 沒接好的事實）。
+
+**前提**：`par_exec` 這顆 Parameter Execute DAT 要真的在動。它沒動的話 MIDI 覆寫
+會變成「寫得進去但不凍結」——導演 15–20 秒後就把旋鈕蓋回去。上面 Phase 2 驗收的
+第 8 步（`rule` 模式連送兩則 `/director/feedback`）就是在測這條線。
+
+> **給審查者的一筆**（Phase 5 遺留，不在 Phase 6 的改動範圍內）：
+> `build_network.PAR_EXEC_BODY` 產生的 DAT 內文是
+> `osc_in_callbacks.note_touch(par.owner, par.name)`，**沒有**先呼叫
+> `claim_script_write()`；真正帶 echo 判斷的是模組層的
+> `osc_in_callbacks.onValueChange()`（`tests/test_td_callbacks.py` 測的是後者）。
+> 照現在這份內文，在 TD 裡導演自己的每一次寫入也會凍住自己 30 秒——正是
+> 「依賴的 TD 行為」#6 要避免的那件事。對 Phase 6 無害（旋鈕本來就該凍結），
+> 但 Phase 2 驗收第 8 步會踩到。修法是把內文換成
+> `osc_in_callbacks.onValueChange(par, prev)`。
+
+### Phase 6 手動驗收（SPEC §6 #6 的 MIDI 覆寫那一項）
+
+> 驗收標準：**轉一個旋鈕 → 導演在接下來 30 秒不再寫那個欄位。**
+
+前置：Phase 4 的 sidecar 在跑（`gpt` 或 `rule` 都可以，重點是有人在寫參數），
+控制器已接上並在 TD 的 **Dialogs → MIDI Device Mapper** 裡對應到第 1 列
+（`build_network.MIDI_DEVICE` 就是那個列號）。
+
+1. **訊息進得來**：點 `midi_in`，轉旋鈕，Viewer 要冒出 channel 且值在 0–127 之間跳。
+   什麼都沒有 → MIDI Device Mapper 那一列不對，或 VERIFY #36–#38 猜錯了。
+2. **channel 名對得上**：channel 應該叫 `ch1c1`、`ch1c2`…。名字不是這個樣子
+   （例如 `c1`、`ch1cc1`）→ 改 `midi_override.midi_channel_name()` 與 `_CHANNEL_RE`
+   （VERIFY #41），這是唯一要改的地方。
+3. **旋鈕真的會動畫面**：轉 CC 1，`director` 的 `Feedback` 要跟著動，畫面拖尾跟著長；
+   轉 CC 5，場景**當場**就換（不等 kick）。
+4. **凍結**：讓 sidecar 跑著，轉一下 CC 1，然後盯著 `Feedback`——接下來 **30 秒**
+   它只能是你轉到的值，不會被導演拉走；30 秒後才會又開始跟著導演跑。
+   同一時間 `Cameraspeed`、`Scene` 這些沒碰過的欄位要繼續跟著導演變
+   （凍的是「那一欄」，不是整台）。
+5. **pad 切模式**：按 note 62，`Mode` 變 `manual`，所有 `/director/*` 都不落地
+   （`Heartbeat` 與 `/feat/section` 照收）；按 note 61 回 `rule`，畫面不得閃。
+6. **60 fps**：整段過程 fps 不掉——`midi_exec` 只在值變化時跑，一次只寫一個參數。
+
 ## `# VERIFY` 清單
 
-TD 不同版本的參數名稱會變，而本機無法查證。`build_network.py` 裡共 **40 處** `# VERIFY`
-（`grep -c '# VERIFY' td/build_network.py` 是 41，其中一處在檔頭 docstring 裡）。
-Phase 5 加了 5 處，都在 `build_projectm_input()` 與 Composite 段（表格 #31–#35）。
+TD 不同版本的參數名稱會變，而本機無法查證。`build_network.py` 裡共 **47 處** `# VERIFY`
+（`grep -c '# VERIFY' td/build_network.py` 是 48，其中一處在檔頭 docstring 裡），
+`td/midi_override.py` 另有 3 處（都是同一件事：channel 命名）。
+Phase 5 加了 5 處，都在 `build_projectm_input()` 與 Composite 段（表格 #31–#35）；
+Phase 6 加了 7 處，在 `build_midi_override()` 與 `midi_override` 的 channel 名（表格 #36–#41）。
 所有設定都走 `set_par()` / `set_expr()`，名字不存在只會印一行 `WARN ...; skipped`
 然後繼續，**不會中斷建構**——所以第一次執行後請先把 Textport 的 WARN 全部掃過一遍，
 那就是實際猜錯的清單。
@@ -291,13 +417,24 @@ Phase 5 加了 5 處，都在 `build_projectm_input()` 與 Composite 段（表�
 | 33 | `pm_ndi` | **operator 類別 `ndiinTOP`** 與來源名稱參數（`name` / `sourcename` / `ndiname`）；名字要跟 OBS 的 NDI 輸出設定一致 |
 | 34 | `pm_fit` | Fit TOP 類別名、`fit`/`fitmode` 參數與 `fill` 選單值拼法、輸出解析度參數（`outputresolution` vs `resolutionmenu`） |
 | 35 | `pm_black` | Constant TOP 的顏色／alpha 參數名（`colorr` vs `color1r`、`alpha` vs `color1a`） |
+| 36 | `midi_in` | **operator 類別 `midiinCHOP`**（猜錯只會 SKIP，不會中斷建構） |
+| 37 | `midi_in.device` | Device 參數名（`device` vs `id`），以及它吃的是 **MIDI Device Mapper 的列號**還是裝置名稱字串。`build_network.MIDI_DEVICE` 預設 1 |
+| 38 | `midi_in.channel` | MIDI channel 過濾參數名（`channel` vs `channels`）；要跟 `midi_override.MIDI_CHANNEL` 一致，否則 channel 名不會是 `ch1*` |
+| 39 | `midi_exec` | CHOP Execute DAT 類別名（`chopexecuteDAT` / `chopexecDAT`）與來源參數 `chops chop` = `../midi_in`（同 #15） |
+| 40 | `midi_exec.valuechange` / `.offtoon` | callback 開關名稱。CC 與 note 都走 `valuechange`；`offtoon` 關掉，不然按一次 pad 會觸發兩次 |
+| 41 | `midi_override._CHANNEL_RE` | **MIDI In CHOP 的 channel 命名**（猜 `ch1c1` / `ch1n60`）。猜錯的話所有 CC 都不會被認得；改 `midi_channel_name()` 與 `_CHANNEL_RE` 兩個地方就好 |
 
 （表格把同一類的多個 `# VERIFY` 合併成一列；逐行位置請 `grep`。）
 
 ## 已知的刻意取捨
 
 - `particle_field` 目前是 Noise → Threshold → Blur 的**替身**，不是真的 Particle GPU；
-  `Particlemode` 只餵給 noise 的 seed。Phase 6 才會換成真的粒子系統。
+  `Particlemode` 只餵給 noise 的 seed。真的粒子系統還沒做（Phase 6 的其他項目）。
+- **MIDI 覆寫只寫參數，不記自己的凍結。** `midi_override` 存了一份 `midi_touch`
+  breadcrumb（`comp.fetch('midi_touch')`，只為了回答「控制器到底有沒有進來」），
+  真正的 30 s 計時仍然是 `osc_in_callbacks` 的 `manual_touch`，由 `par_exec` 寫入。
+  代價：旋鈕轉到同一個量化格（值沒變）時 TD 不會觸發 `onValueChange`，
+  那一下不會**延長**凍結——30 秒是從最後一次「值真的變了」算起。
 - `centroid` 送的是常數 0。SPEC §3.1 本來就把它列為選配，Phase 3 用 Script CHOP + numpy 補。
 - `projectm_in` 已經是 Phase 5 的 Switch TOP（black / Syphon / NDI），但**沒有在 TD 裡跑過**，
   而且本機沒有 projectM、Syphoner、OBS、NDI runtime（`tools/projectm_check.py` 全列 missing）。

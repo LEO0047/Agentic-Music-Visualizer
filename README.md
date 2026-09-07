@@ -42,6 +42,7 @@ td/parspec.py                        # schema → TD Custom Parameters（純 Pyt
 td/osc_in_callbacks.py               # OSC In DAT callbacks：/director/* 路由、30 s 凍結、離散參數待 kick
 td/drop_executor.py                  # on_kick 執行 on_drop、套用待決離散值、45 s heartbeat 看門狗
 td/td_stub.py                        # 沒有 TD 時用來跑測試的最小 td 介面
+td/midi_override.py                  # Phase 6：MIDI CC → 參數（人手寫入，觸發 30 s 凍結）、note → Mode
 ```
 
 `scripts/smoke_codex.sh` 會消耗 ChatGPT 訂閱的 Codex 額度（一次約 25k tokens），不要拿來輪詢。

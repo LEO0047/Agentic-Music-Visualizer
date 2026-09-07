@@ -466,3 +466,14 @@ def test_the_callbacks_dat_text_still_parses_with_its_appended_path_bootstrap():
         "if _TD_DIR not in _sys.path:\n    _sys.path.insert(0, _TD_DIR)\n" % str(TD_DIR)
     )
     ast.parse(appended)
+
+
+def test_par_exec_body_routes_through_the_echo_guard():
+    """Reviewer regression (Phase 6): the generated Parameter Execute DAT must call
+    osc_in_callbacks.onValueChange (which claims script writes) and never
+    note_touch directly, otherwise every director OSC write freezes itself."""
+    import build_network
+
+    body = build_network.PAR_EXEC_BODY
+    assert "osc_in_callbacks.onValueChange(par, prev)" in body
+    assert "note_touch" not in body
