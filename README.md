@@ -29,6 +29,11 @@ uv run pytest -q                     # 單元測試，不會呼叫真的 codex
 scripts/smoke_codex.sh               # Phase 0 驗收：跑一次真實 codex exec
 tools/audio_check.py                 # Phase 1 驗收：devices / loopback / meter
 amv/audio_features.py                # 純 numpy 頻帶能量、Normalizer、KickDetector
+amv/features.py                      # FeatureBuffer：1/30/120 s 平均、斜率、趨勢、summary()
+amv/sections.py                      # SectionDetector：steady/build/drop/breakdown（SPEC §4）
+amv/osc_io.py                        # FeatureReceiver（/feat/* 進）、TDClient（/director/* 出）
+amv/sidecar.py                       # python -m amv.sidecar：Phase 3 接收、判段、記 log、回送 /feat/section
+tools/fake_td.py                     # 沒有 TD 時的合成特徵源（145 BPM 劇本，--speed 加速）
 ```
 
 `scripts/smoke_codex.sh` 會消耗 ChatGPT 訂閱的 Codex 額度（一次約 25k tokens），不要拿來輪詢。
@@ -52,7 +57,7 @@ amv/audio_features.py                # 純 numpy 頻帶能量、Normalizer、Kic
 | 0 | 環境準備 | `codex exec` 回傳合規 JSON | ✅ |
 | 1 | 音訊路由 | 喇叭有聲、TD CHOP 波形在動 | 🟡 sidecar 側完成：`tools/audio_check.py loopback` PASS；多重輸出裝置與 TD 端待使用者操作，見 [docs/phase1-audio-routing.md](docs/phase1-audio-routing.md) |
 | 2 | 反射層 | 不開 Director 也能 60 fps 反應 | ⬜ |
-| 3 | 特徵匯流 | build/drop/breakdown 時間戳與耳朵一致 | ⬜ |
+| 3 | 特徵匯流 | build/drop/breakdown 時間戳與耳朵一致 | ✅ sidecar + `tools/fake_td.py` 端到端：6 個轉換全在 ±0.2 s（真曲驗聽待 TD 上線） |
 | 4 | 導演層 | 連跑 60 分鐘；拔網路 30 s 內 fallback | ⬜ |
 | 5 | projectM 側鏈 | projectm_mix 0→1 fps 不掉 | ⬜ |
 | 6 | 演出強化 | 反重複、on_drop、錄影、MIDI 覆寫 | ⬜ |
