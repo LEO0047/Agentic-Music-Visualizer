@@ -414,6 +414,46 @@ def test_gpt_director_sends_the_built_prompt():
 
 # -- DirectorLoop -----------------------------------------------------------
 
+@pytest.mark.parametrize("action", ["manual", "rule_then_gpt", "stop", "close"])
+def test_inflight_reply_cannot_override_takeover_or_shutdown(action):
+    td = RecordingTD()
+    clock = FakeClock()
+    class Client:
+        def decide(self, prompt):
+            if action == "manual":
+                loop.set_mode("manual")
+            elif action == "rule_then_gpt":
+                loop.set_mode("rule")
+                loop.set_mode("gpt")
+            elif action == "stop":
+                loop.request_stop()
+            else:
+                loop.close()
+            return dict(VALID)
+    loop = DirectorLoop(td, GPTDirector(Client(), RuleDirector()),
+                        clock=clock, worker=False, out=io.StringIO())
+    loop.on_tick(SUMMARY, "build")
+    assert td.decisions == []
+
+
+@pytest.mark.parametrize("changed_section", [True, False])
+def test_stale_reply_uses_current_music_and_publication_time(changed_section):
+    td = RecordingTD()
+    clock = FakeClock()
+    class Client:
+        def decide(self, prompt):
+            clock.advance(13 if changed_section else 20)
+            loop.on_tick(dict(SUMMARY, energy=0.1),
+                         "breakdown" if changed_section else "build")
+            return dict(VALID)
+    loop = DirectorLoop(td, GPTDirector(Client(), RuleDirector()),
+                        clock=clock, worker=False, out=io.StringIO())
+    loop.on_tick(SUMMARY, "build")
+    assert len(td.decisions) == 1
+    assert loop.decisions[0]["source"] == "rule (stale decision)"
+    assert loop.decisions[0]["t"] == clock()
+    assert loop.decisions[0]["section"] == ("breakdown" if changed_section else "build")
+
 
 def test_loop_fires_immediately_then_once_a_period():
     td = RecordingTD()
@@ -545,12 +585,15 @@ def test_loop_keeps_only_one_decision_in_flight():
         assert loop.on_tick(SUMMARY, "steady") is False
     assert slow.calls == 1
     gate.set()
-    loop.close()
+    # Let this reply publish before shutting down. close() intentionally
+    # rejects replies still in flight, as the takeover tests above verify.
+    loop._thread.join(2.0)
     assert slow.calls == 1
     assert len(td.decisions) == 1
 
     clock.advance(10.0)
     assert loop.on_tick(SUMMARY, "steady") is True
+    loop._thread.join(2.0)
     loop.close()
     assert slow.calls == 2
 

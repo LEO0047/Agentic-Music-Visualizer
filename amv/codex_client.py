@@ -102,6 +102,7 @@ class CodexClient:
         return [
             str(self.binary),
             "exec",
+            "--ephemeral",
             "-m",
             self.model,
             "-c",

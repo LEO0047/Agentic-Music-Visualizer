@@ -392,7 +392,10 @@ def build_audio(amv):
         # is read as "select the band" rather than as an operator name.
         trim = create(amv, "trimCHOP", "%s_trim" % name, -700, y)
         connect(spectrum, trim)
-        set_par(trim, "units unit", "samples")  # VERIFY menu value spelling
+        # Trim has independent units for each endpoint (2025.33230 docs).
+        set_par(trim, "relative", "abs")
+        set_par(trim, "startunit", "samples")
+        set_par(trim, "endunit", "samples")
         set_expr(trim, "start startsample", _bin_expr(low))
         set_expr(trim, "end endsample", _bin_expr(high))
 
@@ -421,7 +424,7 @@ def build_audio(amv):
     # energy: RMS over the raw audio, 1 s window (SPEC §3.1)
     energy_rms = create(amv, "analyzeCHOP", "energy_rms", -700, 150)
     connect(audio_in, energy_rms)
-    set_par(energy_rms, "function", "rms")  # VERIFY menu value
+    set_par(energy_rms, "function", "rmspower")
     energy_lag = create(amv, "lagCHOP", "energy_lag", -550, 150)
     connect(energy_rms, energy_lag)
     set_par(energy_lag, "lag1", ENERGY_LAG)
