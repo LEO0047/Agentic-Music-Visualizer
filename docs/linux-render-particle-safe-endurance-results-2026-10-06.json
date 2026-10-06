@@ -1,0 +1,2082 @@
+{
+  "passed": true,
+  "error": null,
+  "started_utc": "2026-10-06T09:15:28.261657+00:00",
+  "mode": "realtime-headless",
+  "requested_duration_s": 3600.0,
+  "duration_s": 3600.0,
+  "target_fps": 30,
+  "width": 320,
+  "height": 180,
+  "expected_frames": 108000,
+  "expected_audio_samples_per_channel": 172800000,
+  "audio_source": "original procedural Psytrance-like stereo PCM",
+  "feature_calibration": "Declared two-second lookahead reference from the same source calibrates normalization; per-frame PCM analysis is causal after that reference, not strict streaming from sample zero",
+  "section_authority": "local PCM SectionDetector",
+  "software_versions": {
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "numpy": "2.5.3"
+  },
+  "ai_calls": 0,
+  "audio_device_playback": false,
+  "touchdesigner_runtime": false,
+  "controls": "independent LinuxControlState adapter over actual loopback OSC",
+  "projectm": "No external projectM; scene projectm_blend is the shader's native analytic fallback; projectm_mix is tracked but has no external source to mix",
+  "source_sha256": {
+    "tools/linux_visualizer.py": "ed58c92642b7d92e7c4fc0e7e1c550eb87a246f13327a58f75869a148e1bc27c",
+    "amv/linux_controls.py": "f8fd1fe50229864aade7291e8831bf433a8fa74ffe211197d740b4b72ab1e82e",
+    "tools/render_shaders.py": "2b6911ba7ec2166876d8f9b29c2c53a426d1f9b2ad3ee4407c5b9c62f6625789",
+    "td/shaders/visualizer.frag": "fe5024d3e181dcc9dd6d2a51c2560bd9fbdeac968a7c1723e961f7c7e370bdb0",
+    "amv/audio_features.py": "48609704187af0b12937700fe23d925b817aa2d0652227bd0d8342e23b79961c",
+    "amv/features.py": "e0780769f43f82c84a1dda590ec067da8c778d3852c5d3ae0f0148295fd58395",
+    "amv/director.py": "1fb0dfc8c1430af5bfda12d485e3e80c130d42a6f9bfabed4873976059b22184",
+    "amv/sections.py": "ea13a33598a1c4aa4cc6018b9acbffa101828c060d5dcc843e80ce9ae1e2f2cc",
+    "amv/osc_io.py": "c797103ba8991c7f6f39d4fecf6efa0c01ac20b37133439bc5990ebe26b9372b",
+    "amv/schema.py": "7ec280da3e824398eeb3570edca00b5509d1deb44a733fcaef80ce80189461e9",
+    "director_schema.json": "d96029a78e1ce963d49fb8f7cf0ddaeddd37f94d5312347dd7770d5bc6baf838"
+  },
+  "empty_particle_fallback": "Linux compositor maps particle_field + particle_mode none to the existing animated kaleido_mesh branch with particle_mode still none. Decisions, logical controls and original GLSL are unchanged; counters distinguish requested and effective scenes.",
+  "showcase_particle_schedule": "Successive five-scene cycles alternate particle_field rain and particle_field none; all other scene presets are unchanged",
+  "director": "showcase",
+  "errors": [],
+  "rendered_frames": 107805,
+  "skipped_render_slots": 195,
+  "feature_packets_sent": 215994,
+  "feature_packets_received": 215994,
+  "renderer": {
+    "egl_version": "1.5",
+    "egl_vendor": "Mesa Project",
+    "gl_vendor": "Mesa",
+    "gl_renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "gl_version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "glsl_version": "4.50"
+  },
+  "shader_sha256": "fe5024d3e181dcc9dd6d2a51c2560bd9fbdeac968a7c1723e961f7c7e370bdb0",
+  "shader_source_modified": false,
+  "osc_control_endpoint": "127.0.0.1:40143",
+  "osc_feature_endpoint": "127.0.0.1:56297",
+  "rss_start_bytes": 135557120,
+  "wall_elapsed_s": 3600.0001066760015,
+  "render_fps": 117.2370819098945,
+  "wall_fps": 29.94583244597176,
+  "render_time_p95_ms": 16.0,
+  "render_time_max_ms": 272.9144559998531,
+  "frame_interval_p95_ms": 39.0,
+  "frame_interval_max_ms": 277.3609709984157,
+  "timing_percentiles": "cumulative histogram upper bounds, 1ms resolution",
+  "raw_shader_draws": 115001,
+  "raw_float_frames_validated": 115001,
+  "max_composition_layers": 2,
+  "black_frames": 0,
+  "distinct_sampled_frames": 2048,
+  "distinct_sample_capacity": 2048,
+  "scene_render_draws": {
+    "fractal_temple": 22996,
+    "tunnel": 23111,
+    "particle_field": 16143,
+    "kaleido_mesh": 29742,
+    "projectm_blend": 23009
+  },
+  "palette_render_draws": {
+    "violet_cyan": 22996,
+    "acid_lime": 23111,
+    "amber_dusk": 22992,
+    "mono_white": 22893,
+    "infrared": 23009
+  },
+  "scene_output_frames": {
+    "fractal_temple": 21613,
+    "tunnel": 21644,
+    "particle_field": 15054,
+    "kaleido_mesh": 27927,
+    "projectm_blend": 21567
+  },
+  "requested_scene_render_draws": {
+    "fractal_temple": 22996,
+    "tunnel": 23111,
+    "particle_field": 22992,
+    "kaleido_mesh": 22893,
+    "projectm_blend": 23009
+  },
+  "requested_scene_output_frames": {
+    "fractal_temple": 21601,
+    "tunnel": 21645,
+    "particle_field": 21532,
+    "kaleido_mesh": 21438,
+    "projectm_blend": 21589
+  },
+  "empty_particle_fallback_draws": 6849,
+  "empty_particle_fallback_output_frames": 6849,
+  "scene_accounting": "scene_render_draws counts actual shader branches; scene_output_frames counts the dominant effective branch. requested_scene_* preserves director intent; telemetry/snapshots include every weighted requested/effective layer.",
+  "motion_delta_scope": "RGB24 pixels sampled every eighth row and column; exact freeze uses FULL RGB24 frame SHA256 and media timestamps",
+  "motion_mean_delta": 0.03196727834157931,
+  "motion_max_delta": 0.10868002474308014,
+  "longest_exact_repeat_run": 0,
+  "longest_exact_repeat_duration_s": 0.0,
+  "render_budget_exceeded_frames": 358,
+  "drop_executions": 74,
+  "controls_accepted_batches": 151,
+  "controls_applied_batches": 151,
+  "shader_clock_s": 2450.646686503882,
+  "audio_analysis_blocks": 36000,
+  "audio_analysis_samples": 172800000,
+  "detected_kicks": 5516,
+  "section_events": [
+    [
+      44.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      48.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      48.5,
+      "steady",
+      "drop"
+    ],
+    [
+      50.5,
+      "drop",
+      "steady"
+    ],
+    [
+      51.8,
+      "steady",
+      "drop"
+    ],
+    [
+      53.8,
+      "drop",
+      "steady"
+    ],
+    [
+      76.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      80.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      81.6,
+      "steady",
+      "drop"
+    ],
+    [
+      83.6,
+      "drop",
+      "steady"
+    ],
+    [
+      140.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      144.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      144.5,
+      "steady",
+      "drop"
+    ],
+    [
+      146.5,
+      "drop",
+      "steady"
+    ],
+    [
+      147.8,
+      "steady",
+      "drop"
+    ],
+    [
+      149.8,
+      "drop",
+      "steady"
+    ],
+    [
+      172.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      176.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      177.6,
+      "steady",
+      "drop"
+    ],
+    [
+      179.6,
+      "drop",
+      "steady"
+    ],
+    [
+      236.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      240.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      240.5,
+      "steady",
+      "drop"
+    ],
+    [
+      242.5,
+      "drop",
+      "steady"
+    ],
+    [
+      243.8,
+      "steady",
+      "drop"
+    ],
+    [
+      245.8,
+      "drop",
+      "steady"
+    ],
+    [
+      268.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      272.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      273.6,
+      "steady",
+      "drop"
+    ],
+    [
+      275.6,
+      "drop",
+      "steady"
+    ],
+    [
+      332.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      336.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      336.5,
+      "steady",
+      "drop"
+    ],
+    [
+      338.5,
+      "drop",
+      "steady"
+    ],
+    [
+      339.8,
+      "steady",
+      "drop"
+    ],
+    [
+      341.8,
+      "drop",
+      "steady"
+    ],
+    [
+      364.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      368.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      369.6,
+      "steady",
+      "drop"
+    ],
+    [
+      371.6,
+      "drop",
+      "steady"
+    ],
+    [
+      428.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      432.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      432.5,
+      "steady",
+      "drop"
+    ],
+    [
+      434.5,
+      "drop",
+      "steady"
+    ],
+    [
+      435.8,
+      "steady",
+      "drop"
+    ],
+    [
+      437.8,
+      "drop",
+      "steady"
+    ],
+    [
+      460.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      464.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      465.6,
+      "steady",
+      "drop"
+    ],
+    [
+      467.6,
+      "drop",
+      "steady"
+    ],
+    [
+      524.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      528.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      528.5,
+      "steady",
+      "drop"
+    ],
+    [
+      530.5,
+      "drop",
+      "steady"
+    ],
+    [
+      531.8,
+      "steady",
+      "drop"
+    ],
+    [
+      533.8,
+      "drop",
+      "steady"
+    ],
+    [
+      556.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      560.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      561.6,
+      "steady",
+      "drop"
+    ],
+    [
+      563.6,
+      "drop",
+      "steady"
+    ],
+    [
+      620.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      624.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      624.5,
+      "steady",
+      "drop"
+    ],
+    [
+      626.5,
+      "drop",
+      "steady"
+    ],
+    [
+      627.8,
+      "steady",
+      "drop"
+    ],
+    [
+      629.8,
+      "drop",
+      "steady"
+    ],
+    [
+      652.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      656.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      657.6,
+      "steady",
+      "drop"
+    ],
+    [
+      659.6,
+      "drop",
+      "steady"
+    ],
+    [
+      716.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      720.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      720.5,
+      "steady",
+      "drop"
+    ],
+    [
+      722.5,
+      "drop",
+      "steady"
+    ],
+    [
+      723.8,
+      "steady",
+      "drop"
+    ],
+    [
+      725.8,
+      "drop",
+      "steady"
+    ],
+    [
+      748.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      752.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      753.6,
+      "steady",
+      "drop"
+    ],
+    [
+      755.6,
+      "drop",
+      "steady"
+    ],
+    [
+      812.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      816.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      816.5,
+      "steady",
+      "drop"
+    ],
+    [
+      818.5,
+      "drop",
+      "steady"
+    ],
+    [
+      819.8,
+      "steady",
+      "drop"
+    ],
+    [
+      821.8,
+      "drop",
+      "steady"
+    ],
+    [
+      844.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      848.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      849.6,
+      "steady",
+      "drop"
+    ],
+    [
+      851.6,
+      "drop",
+      "steady"
+    ],
+    [
+      908.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      912.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      912.5,
+      "steady",
+      "drop"
+    ],
+    [
+      914.5,
+      "drop",
+      "steady"
+    ],
+    [
+      915.8,
+      "steady",
+      "drop"
+    ],
+    [
+      917.8,
+      "drop",
+      "steady"
+    ],
+    [
+      940.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      944.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      945.6,
+      "steady",
+      "drop"
+    ],
+    [
+      947.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1004.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1008.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1008.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1010.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1011.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1013.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1036.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1040.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1041.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1043.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1100.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1104.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1104.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1106.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1107.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1109.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1132.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1136.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1137.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1139.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1196.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1200.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1200.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1202.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1203.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1205.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1228.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1232.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1233.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1235.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1292.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1296.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1296.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1298.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1299.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1301.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1324.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1328.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1329.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1331.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1388.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1392.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1392.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1394.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1395.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1397.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1420.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1424.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1425.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1427.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1484.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1488.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1488.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1490.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1491.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1493.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1516.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1520.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1521.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1523.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1580.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1584.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1584.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1586.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1587.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1589.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1612.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1616.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1617.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1619.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1676.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1680.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1680.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1682.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1683.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1685.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1708.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1712.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1713.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1715.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1772.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1776.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1776.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1778.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1779.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1781.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1804.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1808.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1809.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1811.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1868.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1872.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1872.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1874.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1875.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1877.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1900.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1904.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1905.6,
+      "steady",
+      "drop"
+    ],
+    [
+      1907.6,
+      "drop",
+      "steady"
+    ],
+    [
+      1964.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      1968.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      1968.5,
+      "steady",
+      "drop"
+    ],
+    [
+      1970.5,
+      "drop",
+      "steady"
+    ],
+    [
+      1971.8,
+      "steady",
+      "drop"
+    ],
+    [
+      1973.8,
+      "drop",
+      "steady"
+    ],
+    [
+      1996.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2000.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2001.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2003.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2060.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2064.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2064.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2066.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2067.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2069.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2092.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2096.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2097.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2099.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2156.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2160.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2160.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2162.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2163.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2165.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2188.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2192.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2193.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2195.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2252.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2256.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2256.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2258.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2259.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2261.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2284.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2288.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2289.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2291.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2348.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2352.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2352.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2354.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2355.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2357.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2380.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2384.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2385.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2387.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2444.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2448.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2448.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2450.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2451.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2453.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2476.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2480.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2481.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2483.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2540.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2544.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2544.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2546.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2547.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2549.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2572.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2576.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2577.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2579.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2636.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2640.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2640.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2642.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2643.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2645.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2668.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2672.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2673.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2675.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2732.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2736.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2736.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2738.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2739.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2741.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2764.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2768.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2769.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2771.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2828.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2832.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2832.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2834.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2835.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2837.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2860.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2864.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2865.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2867.6,
+      "drop",
+      "steady"
+    ],
+    [
+      2924.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2928.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2928.5,
+      "steady",
+      "drop"
+    ],
+    [
+      2930.5,
+      "drop",
+      "steady"
+    ],
+    [
+      2931.8,
+      "steady",
+      "drop"
+    ],
+    [
+      2933.8,
+      "drop",
+      "steady"
+    ],
+    [
+      2956.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      2960.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      2961.6,
+      "steady",
+      "drop"
+    ],
+    [
+      2963.6,
+      "drop",
+      "steady"
+    ],
+    [
+      3020.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3024.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3024.5,
+      "steady",
+      "drop"
+    ],
+    [
+      3026.5,
+      "drop",
+      "steady"
+    ],
+    [
+      3027.8,
+      "steady",
+      "drop"
+    ],
+    [
+      3029.8,
+      "drop",
+      "steady"
+    ],
+    [
+      3052.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3056.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3057.6,
+      "steady",
+      "drop"
+    ],
+    [
+      3059.6,
+      "drop",
+      "steady"
+    ],
+    [
+      3116.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3120.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3120.5,
+      "steady",
+      "drop"
+    ],
+    [
+      3122.5,
+      "drop",
+      "steady"
+    ],
+    [
+      3123.8,
+      "steady",
+      "drop"
+    ],
+    [
+      3125.8,
+      "drop",
+      "steady"
+    ],
+    [
+      3148.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3152.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3153.6,
+      "steady",
+      "drop"
+    ],
+    [
+      3155.6,
+      "drop",
+      "steady"
+    ],
+    [
+      3212.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3216.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3216.5,
+      "steady",
+      "drop"
+    ],
+    [
+      3218.5,
+      "drop",
+      "steady"
+    ],
+    [
+      3219.8,
+      "steady",
+      "drop"
+    ],
+    [
+      3221.8,
+      "drop",
+      "steady"
+    ],
+    [
+      3244.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3248.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3249.6,
+      "steady",
+      "drop"
+    ],
+    [
+      3251.6,
+      "drop",
+      "steady"
+    ],
+    [
+      3308.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3312.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3312.5,
+      "steady",
+      "drop"
+    ],
+    [
+      3314.5,
+      "drop",
+      "steady"
+    ],
+    [
+      3315.8,
+      "steady",
+      "drop"
+    ],
+    [
+      3317.8,
+      "drop",
+      "steady"
+    ],
+    [
+      3340.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3344.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3345.6,
+      "steady",
+      "drop"
+    ],
+    [
+      3347.6,
+      "drop",
+      "steady"
+    ],
+    [
+      3404.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3408.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3408.5,
+      "steady",
+      "drop"
+    ],
+    [
+      3410.5,
+      "drop",
+      "steady"
+    ],
+    [
+      3411.8,
+      "steady",
+      "drop"
+    ],
+    [
+      3413.8,
+      "drop",
+      "steady"
+    ],
+    [
+      3436.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3440.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3441.6,
+      "steady",
+      "drop"
+    ],
+    [
+      3443.6,
+      "drop",
+      "steady"
+    ],
+    [
+      3500.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3504.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3504.5,
+      "steady",
+      "drop"
+    ],
+    [
+      3506.5,
+      "drop",
+      "steady"
+    ],
+    [
+      3507.8,
+      "steady",
+      "drop"
+    ],
+    [
+      3509.8,
+      "drop",
+      "steady"
+    ],
+    [
+      3532.2,
+      "steady",
+      "breakdown"
+    ],
+    [
+      3536.1,
+      "breakdown",
+      "steady"
+    ],
+    [
+      3537.6,
+      "steady",
+      "drop"
+    ],
+    [
+      3539.6,
+      "drop",
+      "steady"
+    ],
+    [
+      3596.2,
+      "steady",
+      "breakdown"
+    ]
+  ],
+  "control_packets_sent": 1662,
+  "control_packets_received": 1662,
+  "control_packets_rejected": 0,
+  "internal_control_packets_received": 1662,
+  "external_control_packets_received": 0,
+  "external_control_accounting": "Received only; external sender's sent count is not observable. Strict sent/received equality applies to this player's own loopback sender.",
+  "osc_send_errors": 0,
+  "heartbeat_stale_frames": 0,
+  "rss_peak_bytes": 139448320,
+  "rss_end_bytes": 140152832,
+  "all_five_scenes_rendered": true,
+  "exact_frame_count": false,
+  "exact_audio_sample_count": true,
+  "artifact_sha256": {
+    "frame-102600-particle_field.png": "358d84b117a48ad52c1dd8553240973c95803652e0b134353e16e80ac2952f83",
+    "frame-090000-projectm_blend.png": "e5ca79756f9aadd8efe0a54c462ed6ea0f202d128f334fe0d84085db495066e7",
+    "frame-054000-projectm_blend.png": "091eb9e721c384ded4310ec12ff976a7d9ad51d7c652aae33c8e26aebdc99c84",
+    "frame-073800-particle_field.png": "4a04ff2a99eebef6f72955394a7312ed9701a083a64bf82cd0ae0276bc088e65",
+    "frame-082800-projectm_blend.png": "2d696fa01af443665ef33cd3179ac4bd1e7d0aed07803fdf21f97b78fb2ac495",
+    "frame-059400-particle_field.png": "50a3497a4944339d83edf9620ef1b364cffe326cc8d4a098bfe5f5971a3acd0b",
+    "frame-045000-particle_field.png": "5cc6a245a37fdf7d09ced15f493a8dcf971e191bb9c9f8ec3b7fc4c7d5897979",
+    "frame-039600-projectm_blend.png": "961395205f126115a69a67431c627462666c3901a7cbfd59af5b8e518cb2b512",
+    "frame-021600-projectm_blend.png": "8dbce283ba6ac89bb1393381abdb4ad27fa6e759cda5d010a32f2716d4517a28",
+    "frame-055800-kaleido_mesh.png": "d19f7338d60f222d34c591f84a6769b289f56c5caf473349033e2848d8b98824",
+    "frame-106200-particle_field.png": "cb0a30907f68a4eaed74553871061b5274a9d4dad419696e678e57125f1b7135",
+    "frame-063000-particle_field.png": "5be31ac62e744a02ca0f94815dae0095b3077d58b5f6cf2a4166a8612e388dc0",
+    "frame-027000-kaleido_mesh.png": "5e3619e2e668dfea6ce569aed84783e959070dc3e90c98a11268ab734ad217eb",
+    "frame-010800-projectm_blend.png": "f41068c4094ae0dc031013b5e16b1877d8a85da1e840644a1b59ab9084bdd33b",
+    "frame-005400-particle_field.png": "cab569fbddf910e4b2b5eed952afba60ed5441a6905fdb32453cd58f50d40ffe",
+    "frame-046800-projectm_blend.png": "44c4796f6c8ccdb2a9dd48e548176a9456bbf4555eac6b039b4d3c52dd06cda7",
+    "frame-016200-particle_field.png": "ef81b8456ebf69056bb3ca5826120c1d732a3448a55080496e0a239192c208af",
+    "frame-050400-projectm_blend.png": "97df73a2ec683e7abc01698befa1b1686342d0c1315808ba83d7cede69fefff7",
+    "frame-007200-projectm_blend.png": "27dc3a183dfd9b61cc77bc50559f8153f22365fb00112caea09911c6bea82409",
+    "frame-034200-particle_field.png": "3f9071edd84d24b1887d2924bf8288c4c48e80111dc8c83edf09c060bd055a43",
+    "frame-097200-projectm_blend.png": "a0d91cd73186d3bf8e4e8052c006bd3460667c241f1126014cc1e33cc6cb251a",
+    "frame-075600-projectm_blend.png": "411f522cc616a534003b5ae51abed980c0903cf9c043b7a4fb02669a0c853ddb",
+    "frame-030600-particle_field.png": "a7cdd56a56fd5163748b2bf208a07974bf17533b9c23b9b74787cd049dcbe5ec",
+    "frame-032400-projectm_blend.png": "a28eb51d03807b9a273ca927f755e1bfe71a4978936ff9dfaea0580262487be0",
+    "frame-088200-particle_field.png": "745c1a0ba47fc455c542c8c9242385475a9aad34396488c1b939e8e9ca673fc8",
+    "frame-099000-kaleido_mesh.png": "c7fd4739b590787855e231de5c1f6066826e5b4ea2261e0af9ea2276817f6798",
+    "frame-028800-projectm_blend.png": "c1417f83116169a77042d428cea5df322ea6e77c62a2a7d3c1d8a5a83bb9b9d9",
+    "frame-091800-particle_field.png": "1dbbe2c9155972804761ef04249ae795205fe53c0429d99d72ee1334219d66e7",
+    "frame-041400-kaleido_mesh.png": "8d448ad8bbbc2b28b80ae5efa84c631e26ca0ee5e9c2b37cebf6de4fcc5bd6ac",
+    "frame-079200-projectm_blend.png": "52d8af7f8e373bdc70bb67f51d6779a6daec8a0e3b0047d4573834a655f5b9e6",
+    "frame-003600-projectm_blend.png": "1cc6db8caf74a5d6a15b356660a7c04b627362de5b69e240bec6220b32c10ced",
+    "frame-014400-projectm_blend.png": "6af1e9efeed5174f27e1b3b021975d9a3596e764c989c8d8ae0e29433ad649ca",
+    "frame-057600-projectm_blend.png": "60a7276263dd09ff3a8540a96a02e3d33ac0a61670ecd9e456885b9fb12da651",
+    "frame-086400-projectm_blend.png": "5f1917366979c384d0de147d19221427f9b25d6e2099b330da65fb83e828bc77",
+    "frame-081000-particle_field.png": "3dcd7c7b5c0e0eeb52337326b001139f294d0c240dce49171c737d246a3e2e4d",
+    "frame-104400-projectm_blend.png": "7ee9ed2dbbce60ef6f638a7415bc20a2337e65fa175a76c76b7262347c57dd93",
+    "frame-036000-projectm_blend.png": "ae411870c7cf8156a4edd1f47c826c52fadea5fa6c75865d6eda97f36e56ad0c",
+    "frame-093600-projectm_blend.png": "ae9e9c53836e085afe5bb695a0ea6282f13dde9ac853c8d77c6f4b719d8bd1ad",
+    "frame-077400-particle_field.png": "a4336ed30458b08e38092761b1d03a3bd2fa4e32d677a6f5087b5918564bd094",
+    "frame-025200-projectm_blend.png": "1101883cba07442683748441880d6a725a6fdc901a184ea499d86c436bd431d3",
+    "frame-009000-particle_field.png": "61adbffd941d8c6df93c5e813d0c1bed098da97c6dac63d9943890793e97f61c",
+    "frame-012600-kaleido_mesh.png": "24f26d1aa1de2dadcec5aa394973302e65b4ba5c1f6237bf764e2d0df91f1b6c",
+    "frame-018000-projectm_blend.png": "86ea4e4942bfa8d31e75d9eba70c2a85df5e49e928926601aedeb6a64c4a234e",
+    "frame-023400-particle_field.png": "0908e8a23b7d8047bf55db8da89a6216782020b608a3f43deb8d51691825a523",
+    "frame-052200-particle_field.png": "797e3f238ebafe5f9a0d67b69687e591b6e6d6e58f7c8e3701c559e8d0545cab",
+    "frame-064800-projectm_blend.png": "2ac0f9ac75592b2c67f87299a29dff0fcc9d4e29deded0784e6c21582a9ec007",
+    "frame-000000-fractal_temple.png": "2febbaa048b8636f64feaccbeaa148c26bd789c6076553d5c2a9a433b1e0fb46",
+    "frame-095400-particle_field.png": "4c2133da8da723b6262cb262054a76e5f0e9907ccbfda9aa7354b46fc89ca8f5",
+    "frame-037800-particle_field.png": "fe04372304078fdc835f5f5734c1075c0911347a28a2b3a4e41e81836d91c86c",
+    "frame-048600-particle_field.png": "ce9b664fe57173cff5a9f2c8ead10645fa76e3c89d79fd5dd5a2f4ff221b4bca",
+    "frame-001800-particle_field.png": "0f6b820adf1c73e89dceb2afabff7da6371ea97a4ab8cfc9399adc2f8b5ab957",
+    "frame-019800-particle_field.png": "5c35a610839c2d850a4c6a397b22cdd6509675cf138c2aacfc299b052476afac",
+    "frame-068400-projectm_blend.png": "af1bd779fa58c38bd0e5348d7eafe7c0e8a6bf635484a28e9eb1db4d7e767ff9",
+    "frame-072000-projectm_blend.png": "e50f2f28419f29a7e8a43aa18cedefbae979ea56a41669a1140d298a6894a834",
+    "frame-100800-projectm_blend.png": "52ce07415c47a3996e5f3abd5d689472803db556d619498ab6fd37c72514f43e",
+    "frame-043200-projectm_blend.png": "59bb9c3d6d47af344ef2d7a21fa75a2141b49859c67203dd5c318f6d3c55276e",
+    "frame-084600-kaleido_mesh.png": "520e7bfa3c550df5ddc4095770efc19f816eb90f9fb87dfb38f0dbcaba7f0f88",
+    "frame-061200-projectm_blend.png": "69e55d9d776c1364e954fa16811196e34716440f16bc1ad4539e65fd7fe770bc",
+    "frame-070200-kaleido_mesh.png": "277a579d761e5deeaa6260077f6222ec657eeeefce5b8c9ae166c1133025dcf4",
+    "frame-066600-particle_field.png": "0e43018716a5cd8699a82877193453715d9b0c253371067c94ee25f51987c7b7"
+  },
+  "execution_completed": true,
+  "resources_released": true,
+  "source_unchanged_during_run": true,
+  "checks": {
+    "execution_completed": true,
+    "source_unchanged_during_run": true,
+    "no_errors": true,
+    "all_raw_float_draws_validated": true,
+    "no_black_frames": true,
+    "feature_udp_complete": true,
+    "control_udp_complete": true,
+    "no_osc_send_errors": true,
+    "no_one_second_exact_freeze": true,
+    "resources_released": true,
+    "exact_audio_analysis_samples": true,
+    "director_heartbeat_continuous": true,
+    "all_five_scenes_rendered": true,
+    "all_five_palettes_rendered": true,
+    "empty_particle_fallback_exercised": true,
+    "full_requested_wall_duration": true,
+    "at_least_98_percent_render_slots": true,
+    "no_half_second_frame_gap": true
+  },
+  "qualification": "target_passed",
+  "finished_utc": "2026-10-06T10:15:29.186808+00:00",
+  "total_wall_elapsed_s": 3600.9252000149863
+}

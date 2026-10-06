@@ -54,6 +54,7 @@ operator's back. ``tools/preflight.py`` is where the paid version belongs.
 
 from __future__ import annotations
 
+import copy
 import json
 import random
 import sys
@@ -566,6 +567,9 @@ class DirectorLoop:
             one, so a build → drop → steady flurry cannot fire three calls.
         clock: Track time. Pass the sidecar's ``ScaledClock`` and ``--speed``
             compresses the decision period with everything else.
+        wall_clock: Unscaled monotonic time for the AI freshness watchdog.
+            Service ``on_tick`` at least once a second; a rule decision replaces
+            an overdue response after 25 s, within the 30 s outage budget.
         log_path: JSONL, one line per decision.
         worker: ``False`` runs decisions inline (tests only).
     """
@@ -584,6 +588,7 @@ class DirectorLoop:
         out: TextIO | None = None,
         bpm: float = DEFAULT_BPM,
         history: History | None = None,
+        wall_clock: Callable[[], float] = time.monotonic,
     ) -> None:
         if mode not in MODES:
             raise ValueError(f"mode must be one of {MODES}, got {mode!r}")
@@ -594,6 +599,10 @@ class DirectorLoop:
         self.period_s = float(period_s)
         self.min_interval_s = float(min_interval_s)
         self.clock = clock
+        # The show clock may run at x20 during replay. Outage protection is
+        # always measured in real seconds, independently of decision cadence.
+        self.wall_clock = wall_clock
+        self.fallback_after_s = 25.0  # 5 s headroom for the normal 1 Hz hook
         self.log_path = Path(log_path) if log_path else None
         self.worker = bool(worker)
         self.out = out if out is not None else sys.stdout
@@ -607,21 +616,27 @@ class DirectorLoop:
         self.last_section: str | None = None
         self._last_decision: float | None = None
         self._inflight = False
+        self._inflight_mode_revision: int | None = None
+        self._rule_takeover_pending = False
         self._thread: threading.Thread | None = None
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
         self._log: TextIO | None = None
         self._mode_revision = 0
         self._section_revision = 0
         self._latest_summary: dict = {}
         self._closed = False
+        self._publication_revision = 0
+        self._fresh_since_wall: float | None = None
+        self._last_watchdog_attempt: float | None = None
 
     # -- lifecycle ----------------------------------------------------------
 
     def close(self, timeout: float = 5.0) -> None:
         """Wait for an in-flight decision and close the log. Safe to call twice."""
-        self._closed = True
-        thread, self._thread = self._thread, None
-        if thread is not None and thread.is_alive():
+        with self._lock:
+            self._closed = True
+            thread, self._thread = self._thread, None
+        if thread is not None and thread is not threading.current_thread() and thread.is_alive():
             thread.join(timeout)
         with self._lock:
             if self._log is not None:
@@ -638,15 +653,24 @@ class DirectorLoop:
         """Switch mode live (the hotkeys, SPEC §5). Returns the new mode."""
         if name not in MODES:
             raise ValueError(f"mode must be one of {MODES}, got {name!r}")
-        if name != self.mode:
-            self._mode_revision += 1
-            self.mode = name
-            print(f"{_clock_stamp()}  mode → {name}", file=self.out, flush=True)
-        return self.mode
+        with self._lock:
+            if name != self.mode:
+                self._mode_revision += 1
+                previous = self.mode
+                self.mode = name
+                self._rule_takeover_pending = name == "rule"
+                # Switching between automatic directors must not extend the
+                # age of the last delivered look. Manual control intentionally
+                # suspends that budget, so resuming automation starts it anew.
+                if previous == "manual" or self._fresh_since_wall is None:
+                    self._fresh_since_wall = self.wall_clock()
+                print(f"{_clock_stamp()}  mode → {name}", file=self.out, flush=True)
+            return self.mode
 
     def request_stop(self) -> None:
         """Ask the sidecar loop to end at the next tick (the ``q`` hotkey)."""
-        self.stop_requested = True
+        with self._lock:
+            self.stop_requested = True
 
     # -- startup smoke test -------------------------------------------------
 
@@ -731,7 +755,9 @@ class DirectorLoop:
 
     def should_fire(self, section: str, now: float) -> bool:
         """Is this tick a decision? Period elapsed, or a section worth reacting to."""
-        if self._inflight:
+        obsolete_rule_takeover = (self.mode == "rule"
+                                  and self._inflight_mode_revision != self._mode_revision)
+        if self._inflight and self.mode != "manual" and not obsolete_rule_takeover:
             return False
         if self._last_decision is None:
             return True
@@ -748,16 +774,49 @@ class DirectorLoop:
         which is how the ``q`` hotkey ends a run: the sidecar's own loop already
         treats that as a clean shutdown.
         """
+        with self._lock:
+            return self._on_tick_locked(summary, section)
+
+    def _on_tick_locked(self, summary: dict, section: str) -> bool:
         if self.stop_requested:
             raise KeyboardInterrupt
         if self._closed:
             return False
         now = self.clock()
+        wall = self.wall_clock()
+        if self._fresh_since_wall is None:
+            self._fresh_since_wall = wall
         self._latest_summary = dict(summary)
         if section != self.last_section:
             self._section_revision += 1
         fire = self.should_fire(section, now)
         self.last_section = section
+        if self.mode == "rule" and (self._rule_takeover_pending or (fire and self._inflight)):
+            # A human's rule takeover must not wait for the old GPT timeout.
+            # Keep that worker/handle intact, and run only the cheap rule path
+            # here, immediately once and then at the ordinary rule cadence.
+            self._rule_takeover_pending = False
+            self._last_decision = now
+            decision = self.rule.decide(summary, section, self.history, now, self._bpm(summary))
+            self._publish(decision, section, now)
+            return True
+        # Do not wait for a hung model to return before choosing a safe look.
+        # Also covers an outage immediately after a success, before the next
+        # scheduled request. At most one fallback per ordinary decision period.
+        retry_after = min(self.period_s, self.fallback_after_s)
+        if (self.mode == "gpt"
+                and wall - self._fresh_since_wall >= self.fallback_after_s
+                and (self._last_watchdog_attempt is None
+                     or wall - self._last_watchdog_attempt >= retry_after)):
+            self._last_watchdog_attempt = wall
+            decision = self.rule.decide(summary, section, self.history, now, self._bpm(summary))
+            decision["_source"] = "rule (AI freshness watchdog)"
+            decision["_latency_s"] = wall - self._fresh_since_wall
+            self._publish(decision, section, now)
+            # Request cadence is independent of provisional rule output. In
+            # particular, a 30/60 s AI period must not be postponed forever
+            # by this 25 s safety heartbeat.
+            return True
         if not fire:
             return False
         self._last_decision = now
@@ -766,18 +825,21 @@ class DirectorLoop:
             self._beat()
             return True
         self._inflight = True
+        self._inflight_mode_revision = self._mode_revision
         if self.worker:
             self._thread = threading.Thread(
                 target=self._run_decision,
                 args=(dict(summary), section, now,
-                      self._mode_revision, self._section_revision),
+                      self._mode_revision, self._section_revision,
+                      self._publication_revision, wall),
                 name="amv-director",
                 daemon=True,
             )
             self._thread.start()
         else:
             self._run_decision(dict(summary), section, now,
-                               self._mode_revision, self._section_revision)
+                               self._mode_revision, self._section_revision,
+                               self._publication_revision, wall)
         return True
 
     # -- deciding -----------------------------------------------------------
@@ -788,27 +850,47 @@ class DirectorLoop:
         return kicks if 60.0 <= kicks <= 220.0 else self.bpm
 
     def _run_decision(self, summary: dict, section: str, now: float,
-                      mode_revision: int, section_revision: int) -> None:
+                      mode_revision: int, section_revision: int,
+                      publication_revision: int, requested_wall: float) -> None:
         try:
-            if (self._closed or self.stop_requested or self.mode == "manual"
-                    or mode_revision != self._mode_revision):
-                return
-            director = self._director_for_mode()
-            decision = director.decide(summary, section, self.history, now, self._bpm(summary))
-            finished = self.clock()
+            with self._lock:
+                if not self._can_publish(mode_revision):
+                    return
+                director = self._director_for_mode()
+                # Watchdog publications can update history while GPT waits.
+                history = copy.deepcopy(self.history)
+            decision = director.decide(summary, section, history, now, self._bpm(summary))
             # An in-flight response must not override a later manual takeover,
             # mode change, or shutdown. Audio keeps running independently.
-            if self._closed or self.stop_requested or mode_revision != self._mode_revision:
-                return
-            if director is not self.rule and (
-                    section_revision != self._section_revision
-                    or finished - now > self.period_s):
-                summary = self._latest_summary
-                section = self.last_section or section
-                decision = self.rule.decide(
-                    summary, section, self.history, finished, self._bpm(summary))
-                decision["_source"] = "rule (stale decision)"
-            self._publish(decision, section, finished)
+            with self._lock:
+                if not self._can_publish(mode_revision):
+                    return
+                finished = self.clock()
+                stale = (section_revision != self._section_revision
+                         or finished - now > self.period_s
+                         or self.wall_clock() - requested_wall >= self.fallback_after_s)
+                superseded = publication_revision != self._publication_revision
+                if superseded:
+                    # The watchdog filled the gap; it did not cancel a still
+                    # timely, healthy request. Accept current GPT answers
+                    # after rechecking variety against the now-newer history.
+                    # Failed/aged/old-section replies add nothing to the fresh
+                    # rule output and must not cause a second publication.
+                    if stale or decision.get("_source") != "gpt":
+                        return
+                    decision = enforce_variety(decision, self.history, finished)
+                elif director is not self.rule and stale:
+                    metadata = _private(decision)
+                    summary = self._latest_summary
+                    section = self.last_section or section
+                    decision = self.rule.decide(
+                        summary, section, self.history, finished, self._bpm(summary))
+                    decision.update(metadata)
+                    decision["_source"] = "rule (stale decision)"
+                    if metadata.get("_source", "gpt") != "gpt":
+                        decision["_fallback_source"] = metadata["_source"]
+                if self._can_publish(mode_revision):
+                    self._publish(decision, section, finished)
         except BaseException as exc:  # noqa: BLE001 - a worker thread must not die silently
             if isinstance(exc, (KeyboardInterrupt, SystemExit)):
                 raise
@@ -819,28 +901,42 @@ class DirectorLoop:
                 flush=True,
             )
         finally:
-            self._inflight = False
+            with self._lock:
+                self._inflight = False
+
+    def _can_publish(self, mode_revision: int) -> bool:
+        """Called under the same lock used by takeover and publication."""
+        return (not self._closed and not self.stop_requested and self.mode != "manual"
+                and mode_revision == self._mode_revision)
 
     # -- publishing ---------------------------------------------------------
 
     def _beat(self) -> int:
-        self.heartbeat += 1
-        if self.td is not None:
-            self.td.send_heartbeat(self.heartbeat)
+        beat = self.heartbeat + 1
+        if self.td is not None and self.td.send_heartbeat(beat) is False:
+            self.errors += 1
+            return self.heartbeat
+        self.heartbeat = beat
         return self.heartbeat
 
-    def _publish(self, decision: dict, section: str, now: float) -> dict:
+    def _publish(self, decision: dict, section: str, now: float) -> dict | None:
         """Send, remember, log and print one decision."""
         clean = strip_private(decision)
         source = str(decision.get("_source", self.mode))
         latency = float(decision.get("_latency_s", 0.0) or 0.0)
         with self._lock:
-            self.heartbeat += 1
-            beat = self.heartbeat
+            if self._closed or self.stop_requested or self.mode == "manual":
+                return None
+            beat = self.heartbeat + 1
             if self.td is not None:
                 # send_director ends with the heartbeat, so passing ours keeps
                 # one decision to exactly one beat.
-                self.td.send_director(clean, heartbeat=beat)
+                if self.td.send_director(clean, heartbeat=beat) is None:
+                    self.errors += 1
+                    return None
+            self.heartbeat = beat
+            self._publication_revision += 1
+            self._fresh_since_wall = self.wall_clock()
             self.history.append(clean, now, source)
             record = {
                 "t": round(float(now), 3),
@@ -851,6 +947,9 @@ class DirectorLoop:
                 "heartbeat": beat,
                 "decision": clean,
             }
+            for key in ("_error", "_fallback_source"):
+                if key in decision:
+                    record[key[1:]] = decision[key]
             self.decisions.append(record)
             self._write(record)
             print(self.format_line(record), file=self.out, flush=True)

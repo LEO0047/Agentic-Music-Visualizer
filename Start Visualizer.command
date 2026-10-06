@@ -1,24 +1,19 @@
-#!/bin/zsh
-set -e
-cd -- "${0:A:h}"
+#!/bin/sh
+# A stdlib-only bootstrap. Never install dependencies just by opening this file.
+cd -- "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)" || exit 1
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-if ! command -v uv >/dev/null; then
-  print 'Install uv first: https://docs.astral.sh/uv/'
-  read '?Press Return to close.'
+if [ -x .venv/bin/python ]; then
+  PYTHON=.venv/bin/python
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON=python3
+else
+  printf '%s\n' 'Python is missing. Install Python 3.11+ and uv: https://docs.astral.sh/uv/' >&2
   exit 1
 fi
-if [[ ! -d /Applications/TouchDesigner.app ]]; then
-  print 'Install TouchDesigner and activate its free Non-Commercial license first.'
-  read '?Press Return to close.'
-  exit 1
+"$PYTHON" -B -m amv.launcher "$@"
+status=$?
+if [ "$status" -ne 0 ] && [ -t 0 ] && [ -t 1 ]; then
+  printf '\nPress Return to close. '
+  IFS= read -r answer
 fi
-uv sync --extra audio
-mkdir -p artifacts
-swift tools/audio_route.swift enable
-function restore_audio() { swift tools/audio_route.swift restore || true; }
-trap restore_audio EXIT
-trap 'exit 130' INT TERM HUP
-open -a TouchDesigner Agentic-Music-Visualizer.toe
-print 'Apple Music: select this Mac as output. Use its own volume slider.'
-print 'Director: GPT, with automatic rule fallback. Ctrl-C stops it and restores audio.'
-uv run python -m amv.sidecar --director gpt --decisions-log artifacts/director-decisions.jsonl
+exit "$status"

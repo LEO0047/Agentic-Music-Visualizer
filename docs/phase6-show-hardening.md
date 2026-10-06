@@ -146,8 +146,9 @@ variety  longest scene run 1 decisions / 0s   repeats within 60s: 0
 quota    210 decisions/h × 25,000 tokens = 5,250,000 tokens/h → 26.2M per 5h window
 ```
 
-間隔比 `--period 18` 大一點點，是因為導演只能在 sidecar 的 status tick 上開火
-（`--status-rate`，預設 1 Hz 節目時間）；比 18 小的那幾次是段落事件觸發
+以上是原版的量測：當時導演只能在 sidecar 的 status tick 上開火
+（`--status-rate`，預設 1 Hz 節目時間）。2026-10-06 起已改為獨立的偵測 tick，
+關閉或調慢 console status 不會停用導演與失效 watchdog。比 18 小的那幾次是段落事件觸發
 （`--min-interval` 之上，build / drop / breakdown 到站時可以插隊）。
 
 ---

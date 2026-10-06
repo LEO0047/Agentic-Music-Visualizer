@@ -745,3 +745,422 @@ def test_end_to_end_loop_falls_back_without_stalling(monkeypatch, tmp_path):
     assert loop.errors == 0
     for decision in td.decisions:
         assert validate_and_clamp(decision) == decision
+
+
+@pytest.mark.parametrize("action", ["manual", "stop", "close"])
+def test_takeover_during_stale_recomputation_cannot_publish(action):
+    clock = FakeClock()
+    td = RecordingTD()
+
+    class SlowReply:
+        def decide(self, prompt):
+            clock.advance(20)
+            return dict(VALID)
+
+    class TakeoverRule(RuleDirector):
+        def decide(self, *args, **kwargs):
+            if action == "manual":
+                loop.set_mode("manual")
+            elif action == "stop":
+                loop.request_stop()
+            else:
+                loop.close()
+            return super().decide(*args, **kwargs)
+
+    loop = DirectorLoop(td, GPTDirector(SlowReply(), TakeoverRule()),
+                        clock=clock, worker=False, out=io.StringIO())
+    loop.on_tick(SUMMARY, "build")
+    assert td.decisions == []
+    assert loop.history.count == 0
+
+
+def test_watchdog_bounds_outage_then_rejects_late_reply_and_recovers():
+    clock, wall, td = FakeClock(), FakeClock(), RecordingTD()
+    entered, release = threading.Event(), threading.Event()
+
+    class Client:
+        calls = 0
+
+        def decide(self, prompt):
+            self.calls += 1
+            if self.calls == 2:
+                entered.set()
+                assert release.wait(5)
+            return dict(VALID)
+
+    client = Client()
+    loop = DirectorLoop(td, GPTDirector(client, RuleDirector()), clock=clock,
+                        wall_clock=wall, out=io.StringIO())
+    try:
+        loop.on_tick(SUMMARY, "steady")
+        loop._thread.join(2)
+        assert len(td.decisions) == 1
+        clock.advance(18); wall.advance(18)
+        loop.on_tick(SUMMARY, "steady")
+        assert entered.wait(2)
+        clock.advance(6); wall.advance(6)
+        assert not loop.on_tick(SUMMARY, "steady")
+        clock.advance(1); wall.advance(1)
+        assert loop.on_tick(dict(SUMMARY, energy=0.1), "breakdown")
+        assert len(td.decisions) == 2
+        record = loop.decisions[-1]
+        assert record["t"] == 25
+        assert record["source"] == "rule (AI freshness watchdog)"
+        assert record["section"] == "breakdown"
+        assert record["decision"]["feedback"] <= 0.5
+        assert client.calls == 2  # the hung worker is never duplicated
+        release.set()
+        loop._thread.join(2)
+        assert len(td.decisions) == 2  # late GPT is discarded
+        assert not loop.on_tick(SUMMARY, "breakdown")  # no immediate burst
+        clock.advance(18); wall.advance(18)
+        assert loop.on_tick(SUMMARY, "breakdown")
+        loop._thread.join(2)
+        assert loop.decisions[-1]["source"] == "gpt"
+        assert len(td.decisions) == loop.history.count == 3
+    finally:
+        release.set()
+        loop.close()
+
+
+def test_watchdog_uses_wall_clock_and_initial_request_budget():
+    clock, wall = FakeClock(), FakeClock()
+    entered, release = threading.Event(), threading.Event()
+
+    class Client:
+        def decide(self, prompt):
+            entered.set()
+            assert release.wait(5)
+            return dict(VALID)
+
+    td = RecordingTD()
+    loop = DirectorLoop(td, GPTDirector(Client(), RuleDirector()), clock=clock,
+                        wall_clock=wall, out=io.StringIO())
+    try:
+        loop.on_tick(SUMMARY, "steady")
+        assert entered.wait(2)
+        clock.advance(500); wall.advance(1)
+        assert not loop.on_tick(SUMMARY, "steady")
+        assert not td.decisions
+        wall.advance(24)
+        assert loop.on_tick(SUMMARY, "steady")
+        assert len(td.decisions) == 1
+        # A permanently stuck call still permits subsequent rule publications.
+        wall.advance(25); clock.advance(500)
+        loop.on_tick(SUMMARY, "steady")
+        assert len(td.decisions) == 2
+        loop.set_mode("manual")
+        wall.advance(25); clock.advance(500)
+        loop.on_tick(SUMMARY, "steady")
+        assert len(td.decisions) == 2
+    finally:
+        release.set()
+        loop.close()
+
+
+def test_stale_fallback_keeps_failure_reason_and_original_latency():
+    clock = FakeClock()
+
+    class Timeout:
+        def decide(self, prompt):
+            clock.advance(20)
+            raise CodexError("quota exhausted")
+
+    loop = DirectorLoop(RecordingTD(), GPTDirector(Timeout(), RuleDirector(), clock=clock),
+                        clock=clock, worker=False, out=io.StringIO())
+    loop.on_tick(SUMMARY, "build")
+    record = loop.decisions[-1]
+    assert record["source"] == "rule (stale decision)"
+    assert record["fallback_source"] == "rule (CodexError)"
+    assert record["latency_s"] == 20
+    assert record["error"] == "quota exhausted"
+    assert all(not k.startswith("_") for k in record["decision"])
+
+
+def test_failed_transport_does_not_count_as_published_history():
+    class FailedTD(RecordingTD):
+        def send_director(self, *args, **kwargs):
+            return None
+
+        def send_heartbeat(self, n):
+            return False
+
+    loop, clock = rule_loop(FailedTD())
+    loop.on_tick(SUMMARY, "steady")
+    assert loop.errors == 1
+    assert loop.decisions == []
+    assert loop.history.count == loop.heartbeat == 0
+    loop.set_mode("manual")
+    clock.advance(18)
+    loop.on_tick(SUMMARY, "steady")
+    assert loop.errors == 2
+    assert loop.heartbeat == 0
+
+
+def test_manual_heartbeats_continue_while_old_gpt_is_stuck():
+    clock, wall, td = FakeClock(), FakeClock(), RecordingTD()
+    entered, release = threading.Event(), threading.Event()
+
+    class Client:
+        def decide(self, prompt):
+            entered.set()
+            assert release.wait(5)
+            return dict(VALID)
+
+    loop = DirectorLoop(td, GPTDirector(Client(), RuleDirector()), clock=clock,
+                        wall_clock=wall, out=io.StringIO())
+    try:
+        loop.on_tick(SUMMARY, "steady")
+        assert entered.wait(2)
+        loop.set_mode("manual")
+        clock.advance(18); wall.advance(18)
+        assert loop.on_tick(SUMMARY, "steady")
+        assert td.heartbeats == [1]
+        assert not td.decisions
+    finally:
+        release.set()
+        loop.close()
+
+
+def test_publication_and_mode_change_are_serialized():
+    """Once set_mode returns, an earlier reply cannot reach the transport."""
+    td = RecordingTD()
+    publishing, release, changed = threading.Event(), threading.Event(), threading.Event()
+
+    class PausedPublish(DirectorLoop):
+        def _publish(self, *args, **kwargs):
+            publishing.set()
+            assert release.wait(5)
+            return super()._publish(*args, **kwargs)
+
+    loop = PausedPublish(td, RuleDirector(), mode="rule", out=io.StringIO())
+    changer = threading.Thread(target=lambda: (loop.set_mode("manual"), changed.set()))
+    try:
+        loop.on_tick(SUMMARY, "steady")
+        assert publishing.wait(2)
+        changer.start()
+        assert not changed.wait(0.05)
+        release.set()
+        loop._thread.join(2)
+        assert changed.wait(2)
+        published = len(td.decisions)
+        loop.on_tick(SUMMARY, "steady")
+        assert len(td.decisions) == published
+        assert loop.mode == "manual"
+    finally:
+        release.set()
+        changer.join(2)
+        loop.close()
+
+
+@pytest.mark.parametrize("latency", [11, 13])
+@pytest.mark.parametrize("outage_result", ["timeout", "late_success"])
+def test_watchdog_recovers_realistic_latency_after_outage(latency, outage_result):
+    """A provisional rule look must not permanently demote healthy slow AI."""
+    clock, wall, td = FakeClock(), FakeClock(), RecordingTD()
+    starts = []
+
+    class Client:
+        def decide(self, prompt):
+            starts.append(wall())
+            request = len(starts)
+            delay = 0 if request == 1 else 30 if request == 2 else latency
+            for _ in range(delay):
+                clock.advance(1)
+                wall.advance(1)
+                loop.on_tick(SUMMARY, "steady")
+            if request == 2 and outage_result == "timeout":
+                raise CodexError("simulated outage timeout")
+            return dict(VALID)
+
+    loop = DirectorLoop(td, GPTDirector(Client(), RuleDirector(), clock=wall),
+                        clock=clock, wall_clock=wall, worker=False, out=io.StringIO())
+    while wall() < 140:
+        loop.on_tick(SUMMARY, "steady")
+        clock.advance(1)
+        wall.advance(1)
+    gpt = [r for r in loop.decisions if r["source"] == "gpt"]
+    assert starts[:3] == [0, 18, 49]
+    assert len(gpt) == len(starts) - 1  # only the actually timed-out/aged request is dropped
+    assert gpt[1]["t"] == 49 + latency
+    assert all(b - a >= loop.period_s for a, b in zip(starts, starts[1:]))
+    assert max(b["t"] - a["t"] for a, b in zip(loop.decisions, loop.decisions[1:])) <= 25
+    assert loop.history.count == len(loop.decisions)
+
+
+@pytest.mark.parametrize("period", [25, 30, 60])
+@pytest.mark.parametrize("latency", [0, 13])
+def test_watchdog_never_starves_configured_ai_period(period, latency):
+    clock, wall = FakeClock(), FakeClock()
+    starts = []
+
+    class Client:
+        def decide(self, prompt):
+            starts.append(wall())
+            # Begin with a successful cached/fast reply, then realistic latency.
+            for _ in range(latency if len(starts) > 1 else 0):
+                clock.advance(1)
+                wall.advance(1)
+                loop.on_tick(SUMMARY, "steady")
+            return dict(VALID)
+
+    loop = DirectorLoop(RecordingTD(), GPTDirector(Client(), RuleDirector(), clock=wall),
+                        period_s=period, clock=clock, wall_clock=wall,
+                        worker=False, out=io.StringIO())
+    while wall() <= 180:
+        loop.on_tick(SUMMARY, "steady")
+        clock.advance(1)
+        wall.advance(1)
+    assert len(starts) >= 180 // (period + 1)
+    assert all(period <= b - a <= period + 1 for a, b in zip(starts, starts[1:]))
+    assert sum(r["source"] == "gpt" for r in loop.decisions) == len(starts)
+    assert max(b["t"] - a["t"] for a, b in zip(loop.decisions, loop.decisions[1:])) <= 25
+
+
+def test_fresh_gpt_after_watchdog_rechecks_current_history_variety():
+    clock, wall = FakeClock(), FakeClock()
+    seen_watchdog = []
+
+    class Rule(RuleDirector):
+        def decide(self, *args, **kwargs):
+            result = dict(VALID)
+            result["_source"] = "rule"
+            return result
+
+    class Client:
+        calls = 0
+
+        def decide(self, prompt):
+            self.calls += 1
+            if self.calls > 1:
+                for _ in range(13):
+                    clock.advance(1)
+                    wall.advance(1)
+                    loop.on_tick(SUMMARY, "steady")
+                    if loop.decisions[-1]["source"] == "rule (AI freshness watchdog)":
+                        seen_watchdog.append(loop.decisions[-1])
+            return dict(VALID)
+
+    loop = DirectorLoop(RecordingTD(), GPTDirector(Client(), Rule(), clock=wall),
+                        clock=clock, wall_clock=wall, worker=False, out=io.StringIO())
+    loop.on_tick(SUMMARY, "steady")
+    clock.advance(18); wall.advance(18)
+    loop.on_tick(SUMMARY, "steady")
+    assert seen_watchdog
+    assert loop.decisions[-1]["source"] == "gpt"
+    assert loop.decisions[-1]["t"] == 31
+    previous = seen_watchdog[-1]["decision"]
+    current = loop.decisions[-1]["decision"]
+    assert (current["scene"], current["palette"]) != (previous["scene"], previous["palette"])
+
+
+def test_rule_to_gpt_preserves_last_publication_freshness_budget():
+    clock, wall = FakeClock(), FakeClock()
+
+    class Client:
+        def decide(self, prompt):
+            for _ in range(10):
+                clock.advance(1)
+                wall.advance(1)
+                loop.on_tick(SUMMARY, "steady")
+            return dict(VALID)
+
+    loop = DirectorLoop(RecordingTD(), GPTDirector(Client(), RuleDirector(), clock=wall),
+                        mode="rule", clock=clock, wall_clock=wall,
+                        worker=False, out=io.StringIO())
+    loop.on_tick(SUMMARY, "steady")
+    clock.advance(18); wall.advance(18)
+    loop.set_mode("gpt")
+    loop.on_tick(SUMMARY, "steady")
+    assert [(r["t"], r["source"]) for r in loop.decisions] == [
+        (0, "rule"), (25, "rule (AI freshness watchdog)"), (28, "gpt")]
+
+
+def test_rapid_automatic_mode_toggles_cannot_postpone_watchdog():
+    clock, wall = FakeClock(), FakeClock()
+    loop = DirectorLoop(RecordingTD(), GPTDirector(StubClient(VALID), RuleDirector()),
+                        mode="rule", period_s=60, clock=clock, wall_clock=wall,
+                        worker=False, out=io.StringIO())
+    loop.on_tick(SUMMARY, "steady")
+    for instant, mode in [(5, "gpt"), (10, "rule"), (15, "gpt"),
+                          (20, "rule"), (24, "gpt")]:
+        clock.t = wall.t = instant
+        loop.set_mode(mode)
+    clock.t = wall.t = 25
+    assert loop.on_tick(SUMMARY, "steady")
+    assert [(r["t"], r["source"]) for r in loop.decisions] == [
+        (0, "rule"), (25, "rule (AI freshness watchdog)")]
+
+
+def test_resuming_manual_control_starts_a_new_freshness_budget():
+    clock, wall = FakeClock(), FakeClock()
+    loop = DirectorLoop(RecordingTD(), GPTDirector(StubClient(VALID), RuleDirector()),
+                        period_s=1000, clock=clock, wall_clock=wall,
+                        worker=False, out=io.StringIO())
+    loop.on_tick(SUMMARY, "steady")
+    clock.t = wall.t = 20
+    loop.set_mode("manual")
+    clock.t = wall.t = 100
+    loop.set_mode("gpt")
+    assert not loop.on_tick(SUMMARY, "steady")
+    clock.t = wall.t = 124
+    assert not loop.on_tick(SUMMARY, "steady")
+    assert len(loop.decisions) == 1
+    clock.t = wall.t = 125
+    assert loop.on_tick(SUMMARY, "steady")
+    assert loop.decisions[-1]["source"] == "rule (AI freshness watchdog)"
+    assert loop.decisions[-1]["t"] == 125
+    assert loop.decisions[-1]["latency_s"] == 25
+
+
+def test_rule_takeover_is_immediate_and_keeps_cadence_while_old_gpt_hangs():
+    clock, wall, td = FakeClock(), FakeClock(), RecordingTD()
+    entered, release = threading.Event(), threading.Event()
+
+    class Client:
+        calls = 0
+
+        def decide(self, prompt):
+            self.calls += 1
+            if self.calls == 2:
+                entered.set()
+                assert release.wait(5)
+            return dict(VALID)
+
+    client = Client()
+    loop = DirectorLoop(td, GPTDirector(client, RuleDirector()),
+                        clock=clock, wall_clock=wall, out=io.StringIO())
+    try:
+        loop.on_tick(SUMMARY, "steady")
+        loop._thread.join(2)
+        clock.t = wall.t = 18
+        loop.on_tick(SUMMARY, "steady")
+        assert entered.wait(2)
+        original_worker = loop._thread
+        clock.t = wall.t = 20
+        loop.set_mode("rule")
+        assert loop.on_tick(SUMMARY, "steady")
+        assert [r["t"] for r in loop.decisions] == [0, 20]
+        assert loop.decisions[-1]["source"] == "rule"
+        assert loop._inflight
+        assert loop._thread is original_worker
+        assert not loop.on_tick(SUMMARY, "steady")  # takeover is not repeated
+        clock.t = wall.t = 37
+        assert not loop.on_tick(SUMMARY, "steady")
+        clock.t = wall.t = 38
+        assert loop.on_tick(SUMMARY, "steady")
+        assert [r["t"] for r in loop.decisions] == [0, 20, 38]
+        assert loop._thread is original_worker
+        assert client.calls == 2
+        release.set()
+        original_worker.join(2)
+        assert not loop._inflight
+        assert len(loop.decisions) == 3  # obsolete GPT reply remains suppressed
+        clock.t = wall.t = 56
+        assert loop.on_tick(SUMMARY, "steady")
+        loop._thread.join(2)
+        assert loop.decisions[-1]["t"] == 56
+        assert loop.decisions[-1]["source"] == "rule"
+    finally:
+        release.set()
+        loop.close()

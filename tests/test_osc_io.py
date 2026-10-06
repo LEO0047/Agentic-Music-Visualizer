@@ -255,3 +255,74 @@ def test_client_counts_what_it_sent(recorder):
         td.send_director(base_decision())
         td.send_section("drop")
     assert td.sent == len(DIRECTOR_ADDRESSES) + 1
+
+
+@pytest.mark.parametrize("address,value", [
+    ("/feat/unknown", 0.5), ("/feat/nested/bass", 0.5),
+    ("/feat/bass", float("nan")), ("/feat/energy", float("inf")),
+    ("/feat/mid", float("-inf")), ("/feat/high", -0.1),
+    ("/feat/energy", 1.1), ("/feat/kick", 0.5),
+    ("/feat/centroid", -1), ("/feat/bass", True),
+])
+def test_receiver_rejects_poisoned_or_unknown_feature(address, value):
+    receiver = FeatureReceiver("127.0.0.1", 0)
+    try:
+        receiver._on_feature(address, value)
+        assert receiver.received == 0
+        assert receiver.ignored == 1
+        assert receiver.buffer.keys() == ()
+    finally:
+        receiver.stop()
+
+
+def test_socket_error_is_counted_warned_and_next_send_recovers(monkeypatch, caplog):
+    with TDClient("127.0.0.1", 9001) as td:
+        def fail(*args):
+            raise OSError("simulated ENOBUFS")
+        monkeypatch.setattr(td._client, "send_message", fail)
+        assert td.send_section("steady") is False
+        assert td.send_heartbeat(1) is False
+        assert td.sent == 0 and td.send_errors == 2
+        assert "ENOBUFS" in td.last_error
+        assert len(caplog.records) == 1  # repeated failure warnings are throttled
+        monkeypatch.setattr(td._client, "send_message", lambda *args: None)
+        assert td.send_section("steady") is True
+        assert td.sent == 1
+
+
+def test_partial_decision_has_no_completion_heartbeat(monkeypatch):
+    sent = []
+    with TDClient("127.0.0.1", 9001) as td:
+        def send(address, value):
+            if address == "/director/scene":
+                raise OSError("socket full")
+            sent.append(address)
+        monkeypatch.setattr(td._client, "send_message", send)
+        assert td.send_director(base_decision()) is None
+        assert sent == ["/director/transition_mode", "/director/transition_beats"]
+        assert td._heartbeat == 0
+        monkeypatch.setattr(td._client, "send_message", lambda address, value: sent.append(address))
+        assert td.send_director(base_decision()) == 1
+        assert sent[-1] == "/director/heartbeat"
+
+
+@pytest.mark.parametrize("previous,new_mode,expected", [
+    ("glide", "cut", "set"), ("cut", "on_next_kick", "pending"),
+])
+def test_new_transition_mode_precedes_discrete_targets(monkeypatch, previous, new_mode, expected):
+    from pathlib import Path
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "td"))
+    import osc_in_callbacks as cb
+    import td_stub
+    comp = td_stub.director_comp()
+    comp.par.Transitionmode = previous
+    outcomes = {}
+    with TDClient("127.0.0.1", 9001) as td:
+        def send(address, value):
+            outcomes[address] = cb.route(comp, address, [value], now=1000, log=lambda _: None)
+        monkeypatch.setattr(td._client, "send_message", send)
+        decision = base_decision()
+        decision["transition"]["mode"] = new_mode
+        td.send_director(decision)
+    assert outcomes["/director/scene"] == expected
+    assert outcomes["/director/palette"] == expected

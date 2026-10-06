@@ -192,3 +192,69 @@ def test_keyboard_interrupt_closes_the_log(tmp_path):
     sidecar.run(duration=0.0, sleep=FakeSleep(wall, SPEED, interrupt_after=3), wall=wall)
 
     assert sidecar._log is None
+
+
+@pytest.mark.parametrize("status_hz", [0.0, 0.01, 1.0, 100.0])
+def test_director_service_is_independent_of_status_rate(status_hz):
+    wall = FakeWall()
+    seen = []
+    sidecar, buffer = build(
+        wall, speed=1.0, status_hz=status_hz,
+        on_tick=lambda summary, section: seen.append((wall(), summary, section)),
+    )
+    buffer.push("energy", 0.6)
+    buffer.push("bass", 0.4)
+    sleep = FakeSleep(wall, 1.0, feed=lambda: buffer.push("energy", 0.6))
+    sidecar.run(duration=2.0, sleep=sleep, wall=wall)
+    assert len(seen) == sleep.calls
+    assert len(seen) >= 20
+    assert all(row[1]["energy"] == pytest.approx(0.6) for row in seen)
+
+
+def test_stop_request_works_while_waiting_for_first_audio():
+    wall = FakeWall()
+    sidecar, _ = build(
+        wall, speed=1.0, status_hz=0.0, should_stop=lambda: wall() >= 0.3,
+        on_tick=lambda *_: pytest.fail("No decision before audio arrives"),
+    )
+    sleep = FakeSleep(wall, 1.0)
+    sidecar.run(duration=0.0, sleep=sleep, wall=wall)
+    assert wall() == pytest.approx(0.3)
+
+
+def test_printing_status_does_not_duplicate_director_ticks():
+    wall = FakeWall()
+    seen = []
+    sidecar, buffer = build(wall, on_tick=lambda *_: seen.append(True))
+    buffer.push("energy", 0.6)
+    sidecar.tick(0.0)
+    sidecar.status(0.0)
+    assert seen == []
+
+
+def test_transient_udp_error_does_not_stop_section_or_director_loop(monkeypatch):
+    from amv.osc_io import TDClient
+
+    wall = FakeWall()
+    clock = ScaledClock(source=wall)
+    buffer = FeatureBuffer(clock=clock)
+    buffer.push("energy", 0.5)
+    buffer.push("bass", 0.5)
+    hooks = []
+    with TDClient("127.0.0.1", 9001) as td:
+        attempts = []
+
+        def send(address, value):
+            attempts.append(address)
+            if len(attempts) == 1:
+                raise OSError("temporary socket pressure")
+
+        monkeypatch.setattr(td._client, "send_message", send)
+        sidecar = Sidecar(buffer, SectionDetector(), td, clock=clock,
+                          status_hz=10, out=io.StringIO(),
+                          on_tick=lambda *args: hooks.append(args))
+        sidecar.run(duration=0.5, sleep=FakeSleep(wall, 1), wall=wall)
+        assert wall() >= 0.5
+        assert td.send_errors == 1
+        assert td.sent >= 1
+        assert len(hooks) >= 2
