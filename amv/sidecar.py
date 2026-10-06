@@ -12,10 +12,10 @@ and does three things with the result:
 * appends one JSON line per transition to ``--log``, which is what you diff
   against ``tools/fake_td.py``'s printed ground truth.
 
-Phase 4 bolts the director on here without reshaping anything: pass an
-``on_tick(summary, section)`` callback to :class:`Sidecar` and it is called
-with the same dict the director prompt wants, once per status period. A GPT
-loop lives inside that callback (rate-limiting itself to 15–20 s), so the
+Phase 4 bolts the director on here: pass an ``on_tick(summary, section)``
+callback to :class:`Sidecar` and it is serviced on every detection tick,
+independently of the console status rate. A GPT loop lives inside that
+callback (rate-limiting itself to 15–20 s), so the
 10 Hz detection loop never waits on a 13 second ``codex exec``.
 
 ``--speed`` scales the sidecar's own clock. It exists so a compressed test run
@@ -87,8 +87,9 @@ class Sidecar:
         td: Outgoing OSC client, or ``None`` to print only.
         log_path: JSONL file appended to on every transition.
         status_hz: Status lines per second of track time.
-        on_tick: ``on_tick(summary, section)``, called once per status period.
+        on_tick: ``on_tick(summary, section)``, called every detection tick.
             The Phase 4 director hook.
+        should_stop: Optional shutdown request, checked even before audio arrives.
         clock: Callable returning track time in seconds.
         out: Where the human-readable lines go.
     """
@@ -102,6 +103,7 @@ class Sidecar:
         log_path: str | Path | None = None,
         status_hz: float = 1.0,
         on_tick: Callable[[dict, str], None] | None = None,
+        should_stop: Callable[[], bool] | None = None,
         clock: Callable[[], float] = time.monotonic,
         out: TextIO | None = None,
     ) -> None:
@@ -111,6 +113,7 @@ class Sidecar:
         self.log_path = Path(log_path) if log_path else None
         self.status_period = 1.0 / status_hz if status_hz and status_hz > 0 else 0.0
         self.on_tick = on_tick
+        self.should_stop = should_stop
         self.clock = clock
         self.out = out if out is not None else sys.stdout
         self.section = detector.state
@@ -189,7 +192,7 @@ class Sidecar:
     # -- once a second ------------------------------------------------------
 
     def status(self, now: float) -> str:
-        """Emit the compact status line and run the director hook."""
+        """Emit the compact status line; never schedule AI or watchdog work."""
         summary = self.buffer.summary()
         if self._t0 is None:
             # Nothing has arrived yet. Say so, rather than reporting a
@@ -207,8 +210,6 @@ class Sidecar:
             # Also a keepalive: UDP drops are silent, and TD should never be
             # left holding a section that changed while a packet went missing.
             self.td.send_section(self.section)
-        if self.on_tick is not None:
-            self.on_tick(summary, self.section)
         return line
 
     # -- the loop -----------------------------------------------------------
@@ -236,10 +237,14 @@ class Sidecar:
         self._next_status = self.clock()
         try:
             while True:
+                if self.should_stop is not None and self.should_stop():
+                    break
                 if duration and wall() - started >= duration:
                     break
                 now = self.clock()
                 self.tick(now)
+                if self.on_tick is not None and self._t0 is not None:
+                    self.on_tick(self.buffer.summary(), self.section)
                 if self.status_period and now >= self._next_status:
                     self.status(now)
                     self._next_status = now + self.status_period
@@ -369,6 +374,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         log_path=args.log,
         status_hz=args.rate,
         on_tick=loop.on_tick if loop is not None else None,
+        should_stop=(lambda: loop.stop_requested) if loop is not None else None,
         clock=clock,
     )
 

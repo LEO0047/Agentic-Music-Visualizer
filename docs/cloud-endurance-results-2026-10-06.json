@@ -1,0 +1,738 @@
+{
+  "status": "passed",
+  "started_utc": "2026-10-06T05:58:04.562+00:00",
+  "ended_utc": "2026-10-06T06:58:04.831+00:00",
+  "actual_active_wall_seconds": 3600.103621716,
+  "total_wall_seconds_including_shutdown": 3600.2684037760046,
+  "shutdown_seconds": 0.16120605900505325,
+  "full_hour": true,
+  "full_hour_passed": true,
+  "full_production_timing_hour": true,
+  "profile": {
+    "name": "production-timing",
+    "period_s": 18.0,
+    "min_interval_s": 6.0,
+    "watchdog_s": 25.0,
+    "subprocess_timeout_s": 30.0,
+    "phase_scale": 1.0,
+    "status_hz": 1.0,
+    "ok_delay_s": 13.0
+  },
+  "checks": {
+    "requested_wall_duration_completed": true,
+    "no_unexpected_exception": true,
+    "source_code_unchanged": true,
+    "feature_datagrams_all_received": true,
+    "feature_gap_below_one_second": true,
+    "feature_keys_all_received": true,
+    "feature_buffer_bounded": true,
+    "director_decisions_exist": true,
+    "decisions_schema_valid": true,
+    "all_published_decisions_received": true,
+    "heartbeats_strictly_increase": true,
+    "heartbeat_gap_below_td_45s_limit": true,
+    "no_manual_publications": true,
+    "automatic_decision_gap_within_watchdog_budget": true,
+    "no_unexpected_director_errors": true,
+    "no_udp_send_errors": true,
+    "injected_failures_detected": true,
+    "fake_success_calls_have_no_errors": true,
+    "shutdown_threads_clean": true,
+    "shutdown_subprocesses_clean": true,
+    "single_fake_subprocess_at_once": true,
+    "rss_growth_below_96mib": true,
+    "thread_peak_bounded": true,
+    "fallback_within_each_completed_outage": true,
+    "gpt_recovers_in_each_completed_recovery_phase": true,
+    "all_fault_modes_exercised": true,
+    "all_operator_modes_exercised": true,
+    "gpt_success_and_rule_fallback": true,
+    "watchdog_fallback_observed": true,
+    "manual_takeover_during_subprocess": true,
+    "all_music_sections_observed": true
+  },
+  "coverage": {
+    "full_fault_cycle": true,
+    "recovery_music_isolation": "Synthetic PCM is held steady (with kick transients) beginning 30 fixture seconds BEFORE each GPT recovery phase and through its end. At preconditioning entry only, fixture Normalizer peaks are reset and primed from that actual PCM arrangement. The normal default-decay extractors, SectionDetector history and UDP continue untouched, so settling happens before recovery. No section labels or post-extraction features are forced; smoke scales fixture intervals explicitly",
+    "pcm_path": "generated 48kHz mono PCM -> band_energies -> Normalizer -> KickDetector -> 10Hz OSC",
+    "real_components": [
+      "FeatureReceiver",
+      "FeatureBuffer",
+      "Sidecar",
+      "SectionDetector",
+      "DirectorLoop",
+      "GPTDirector",
+      "CodexClient",
+      "TDClient"
+    ],
+    "test_doubles": [
+      "generated PCM",
+      "tools/fake_codex.py",
+      "UDP sink replacing TouchDesigner"
+    ],
+    "not_tested": [
+      "paid AI/auth/quota",
+      "TouchDesigner runtime/callbacks",
+      "GPU/shaders/FPS",
+      "Mac audio routing",
+      "MIDI hardware",
+      "projectM runtime"
+    ]
+  },
+  "features": {
+    "counts": {
+      "bass": 36001,
+      "mid": 36001,
+      "high": 36001,
+      "energy": 36001,
+      "centroid": 36001,
+      "kick": 36001
+    },
+    "max_gaps_s": {
+      "bass": 0.12148888000228908,
+      "mid": 0.12170462400536053,
+      "high": 0.1219243000014103,
+      "energy": 0.12208988400379894,
+      "centroid": 0.12674146900099004,
+      "kick": 0.12676702700264286
+    },
+    "sent_datagrams": 216006,
+    "received_datagrams": 216006,
+    "ignored_datagrams": 0,
+    "pcm_blocks": 36001,
+    "sample_rate": 48000,
+    "pcm_samples": 172804800,
+    "pcm_peak_amplitude": 0.8496753320377217,
+    "synthetic_kicks": 7531,
+    "recovery_calibrations": [
+      {
+        "elapsed_s": 116.01003896399925,
+        "cycle": 0,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 226.0100545450041,
+        "cycle": 0,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 420.0100413610053,
+        "cycle": 1,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 530.0100290920018,
+        "cycle": 1,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 724.0100570050054,
+        "cycle": 2,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 834.0100410700034,
+        "cycle": 2,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 1028.0100617200005,
+        "cycle": 3,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 1138.010029627003,
+        "cycle": 3,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 1332.0100533639998,
+        "cycle": 4,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 1442.0100360299984,
+        "cycle": 4,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 1636.0100512690042,
+        "cycle": 5,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 1746.0100333640003,
+        "cycle": 5,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 1940.0100309359987,
+        "cycle": 6,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 2050.010028318,
+        "cycle": 6,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 2244.010031361002,
+        "cycle": 7,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 2354.0100207709984,
+        "cycle": 7,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 2548.0100221520042,
+        "cycle": 8,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 2658.0100428160004,
+        "cycle": 8,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 2852.0100343119993,
+        "cycle": 9,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 2962.010033696002,
+        "cycle": 9,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 3156.010017667999,
+        "cycle": 10,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 3266.010048410004,
+        "cycle": 10,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 3460.0100476750013,
+        "cycle": 11,
+        "recovery_phase": "gpt_same_mode_recovery",
+        "preconditioning_fixture_s": 30
+      },
+      {
+        "elapsed_s": 3570.010010553,
+        "cycle": 11,
+        "recovery_phase": "gpt_recovery",
+        "preconditioning_fixture_s": 30
+      }
+    ],
+    "buffer_total_samples_end": 7200,
+    "max_gap_s": 0.12676702700264286
+  },
+  "director": {
+    "decisions": 199,
+    "by_source": {
+      "rule (stale decision)": 24,
+      "gpt": 63,
+      "rule (CodexError)": 41,
+      "rule (AI freshness watchdog)": 47,
+      "rule": 24
+    },
+    "mean_latency_s": 11.62,
+    "heartbeats": 214,
+    "errors": 0,
+    "mode": "gpt",
+    "wire_decisions": 199,
+    "max_decision_gap_s_including_manual": 38.83170532499935,
+    "wire_heartbeats": 214,
+    "max_heartbeat_gap_s": 25.10109677300352,
+    "manual_publications": 0,
+    "max_automatic_decision_silence_s": 25.10125247600081,
+    "fault_phase_recovery": [
+      {
+        "cycle": 0,
+        "phase": "process_failure",
+        "phase_start_s": 48.08609845900355,
+        "first_rule_delay_s": 1.151426726995851
+      },
+      {
+        "cycle": 0,
+        "phase": "malformed_output",
+        "phase_start_s": 72.07543049300148,
+        "first_rule_delay_s": 11.044265083997743
+      },
+      {
+        "cycle": 0,
+        "phase": "hung_subprocess",
+        "phase_start_s": 96.08592672600207,
+        "first_rule_delay_s": 23.133767375999014
+      },
+      {
+        "cycle": 1,
+        "phase": "process_failure",
+        "phase_start_s": 352.0215905779987,
+        "first_rule_delay_s": 1.0955530900027952
+      },
+      {
+        "cycle": 1,
+        "phase": "malformed_output",
+        "phase_start_s": 376.09004540000024,
+        "first_rule_delay_s": 10.090819830998953
+      },
+      {
+        "cycle": 1,
+        "phase": "hung_subprocess",
+        "phase_start_s": 400.09621182900446,
+        "first_rule_delay_s": 22.86887514299451
+      },
+      {
+        "cycle": 2,
+        "phase": "process_failure",
+        "phase_start_s": 656.0035834709997,
+        "first_rule_delay_s": 4.108036973004346
+      },
+      {
+        "cycle": 2,
+        "phase": "malformed_output",
+        "phase_start_s": 680.0024095080007,
+        "first_rule_delay_s": 14.126071848004358
+      },
+      {
+        "cycle": 2,
+        "phase": "hung_subprocess",
+        "phase_start_s": 704.093191867003,
+        "first_rule_delay_s": 15.092026164995332
+      },
+      {
+        "cycle": 3,
+        "phase": "process_failure",
+        "phase_start_s": 960.0990903980055,
+        "first_rule_delay_s": 4.102033293995191
+      },
+      {
+        "cycle": 3,
+        "phase": "malformed_output",
+        "phase_start_s": 984.0922399379997,
+        "first_rule_delay_s": 13.825046717000077
+      },
+      {
+        "cycle": 3,
+        "phase": "hung_subprocess",
+        "phase_start_s": 1008.081945099002,
+        "first_rule_delay_s": 14.8887369389995
+      },
+      {
+        "cycle": 4,
+        "phase": "process_failure",
+        "phase_start_s": 1264.0724103329994,
+        "first_rule_delay_s": 1.0945827090035891
+      },
+      {
+        "cycle": 4,
+        "phase": "malformed_output",
+        "phase_start_s": 1288.0820554899983,
+        "first_rule_delay_s": 0.15799796400096966
+      },
+      {
+        "cycle": 4,
+        "phase": "hung_subprocess",
+        "phase_start_s": 1312.0706939939992,
+        "first_rule_delay_s": 13.058057906004251
+      },
+      {
+        "cycle": 5,
+        "phase": "process_failure",
+        "phase_start_s": 1568.028704493001,
+        "first_rule_delay_s": 0.050887999997939914
+      },
+      {
+        "cycle": 5,
+        "phase": "malformed_output",
+        "phase_start_s": 1592.0240298520002,
+        "first_rule_delay_s": 5.926370990004216
+      },
+      {
+        "cycle": 5,
+        "phase": "hung_subprocess",
+        "phase_start_s": 1616.0229135030022,
+        "first_rule_delay_s": 25.02145180699881
+      },
+      {
+        "cycle": 6,
+        "phase": "process_failure",
+        "phase_start_s": 1872.023341470005,
+        "first_rule_delay_s": 1.1956072469984065
+      },
+      {
+        "cycle": 6,
+        "phase": "malformed_output",
+        "phase_start_s": 1896.0283105570052,
+        "first_rule_delay_s": 16.15780539399566
+      },
+      {
+        "cycle": 6,
+        "phase": "hung_subprocess",
+        "phase_start_s": 1920.0388697140006,
+        "first_rule_delay_s": 17.217123506998178
+      },
+      {
+        "cycle": 7,
+        "phase": "process_failure",
+        "phase_start_s": 2176.070209675003,
+        "first_rule_delay_s": 1.098328947002301
+      },
+      {
+        "cycle": 7,
+        "phase": "malformed_output",
+        "phase_start_s": 2200.080620779001,
+        "first_rule_delay_s": 15.852207288997306
+      },
+      {
+        "cycle": 7,
+        "phase": "hung_subprocess",
+        "phase_start_s": 2224.0810536330027,
+        "first_rule_delay_s": 16.90159962799953
+      },
+      {
+        "cycle": 8,
+        "phase": "process_failure",
+        "phase_start_s": 2480.019212612002,
+        "first_rule_delay_s": 3.098320375996991
+      },
+      {
+        "cycle": 8,
+        "phase": "malformed_output",
+        "phase_start_s": 2504.033341385999,
+        "first_rule_delay_s": 8.160690827004146
+      },
+      {
+        "cycle": 8,
+        "phase": "hung_subprocess",
+        "phase_start_s": 2528.0436328420037,
+        "first_rule_delay_s": 21.16724067099858
+      },
+      {
+        "cycle": 9,
+        "phase": "process_failure",
+        "phase_start_s": 2784.072087933004,
+        "first_rule_delay_s": 2.0780192210004316
+      },
+      {
+        "cycle": 9,
+        "phase": "malformed_output",
+        "phase_start_s": 2808.0882442479997,
+        "first_rule_delay_s": 7.954803042004642
+      },
+      {
+        "cycle": 9,
+        "phase": "hung_subprocess",
+        "phase_start_s": 2832.0000387430046,
+        "first_rule_delay_s": 18.237297473999206
+      },
+      {
+        "cycle": 10,
+        "phase": "process_failure",
+        "phase_start_s": 3088.0073660530034,
+        "first_rule_delay_s": 7.35633647099894
+      },
+      {
+        "cycle": 10,
+        "phase": "malformed_output",
+        "phase_start_s": 3112.0029666850023,
+        "first_rule_delay_s": 6.139901780996297
+      },
+      {
+        "cycle": 10,
+        "phase": "hung_subprocess",
+        "phase_start_s": 3136.024885824001,
+        "first_rule_delay_s": 17.120738204997906
+      },
+      {
+        "cycle": 11,
+        "phase": "process_failure",
+        "phase_start_s": 3392.0203035830054,
+        "first_rule_delay_s": 5.955820239993045
+      },
+      {
+        "cycle": 11,
+        "phase": "malformed_output",
+        "phase_start_s": 3416.0652039720007,
+        "first_rule_delay_s": 9.07287657300185
+      },
+      {
+        "cycle": 11,
+        "phase": "hung_subprocess",
+        "phase_start_s": 3440.071375536005,
+        "first_rule_delay_s": 10.128795569995418
+      }
+    ],
+    "gpt_phase_recovery": [
+      {
+        "cycle": 0,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 146.0224667779985,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 39.233771024002635
+      },
+      {
+        "cycle": 0,
+        "phase": "gpt_recovery",
+        "phase_start_s": 256.0809816530018,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 24.97526241200103
+      },
+      {
+        "cycle": 1,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 450.007442533999,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 39.06831973700173
+      },
+      {
+        "cycle": 1,
+        "phase": "gpt_recovery",
+        "phase_start_s": 560.0639773209987,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 25.101130544004263
+      },
+      {
+        "cycle": 2,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 754.0262435210025,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 31.253168850002112
+      },
+      {
+        "cycle": 2,
+        "phase": "gpt_recovery",
+        "phase_start_s": 864.0932889989999,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 25.105835602000298
+      },
+      {
+        "cycle": 3,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 1058.0097947239992,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 31.072915696000564
+      },
+      {
+        "cycle": 3,
+        "phase": "gpt_recovery",
+        "phase_start_s": 1168.0165552690014,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 25.086580025999865
+      },
+      {
+        "cycle": 4,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 1362.0015322719992,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 29.24368895900261
+      },
+      {
+        "cycle": 4,
+        "phase": "gpt_recovery",
+        "phase_start_s": 1472.0188246440011,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 25.19757555799879
+      },
+      {
+        "cycle": 5,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 1666.0645789460032,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 32.192086661998474
+      },
+      {
+        "cycle": 5,
+        "phase": "gpt_recovery",
+        "phase_start_s": 1776.0176255670012,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 25.095241732997238
+      },
+      {
+        "cycle": 6,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 1970.0937888980043,
+        "gpt_publications": 3,
+        "first_gpt_delay_s": 27.213601475996256
+      },
+      {
+        "cycle": 6,
+        "phase": "gpt_recovery",
+        "phase_start_s": 2080.017596755999,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 25.09197774000495
+      },
+      {
+        "cycle": 7,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 2274.0035908960053,
+        "gpt_publications": 3,
+        "first_gpt_delay_s": 24.277220107993344
+      },
+      {
+        "cycle": 7,
+        "phase": "gpt_recovery",
+        "phase_start_s": 2384.067751307004,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 25.108128523999767
+      },
+      {
+        "cycle": 8,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 2578.073242541999,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 37.22979215400119
+      },
+      {
+        "cycle": 8,
+        "phase": "gpt_recovery",
+        "phase_start_s": 2688.0939063760015,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 25.105341374997806
+      },
+      {
+        "cycle": 9,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 2882.0621157159985,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 34.31643308400089
+      },
+      {
+        "cycle": 9,
+        "phase": "gpt_recovery",
+        "phase_start_s": 2992.022762286004,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 13.155938108997361
+      },
+      {
+        "cycle": 10,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 3186.0049014680044,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 33.324142008998024
+      },
+      {
+        "cycle": 10,
+        "phase": "gpt_recovery",
+        "phase_start_s": 3296.0415586829986,
+        "gpt_publications": 2,
+        "first_gpt_delay_s": 14.761547006004548
+      },
+      {
+        "cycle": 11,
+        "phase": "gpt_same_mode_recovery",
+        "phase_start_s": 3490.0305727119994,
+        "gpt_publications": 3,
+        "first_gpt_delay_s": 26.30912384000112
+      }
+    ],
+    "fake_call_modes": {
+      "ok": 99,
+      "fail": 22,
+      "garbage": 19,
+      "hang": 24
+    },
+    "peak_active_fake_subprocesses": 1,
+    "udp_send_errors": 0
+  },
+  "resources": {
+    "baseline_rss_bytes": 40030208,
+    "peak_sampled_rss_bytes": 44920832,
+    "end_rss_bytes": 44941312,
+    "baseline_threads": 1,
+    "peak_sampled_threads": 6,
+    "peak_sampled_os_threads": 14,
+    "remaining_new_threads": []
+  },
+  "errors": {
+    "main": null,
+    "threads": [],
+    "wire": []
+  },
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "source": {
+    "base_commit": "92ecff5265e1b131d706666a4cc6ea9910125674",
+    "sha256": "0f726bbbfeba7e453552fb84a24583d95f8d5e96d8287bc4bc3633d52c2657cb",
+    "files": {
+      "amv/__init__.py": "ab0a90835767a3235b9c9a7146dcb37c20c47e7ddb11017109946eeac6036651",
+      "amv/audio_features.py": "48609704187af0b12937700fe23d925b817aa2d0652227bd0d8342e23b79961c",
+      "amv/codex_client.py": "8938f41a221cb185137f424e81ba3df71326023576c671c7c27480fdcac1096d",
+      "amv/director.py": "1fb0dfc8c1430af5bfda12d485e3e80c130d42a6f9bfabed4873976059b22184",
+      "amv/features.py": "e0780769f43f82c84a1dda590ec067da8c778d3852c5d3ae0f0148295fd58395",
+      "amv/launcher.py": "d6242107a8aab78854c1f03aa39236996d2a1fc57bda8270071a539c066080dc",
+      "amv/osc_io.py": "c797103ba8991c7f6f39d4fecf6efa0c01ac20b37133439bc5990ebe26b9372b",
+      "amv/schema.py": "7ec280da3e824398eeb3570edca00b5509d1deb44a733fcaef80ce80189461e9",
+      "amv/sections.py": "ea13a33598a1c4aa4cc6018b9acbffa101828c060d5dcc843e80ce9ae1e2f2cc",
+      "amv/sidecar.py": "f9ee620a35a324999134d0629f327c5cdf56735bb3a4544cee7a703296383727",
+      "amv/smoke.py": "92ec1dbeed542606d0d923e9f439d7b8fcaa0f3237993f6737906720739ec5ca",
+      "director_schema.json": "d96029a78e1ce963d49fb8f7cf0ddaeddd37f94d5312347dd7770d5bc6baf838",
+      "pyproject.toml": "7e72e24cbf50c30066f7699d719fea660a1f2441b56140e296565fcdbb4b27dc",
+      "td/build_network.py": "109f10d9f86a6d893df27ded9b8b7407a99bef274b3920ddaaa7f12ef153d9f0",
+      "td/drop_executor.py": "15d82c4dd27f2c1f5b3574abd2f9b785ccf411755807c08f5b525820d6e7e20d",
+      "td/midi_override.py": "e9fa4a306e35ffb794b593ed3a0bd13dd0565c65366a18bea1c9129fff7da18d",
+      "td/osc_in_callbacks.py": "54ae28d6977428d02b0a9e7f45cb98e148d8c8b1219c1bc0b2cc5193c85184b7",
+      "td/parspec.py": "43441bf73ddc4755e20e640c65c2a2328c6c48bbedded1aa65b68d86f5d0d94e",
+      "td/shaders/visualizer.frag": "fe5024d3e181dcc9dd6d2a51c2560bd9fbdeac968a7c1723e961f7c7e370bdb0",
+      "td/td_stub.py": "21df84dd4ded83600581743b14669c5a66b86a1b348c626073086df105c1ef14",
+      "td/verify_runtime.py": "a1ba58c2ae707d4dc28e43779b2abe969d779c2431f226ed231be3c3903d3ee4",
+      "tests/test_audio_features.py": "52659ad6a1dbba4c2bef6ac4b605a06c04cc4db6444c9337940ccc14d90f78c8",
+      "tests/test_cloud_endurance.py": "1ec31db8dbbc906d4fc6f93349278c370870cd99d803eda87781975d9485720e",
+      "tests/test_cloud_shaders.py": "2febde501ce4d5ccaadf0a6be559adf2e73a618939ec244748e7989760ef3ca3",
+      "tests/test_codex_client.py": "97440e1fbda722d2ce05b7af4899c21b3f54826b89704cbf2b4b0f01fd75b8d3",
+      "tests/test_director.py": "71feba0f9d584b4142afde6af60026b77d6eeaadac7f3fb09431242401425540",
+      "tests/test_fake_td.py": "83f8ddb214d23b5ba3f06ebd8ed33da2f693953527180e264dfcf6f491a6c294",
+      "tests/test_features.py": "50c84c0262113a70144c833560da5f9e3dbc0aacd093e9f05a1ece66e048faa3",
+      "tests/test_launcher.py": "08f976a89cb8d219c40cc579b96c11cc24b395098f34611f2281f370b7229267",
+      "tests/test_osc_io.py": "7ea11dc66c0575f17f81d578579a478fa7f6e6e9ef7074652965f45bc9554fd9",
+      "tests/test_phase6_tools.py": "c42a98701ede4affddb74b2cdde00e5a1912166c1615e3354b7b9948c952b76b",
+      "tests/test_schema.py": "f1267d05db839af70a7b070046b43a13f96cb2e1efa34a54c738669803ee469e",
+      "tests/test_sections.py": "ee6fd9c9ac3328080ca38d688d2598a57453ea3f76ad7d26b98451197629f30f",
+      "tests/test_sidecar.py": "106e3deab2b4656466dbda2b3bd5ea376e3f925d377f8b10d02ec468aec52230",
+      "tests/test_td_build_compiles.py": "0a5f342c749f6a5a6ddecb4ed96bb03b867c14db6c1dea74db2db6cc6b4ef1f3",
+      "tests/test_td_callbacks.py": "ccb34dd5d19e8c34501273f60be51cf592c25971aa351b6e3c0d4c46fc4795f9",
+      "tests/test_td_drop_executor.py": "093de0d3d01fb9967d599590aaf10e08580d34589ba32656a3c17206aa6d9e07",
+      "tests/test_td_midi.py": "b953c8a77ae3b3eb40b51f38335b2cbe1aba9f8f71f288670bf24ccefb361502",
+      "tests/test_td_parspec.py": "5b5da1f499acc3d11175f6f127f370d3538051b36a4633d16061c9dd223d9d67",
+      "tests/test_td_projectm.py": "5172dc7d87d4be6f83b23064efa4885487837fe3b0bdae95178015453af6c6b3",
+      "tools/audio_check.py": "b79dcade0815e90f0379567a87253f41f47be6ea1cde977d9a8271ba06633f42",
+      "tools/check_env.py": "0574929a7642f952f0245ce8ff8e873addb82f53cbefa87ce72bc94e1a885a67",
+      "tools/cloud_endurance.py": "0919b1e403f8fe336852e6d4e27007c6958ce9005de1bc4e3392091886b0465f",
+      "tools/codex_sessions.py": "86c9f6579b04dce8a3c2d65dc35570e53fd59b40fc94cca7044934a1ba2ea06d",
+      "tools/dry_run.py": "44486c13270a75f1bbdc3a251a1aa9c5d01bfa53786242964b5d49986c8294af",
+      "tools/fake_codex.py": "3770ddaafb372d7c4a33ae499c17e1ad7427bfa45bdb52bd75dd2deac486ff76",
+      "tools/fake_td.py": "de561a431c88e01eddcc318842dab0d1e3182aae4b2376de7c8eee0a40aaa0f3",
+      "tools/preflight.py": "c1265a52b4c13713942a69e3f2aa202f9a784401690c6396bc438502673c4dcf",
+      "tools/projectm_check.py": "275b9f58fa28485ba31f27e2b0db6333312065989af332e73711cbec50add9fc",
+      "tools/render_shaders.py": "2b6911ba7ec2166876d8f9b29c2c53a426d1f9b2ad3ee4407c5b9c62f6625789",
+      "uv.lock": "8f553a7448e4e9505150d9fec33014800a79d3a5d1a4e48b479fec6c8f81ffc1"
+    }
+  }
+}

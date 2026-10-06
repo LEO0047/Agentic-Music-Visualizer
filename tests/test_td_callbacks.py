@@ -255,7 +255,7 @@ def test_manual_mode_blocks_every_director_write_touched_or_not(director, logs):
     director.par.Mode = "manual"
     assert cb.is_frozen(director, "Cameraspeed", NOW) is True
     assert send(director, "/director/camera_speed", 0.4, logs) == "frozen"
-    assert director.par.Cameraspeed.eval() == 0.0
+    assert director.par.Cameraspeed.eval() == parspec.DEFAULTS["Cameraspeed"]
     assert send(director, "/director/scene", "particle_field", logs) == "frozen"
     assert director.par.Scene.eval() == "tunnel"
     assert cb.pending_discrete(director) == {}

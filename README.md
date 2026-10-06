@@ -1,6 +1,48 @@
 # Agentic Music Visualizer
 
-TouchDesigner 負責 60 fps 的反射神經，Python sidecar 加上透過 Codex OAuth 呼叫的 GPT-6 Astra 當導演，每 15–20 秒下一次創意決策；兩層之間只靠 OSC 傳 JSON。反射層直接把 bass / mid / high / energy / kick 綁到幾何、shader 與 feedback，導演掛掉也不會黑畫面；導演層只改「目標值」，TD 用 Lag CHOP 花 2–4 個 beat 滑過去，整數與字串類參數只在下一個 kick 切換。導演走的是本機既有的 `codex exec --output-schema`（ChatGPT 登入額度，不需要 API key），完整規格見 [SPEC.md](SPEC.md)。
+TouchDesigner 負責目標 60 fps 的即時視覺，Python sidecar 加上透過 Codex OAuth 呼叫的 GPT-6 Astra 當導演，每 15–20 秒下一次創意決策；兩層之間只靠 OSC 傳 JSON。反射層直接把 bass / mid / high / energy / kick 綁到幾何、shader 與 feedback，導演掛掉也不會黑畫面；導演層只改「目標值」，TD 用 Lag CHOP 花 2–4 個 beat 滑過去，整數與字串類參數只在下一個 kick 切換。導演走的是本機既有的 `codex exec --output-schema`（ChatGPT 登入額度，不需要 API key），完整規格見 [SPEC.md](SPEC.md)。
+
+## Linux 實際畫面預覽
+
+Linux 已有獨立的實際 GLSL 渲染流程，可輸出跟著音樂變化的五場景影片，
+也能做無視窗的連續渲染。直接看 [Linux 使用說明](README-LINUX.md) 和
+[實際畫面驗證紀錄](docs/linux-visual-verification-2026-10-06.md)。
+這條流程使用 Linux 控制器與 EGL，不需要啟動 TouchDesigner。
+
+## 在這台 Mac 直接播放
+
+開啟根目錄的 **Start Visualizer.command**：預設使用已安裝的 `.venv`，
+以規則導演啟動已建好的 `Agentic-Music-Visualizer.toe`。不自動安裝依賴、
+不改系統音訊、不呼叫 Codex 或使用帳號額度。輸出保持 960 × 540、有標題列與關閉按鈕的一般視窗，
+不啟用全螢幕。需要先安裝 TouchDesigner 並完成授權；請將 `.toe` 和 `td/` 留在同一個 repo。
+
+選配功能必須在終端機明確加入旗標（可以組合）：
+
+```bash
+./"Start Visualizer.command" --dry-run       # 只顯示執行計畫，Linux / 雲端也可用
+./"Start Visualizer.command" --install-deps  # 允許 uv sync --locked --extra audio
+./"Start Visualizer.command" --route-audio   # 允許目前聆聽裝置 + BlackHole 雙輸出
+./"Start Visualizer.command" --enable-ai     # 允許既有 Codex 登入及訂閱額度，失敗用規則
+```
+
+首次安裝需要 Python 與 [uv](https://docs.astral.sh/uv/)；實際 sidecar 使用 Python ≥ 3.11。
+`--enable-ai` 不會登入帳號，需事先完成 Codex 登入。沒有 `--route-audio` 時，
+請自行確認 BlackHole 路由；預設不會替你接上音樂來源。Apple Music 的輸出選「這台 Mac」，
+啟用雙輸出時用 Apple Music 自己的音量滑桿。
+
+點輸出視窗左上角 × 只關閉畫面；在啟動終端機按 Ctrl-C 停止導演。
+只有這次啟動建立、且退出時仍在使用的 AMV 音訊路由才會自動還原；既有路由與手動換過的輸出保持原狀。
+若終端機被強制結束或還原失敗，開 **Restore AirPods.command**，確認後還原儲存的聆聽裝置
+（不限 AirPods）；也能直接在 macOS 聲音設定選輸出。腳本復原可使用 `./"Restore AirPods.command" --yes`。
+
+2026-09-08 已在 TD 2025.33230 實測音樂輸入、五個原生 GLSL 場景與 GPT → OSC → TD 控制。
+這是可播放 MVP；錄影時實測約 47 fps，projectM、實體 MIDI 與 60 分鐘演出仍待驗收。
+詳見 [實機驗收紀錄](docs/runtime-verification-2026-09-08.md)。
+
+2026-10-06 的程式修復、可攜回歸測試與獨立 GLSL 渲染見 [雲端驗證紀錄](docs/cloud-verification-2026-10-06.md)。
+雲端結果與 TouchDesigner／音訊硬體驗收分開記錄。
+
+![TouchDesigner 實際輸出](docs/assets/td-live-preview.png)
 
 ## Repo 結構
 
@@ -64,15 +106,17 @@ td/midi_override.py                  # Phase 6：MIDI CC → 參數（人手寫�
 
 ## 階段進度
 
-| # | 階段 | 驗收 | 狀態 |
-|---|---|---|---|
-| 0 | 環境準備 | `codex exec` 回傳合規 JSON | ✅ |
-| 1 | 音訊路由 | 喇叭有聲、TD CHOP 波形在動 | 🟡 sidecar 側完成：`tools/audio_check.py loopback` PASS；多重輸出裝置與 TD 端待使用者操作，見 [docs/phase1-audio-routing.md](docs/phase1-audio-routing.md) |
-| 2 | 反射層 | 不開 Director 也能 60 fps 反應 | 🟡 網路即程式碼完成（`td/build_network.py`，211 tests 以 td_stub 驗證）；本機無 TouchDesigner，35 個 `# VERIFY` 待在 TD 內確認，見 [td/README.md](td/README.md) |
-| 3 | 特徵匯流 | build/drop/breakdown 時間戳與耳朵一致 | ✅ sidecar + `tools/fake_td.py` 端到端：6 個轉換全在 ±0.2 s（真曲驗聽待 TD 上線） |
-| 4 | 導演層 | 連跑 60 分鐘；拔網路 30 s 內 fallback | ✅ 真實 gpt-6-astra：3 分鐘 dry run 10 決策，延遲 mean 11.2 s / p95 11.7 s，0 重複；fake_codex fail/hang 模式 rule 立即接管、節奏不變；60 分鐘版留給演出前跑 `tools/dry_run.py --minutes 60` |
-| 5 | projectM 側鏈 | projectm_mix 0→1 fps 不掉 | 🟡 網路即程式碼完成（Syphon / NDI / 黑底三選一 Switch → Fit → Level → Composite，`Projectmsource` 參數）；本機無 projectM/OBS/TD，fps 驗收待實機，見 [docs/phase5-projectm.md](docs/phase5-projectm.md) |
-| 6 | 演出強化 | 反重複、on_drop、錄影、MIDI 覆寫 | ✅ `tools/preflight.py`（SPEC §8）、`tools/dry_run.py`（額度/反重複報表）、`tools/codex_sessions.py`、啟動 smoke test 降級、TD 端 MIDI 覆寫；真實 codex 3 分鐘 dry run 見 [docs/dry-run-2026-09-08-real-codex-3min.md](docs/dry-run-2026-09-08-real-codex-3min.md)；60 分鐘 dry run 與 TD 實機驗收留給演出前 |
+> **2026-09-08：可播放 MVP 已在實機驗證。** 下列狀態分開記錄實測與未完成項目。
+> 詳見 [實機驗收紀錄](docs/runtime-verification-2026-09-08.md)。
+
+| 階段 | 實際結果 | 仍待驗收 |
+|---|---|---|
+| 環境／導演 | 真實 Codex JSON、GPT → OSC → TD 參數成功 | 長時間延遲與額度 |
+| 音訊路由 | AirPods 與 BlackHole 雙輸出、TD 特徵有變化 | Bluetooth 延遲校準 |
+| 原生視覺 | 五個 GLSL 場景、一般視窗輸出；20 秒平均 59.08 fps | 穩定 60 fps、長時間測試 |
+| 特徵／段落 | 實際 OSC 接收及段落變化 | 真曲鼓點與段落人工比對 |
+| 錄影 | Non-Commercial 的 MJPEG 錄影可用；錄製時約 47 fps | 長時間錄影壓力 |
+| projectM／MIDI | 介面與程式碼保留，預設關閉 | 外部來源與實體控制器 |
 
 ## 安全
 

@@ -121,7 +121,7 @@ def test_pm_black_is_opaque_black_at_the_canvas_size(sidechain):
     assert sidechain.par("pm_black", "colorb color1b") == 0.0
     assert sidechain.par("pm_black", "alpha color1a") == 1.0
     assert sidechain.par("pm_black", "resolutionw") == canvas == 1280
-    assert sidechain.par("pm_black", "resolutionh") == canvas
+    assert sidechain.par("pm_black", "resolutionh") == 720
 
 
 def test_the_capture_tops_are_pointed_at_the_projectm_names(sidechain):
@@ -173,20 +173,19 @@ def test_the_fit_top_fills_the_canvas(whole_post):
     canvas = whole_post.build_network.PROJECTM_CANVAS
     assert whole_post.par("pm_fit", "fit fitmode") == "fill"
     assert whole_post.par("pm_fit", "resolutionw") == canvas
-    assert whole_post.par("pm_fit", "resolutionh") == canvas
+    assert whole_post.par("pm_fit", "resolutionh") == 720
 
 
 def test_projectm_in_still_feeds_the_composite(whole_post):
     assert whole_post.downstream_of("projectm_level") == ["composite"]
-    assert inputs_of(whole_post, "composite") == [("fb_mix", 0), ("projectm_level", 1)]
+    assert inputs_of(whole_post, "composite") == [("projectm_level", 0), ("fb_mix", 1)]
 
 
 def test_the_level_opacity_is_the_lagged_projectm_mix(whole_post):
     """SPEC §3.3: /director/projectm_mix → Composite opacity → Lag."""
     build_network = whole_post.build_network
     expression = next(e for owner, _, e in whole_post.exprs if owner == "projectm_level")
-    assert expression == build_network.lagged("projectm_mix")
-    assert expression == "op('lag_params')['projectm_mix']"
+    assert expression == "0 if op('director').par.Projectmsource == 'none' else " + build_network.lagged("projectm_mix")
     assert ("projectm_mix", "Projectmmix") in build_network.LAGGED
 
 

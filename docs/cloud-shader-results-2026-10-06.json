@@ -1,0 +1,964 @@
+{
+  "created_at_utc": "2026-10-06T05:16:57.718348+00:00",
+  "time_source": "Cloud host OS clock; not independently synchronized by this tool",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "numpy": "2.5.3",
+  "renderer": {
+    "egl_version": "1.5",
+    "egl_vendor": "Mesa Project",
+    "gl_vendor": "Mesa",
+    "gl_renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "gl_version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "glsl_version": "4.50"
+  },
+  "resolution": [
+    320,
+    180
+  ],
+  "framebuffer": "GL_RGBA32F, read as float32 before any PNG conversion",
+  "shader": "td/shaders/visualizer.frag",
+  "shader_sha256": "fe5024d3e181dcc9dd6d2a51c2560bd9fbdeac968a7c1723e961f7c7e370bdb0",
+  "shader_source_modified": false,
+  "host_shim": "GLSL 330 core; normalized vUV; identity TDOutputSwizzle",
+  "rendered_frame_count": 120,
+  "passed": true,
+  "checks": {
+    "all_frames_finite_bounded_and_opaque": true,
+    "spatially_patterned_frames": 119,
+    "intentional_background_only_frames": 1,
+    "intentional_background_case": "particle_field / particle_none",
+    "every_scene_changes_with_time_and_audio": true,
+    "all_five_scene_baselines_are_distinct": true
+  },
+  "scenes": [
+    {
+      "scene": "fractal_temple",
+      "cases": {
+        "baseline": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9671027660369873,
+          "mean_rgb": 0.0798298791050911,
+          "spatial_std": 0.10580357909202576,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "time_plus_2s": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9555433392524719,
+          "mean_rgb": 0.07759647071361542,
+          "spatial_std": 0.10247459262609482,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0599445141851902
+        },
+        "loud_audio": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9912732839584351,
+          "mean_rgb": 0.12329374998807907,
+          "spatial_std": 0.1530788540840149,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.09031438827514648
+        },
+        "silence": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8575394749641418,
+          "mean_rgb": 0.05749642848968506,
+          "spatial_std": 0.07294159382581711,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.055328380316495895
+        },
+        "palette_violet_cyan": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9671027660369873,
+          "mean_rgb": 0.0798298791050911,
+          "spatial_std": 0.10580357909202576,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "palette_acid_lime": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9627634286880493,
+          "mean_rgb": 0.07171455025672913,
+          "spatial_std": 0.09117386490106583,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.029657790437340736
+        },
+        "palette_amber_dusk": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9659870862960815,
+          "mean_rgb": 0.0733393207192421,
+          "spatial_std": 0.09254378825426102,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.02856668271124363
+        },
+        "palette_mono_white": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9593849182128906,
+          "mean_rgb": 0.08869189023971558,
+          "spatial_std": 0.12216361612081528,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0173474233597517
+        },
+        "palette_infrared": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9667582511901855,
+          "mean_rgb": 0.07034211605787277,
+          "spatial_std": 0.08605379611253738,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.03587717562913895
+        },
+        "particle_spiral": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9671027660369873,
+          "mean_rgb": 0.0798298791050911,
+          "spatial_std": 0.10580357909202576,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_burst": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9671027660369873,
+          "mean_rgb": 0.0798298791050911,
+          "spatial_std": 0.10580357909202576,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_rain": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9671027660369873,
+          "mean_rgb": 0.0798298791050911,
+          "spatial_std": 0.10580357909202576,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_orbit": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9671027660369873,
+          "mean_rgb": 0.0798298791050911,
+          "spatial_std": 0.10580357909202576,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_none": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9671027660369873,
+          "mean_rgb": 0.0798298791050911,
+          "spatial_std": 0.10580357909202576,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "min_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8664798140525818,
+          "mean_rgb": 0.05741154029965401,
+          "spatial_std": 0.07158421725034714,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.053382400423288345
+        },
+        "max_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9978342652320862,
+          "mean_rgb": 0.1274554282426834,
+          "spatial_std": 0.15778183937072754,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.09002290666103363
+        },
+        "day_timestamp": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9097837209701538,
+          "mean_rgb": 0.07717230916023254,
+          "spatial_std": 0.1025773286819458,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.06045043468475342
+        }
+      },
+      "single_input_mean_abs_deltas": {
+        "bass": 0.0689985603094101,
+        "mid": 0.0,
+        "high": 0.013000991195440292,
+        "energy": 0.013633099384605885,
+        "kick": 0.0,
+        "camera_speed": 0.0,
+        "symmetry": 0.027587026357650757
+      }
+    },
+    {
+      "scene": "tunnel",
+      "cases": {
+        "baseline": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9154484868049622,
+          "mean_rgb": 0.06194285675883293,
+          "spatial_std": 0.09742003679275513,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "time_plus_2s": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9439902901649475,
+          "mean_rgb": 0.07558531314134598,
+          "spatial_std": 0.11333733797073364,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.06910552084445953
+        },
+        "loud_audio": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9746133685112,
+          "mean_rgb": 0.08157577365636826,
+          "spatial_std": 0.13671763241291046,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0363348089158535
+        },
+        "silence": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8444520235061646,
+          "mean_rgb": 0.0499553307890892,
+          "spatial_std": 0.07018013298511505,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.020498620346188545
+        },
+        "palette_violet_cyan": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9154484868049622,
+          "mean_rgb": 0.06194285675883293,
+          "spatial_std": 0.09742003679275513,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "palette_acid_lime": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8579771518707275,
+          "mean_rgb": 0.05393427610397339,
+          "spatial_std": 0.07700009644031525,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.024270974099636078
+        },
+        "palette_amber_dusk": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9054224491119385,
+          "mean_rgb": 0.05290567874908447,
+          "spatial_std": 0.07320794463157654,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.013299606740474701
+        },
+        "palette_mono_white": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8019242286682129,
+          "mean_rgb": 0.0568857379257679,
+          "spatial_std": 0.08555064350366592,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.013586077839136124
+        },
+        "palette_infrared": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.914553165435791,
+          "mean_rgb": 0.05951260030269623,
+          "spatial_std": 0.0901552140712738,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.019848329946398735
+        },
+        "particle_spiral": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9154484868049622,
+          "mean_rgb": 0.06194285675883293,
+          "spatial_std": 0.09742003679275513,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_burst": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9154484868049622,
+          "mean_rgb": 0.06194285675883293,
+          "spatial_std": 0.09742003679275513,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_rain": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9154484868049622,
+          "mean_rgb": 0.06194285675883293,
+          "spatial_std": 0.09742003679275513,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_orbit": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9154484868049622,
+          "mean_rgb": 0.06194285675883293,
+          "spatial_std": 0.09742003679275513,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_none": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9154484868049622,
+          "mean_rgb": 0.06194285675883293,
+          "spatial_std": 0.09742003679275513,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "min_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8237160444259644,
+          "mean_rgb": 0.05429316312074661,
+          "spatial_std": 0.07501953840255737,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.05105487257242203
+        },
+        "max_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9807605147361755,
+          "mean_rgb": 0.1083933413028717,
+          "spatial_std": 0.1607883721590042,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.09555094689130783
+        },
+        "day_timestamp": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.939570963382721,
+          "mean_rgb": 0.06970225274562836,
+          "spatial_std": 0.0896289125084877,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.06121770665049553
+        }
+      },
+      "single_input_mean_abs_deltas": {
+        "bass": 0.029812000691890717,
+        "mid": 0.0,
+        "high": 0.0,
+        "energy": 0.008287104777991772,
+        "kick": 0.0,
+        "camera_speed": 0.029022997245192528,
+        "symmetry": 0.030756346881389618
+      }
+    },
+    {
+      "scene": "particle_field",
+      "cases": {
+        "baseline": {
+          "all_finite": true,
+          "min_rgb": 0.016863245517015457,
+          "max_rgb": 0.9779176115989685,
+          "mean_rgb": 0.03923128545284271,
+          "spatial_std": 0.0320088230073452,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "time_plus_2s": {
+          "all_finite": true,
+          "min_rgb": 0.016863876953721046,
+          "max_rgb": 0.9887073040008545,
+          "mean_rgb": 0.039608076214790344,
+          "spatial_std": 0.033040422946214676,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.007155018392950296
+        },
+        "loud_audio": {
+          "all_finite": true,
+          "min_rgb": 0.01687227003276348,
+          "max_rgb": 0.9999790787696838,
+          "mean_rgb": 0.046246614307165146,
+          "spatial_std": 0.04801492393016815,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.008784371428191662
+        },
+        "silence": {
+          "all_finite": true,
+          "min_rgb": 0.016859261319041252,
+          "max_rgb": 0.8976154327392578,
+          "mean_rgb": 0.0352138876914978,
+          "spatial_std": 0.022315068170428276,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.004839753266423941
+        },
+        "palette_violet_cyan": {
+          "all_finite": true,
+          "min_rgb": 0.016863245517015457,
+          "max_rgb": 0.9779176115989685,
+          "mean_rgb": 0.03923128545284271,
+          "spatial_std": 0.0320088230073452,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "palette_acid_lime": {
+          "all_finite": true,
+          "min_rgb": 0.016874155029654503,
+          "max_rgb": 0.9717394709587097,
+          "mean_rgb": 0.0364588163793087,
+          "spatial_std": 0.02624107338488102,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.008741610683500767
+        },
+        "palette_amber_dusk": {
+          "all_finite": true,
+          "min_rgb": 0.016896195709705353,
+          "max_rgb": 0.9766021370887756,
+          "mean_rgb": 0.0365501269698143,
+          "spatial_std": 0.02610616385936737,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.005543150939047337
+        },
+        "palette_mono_white": {
+          "all_finite": true,
+          "min_rgb": 0.01689157821238041,
+          "max_rgb": 0.9654841423034668,
+          "mean_rgb": 0.03802900388836861,
+          "spatial_std": 0.032165735960006714,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.005040824878960848
+        },
+        "palette_infrared": {
+          "all_finite": true,
+          "min_rgb": 0.016896195709705353,
+          "max_rgb": 0.9776868224143982,
+          "mean_rgb": 0.03831404447555542,
+          "spatial_std": 0.027607068419456482,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.007703972514718771
+        },
+        "particle_spiral": {
+          "all_finite": true,
+          "min_rgb": 0.016863245517015457,
+          "max_rgb": 0.9779176115989685,
+          "mean_rgb": 0.03923128545284271,
+          "spatial_std": 0.0320088230073452,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_burst": {
+          "all_finite": true,
+          "min_rgb": 0.016863245517015457,
+          "max_rgb": 0.9780802726745605,
+          "mean_rgb": 0.03881844878196716,
+          "spatial_std": 0.030055170878767967,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.007260516751557589
+        },
+        "particle_rain": {
+          "all_finite": true,
+          "min_rgb": 0.016863245517015457,
+          "max_rgb": 0.9791045784950256,
+          "mean_rgb": 0.039481330662965775,
+          "spatial_std": 0.03085367940366268,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0075919837690889835
+        },
+        "particle_orbit": {
+          "all_finite": true,
+          "min_rgb": 0.016863245517015457,
+          "max_rgb": 0.9825177192687988,
+          "mean_rgb": 0.039210304617881775,
+          "spatial_std": 0.03177507221698761,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.007296516094356775
+        },
+        "particle_none": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.045557230710983276,
+          "mean_rgb": 0.027711430564522743,
+          "spatial_std": 9.26961365621537e-06,
+          "alpha_is_one": true,
+          "spatial_pattern_required": false,
+          "mean_abs_delta_from_baseline": 0.011519847437739372
+        },
+        "min_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016858208924531937,
+          "max_rgb": 0.8781629800796509,
+          "mean_rgb": 0.03641056641936302,
+          "spatial_std": 0.025665616616606712,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.008392377756536007
+        },
+        "max_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016882553696632385,
+          "max_rgb": 0.9999446868896484,
+          "mean_rgb": 0.04817860201001167,
+          "spatial_std": 0.05241510272026062,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.014058179222047329
+        },
+        "day_timestamp": {
+          "all_finite": true,
+          "min_rgb": 0.01686219871044159,
+          "max_rgb": 0.9721894264221191,
+          "mean_rgb": 0.04086893051862717,
+          "spatial_std": 0.035782646387815475,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.00901195127516985
+        }
+      },
+      "single_input_mean_abs_deltas": {
+        "bass": 0.004083662293851376,
+        "mid": 0.0,
+        "high": 0.0013139043003320694,
+        "energy": 0.003702834714204073,
+        "kick": 0.0,
+        "camera_speed": 0.007799021899700165,
+        "symmetry": 0.0
+      }
+    },
+    {
+      "scene": "kaleido_mesh",
+      "cases": {
+        "baseline": {
+          "all_finite": true,
+          "min_rgb": 0.016856525093317032,
+          "max_rgb": 0.9433528184890747,
+          "mean_rgb": 0.07895343750715256,
+          "spatial_std": 0.10327178239822388,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "time_plus_2s": {
+          "all_finite": true,
+          "min_rgb": 0.016856525093317032,
+          "max_rgb": 0.96631920337677,
+          "mean_rgb": 0.08153378963470459,
+          "spatial_std": 0.10347464680671692,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.05863063782453537
+        },
+        "loud_audio": {
+          "all_finite": true,
+          "min_rgb": 0.016859261319041252,
+          "max_rgb": 0.9910733103752136,
+          "mean_rgb": 0.11983579397201538,
+          "spatial_std": 0.14932218194007874,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.08087293058633804
+        },
+        "silence": {
+          "all_finite": true,
+          "min_rgb": 0.016855260357260704,
+          "max_rgb": 0.8220046162605286,
+          "mean_rgb": 0.059167876839637756,
+          "spatial_std": 0.07224976271390915,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.05004212632775307
+        },
+        "palette_violet_cyan": {
+          "all_finite": true,
+          "min_rgb": 0.016856525093317032,
+          "max_rgb": 0.9433528184890747,
+          "mean_rgb": 0.07895343750715256,
+          "spatial_std": 0.10327178239822388,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "palette_acid_lime": {
+          "all_finite": true,
+          "min_rgb": 0.016859885305166245,
+          "max_rgb": 0.930528998374939,
+          "mean_rgb": 0.07089253515005112,
+          "spatial_std": 0.08901122957468033,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.02940213307738304
+        },
+        "palette_amber_dusk": {
+          "all_finite": true,
+          "min_rgb": 0.016866182908415794,
+          "max_rgb": 0.9371481537818909,
+          "mean_rgb": 0.07251957803964615,
+          "spatial_std": 0.09032407402992249,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.028196483850479126
+        },
+        "palette_mono_white": {
+          "all_finite": true,
+          "min_rgb": 0.016865134239196777,
+          "max_rgb": 0.9235065579414368,
+          "mean_rgb": 0.08754096180200577,
+          "spatial_std": 0.1194695308804512,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.017155824229121208
+        },
+        "palette_infrared": {
+          "all_finite": true,
+          "min_rgb": 0.016866393387317657,
+          "max_rgb": 0.942756712436676,
+          "mean_rgb": 0.06971275806427002,
+          "spatial_std": 0.08393889665603638,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.03542819991707802
+        },
+        "particle_spiral": {
+          "all_finite": true,
+          "min_rgb": 0.016856525093317032,
+          "max_rgb": 0.9433528184890747,
+          "mean_rgb": 0.07895343750715256,
+          "spatial_std": 0.10327178239822388,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_burst": {
+          "all_finite": true,
+          "min_rgb": 0.016856525093317032,
+          "max_rgb": 0.9459158778190613,
+          "mean_rgb": 0.07885848730802536,
+          "spatial_std": 0.10312510281801224,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.002245730720460415
+        },
+        "particle_rain": {
+          "all_finite": true,
+          "min_rgb": 0.016856525093317032,
+          "max_rgb": 0.9430945515632629,
+          "mean_rgb": 0.07909130305051804,
+          "spatial_std": 0.10304462909698486,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.00236919685266912
+        },
+        "particle_orbit": {
+          "all_finite": true,
+          "min_rgb": 0.016856525093317032,
+          "max_rgb": 0.94341641664505,
+          "mean_rgb": 0.07895172387361526,
+          "spatial_std": 0.10328936576843262,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0022594097536057234
+        },
+        "particle_none": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9419687986373901,
+          "mean_rgb": 0.07617917656898499,
+          "spatial_std": 0.1020270586013794,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0027742749080061913
+        },
+        "min_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016854848712682724,
+          "max_rgb": 0.9095597267150879,
+          "mean_rgb": 0.05916991084814072,
+          "spatial_std": 0.0724240317940712,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.050768736749887466
+        },
+        "max_controls": {
+          "all_finite": true,
+          "min_rgb": 0.01686219871044159,
+          "max_rgb": 0.9913476705551147,
+          "mean_rgb": 0.13983450829982758,
+          "spatial_std": 0.1691090315580368,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.09330494701862335
+        },
+        "day_timestamp": {
+          "all_finite": true,
+          "min_rgb": 0.016856105998158455,
+          "max_rgb": 0.9066932797431946,
+          "mean_rgb": 0.07835415005683899,
+          "spatial_std": 0.09957921504974365,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.05662195757031441
+        }
+      },
+      "single_input_mean_abs_deltas": {
+        "bass": 0.06038659065961838,
+        "mid": 0.0,
+        "high": 0.012253737077116966,
+        "energy": 0.013546792790293694,
+        "kick": 0.0,
+        "camera_speed": 0.0024374264758080244,
+        "symmetry": 0.029439641162753105
+      }
+    },
+    {
+      "scene": "projectm_blend",
+      "cases": {
+        "baseline": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8984618186950684,
+          "mean_rgb": 0.07989994436502457,
+          "spatial_std": 0.09969619661569595,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "time_plus_2s": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9411307573318481,
+          "mean_rgb": 0.0905933827161789,
+          "spatial_std": 0.10821811109781265,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.060184892266988754
+        },
+        "loud_audio": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9767109155654907,
+          "mean_rgb": 0.11752741783857346,
+          "spatial_std": 0.1448243260383606,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.06620855629444122
+        },
+        "silence": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.833459198474884,
+          "mean_rgb": 0.05990144610404968,
+          "spatial_std": 0.06994849443435669,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.039384521543979645
+        },
+        "palette_violet_cyan": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8984618186950684,
+          "mean_rgb": 0.07989994436502457,
+          "spatial_std": 0.09969619661569595,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "palette_acid_lime": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8654428720474243,
+          "mean_rgb": 0.06986497342586517,
+          "spatial_std": 0.08196746557950974,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.033379603177309036
+        },
+        "palette_amber_dusk": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8916589617729187,
+          "mean_rgb": 0.07018445432186127,
+          "spatial_std": 0.07984141260385513,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.025789199396967888
+        },
+        "palette_mono_white": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8303285837173462,
+          "mean_rgb": 0.08169303834438324,
+          "spatial_std": 0.09913402050733566,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.018688349053263664
+        },
+        "palette_infrared": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8973825573921204,
+          "mean_rgb": 0.07287194579839706,
+          "spatial_std": 0.08651453256607056,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.033763445913791656
+        },
+        "particle_spiral": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8984618186950684,
+          "mean_rgb": 0.07989994436502457,
+          "spatial_std": 0.09969619661569595,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_burst": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8984618186950684,
+          "mean_rgb": 0.07989994436502457,
+          "spatial_std": 0.09969619661569595,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_rain": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8984618186950684,
+          "mean_rgb": 0.07989994436502457,
+          "spatial_std": 0.09969619661569595,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_orbit": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8984618186950684,
+          "mean_rgb": 0.07989994436502457,
+          "spatial_std": 0.09969619661569595,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "particle_none": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8984618186950684,
+          "mean_rgb": 0.07989994436502457,
+          "spatial_std": 0.09969619661569595,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.0
+        },
+        "min_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.8196229934692383,
+          "mean_rgb": 0.06272011995315552,
+          "spatial_std": 0.07160352915525436,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.05533445626497269
+        },
+        "max_controls": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9561907649040222,
+          "mean_rgb": 0.14687088131904602,
+          "spatial_std": 0.16238732635974884,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.10354552417993546
+        },
+        "day_timestamp": {
+          "all_finite": true,
+          "min_rgb": 0.016853587701916695,
+          "max_rgb": 0.9029330611228943,
+          "mean_rgb": 0.08379688113927841,
+          "spatial_std": 0.08785846084356308,
+          "alpha_is_one": true,
+          "spatial_pattern_required": true,
+          "mean_abs_delta_from_baseline": 0.06487735360860825
+        }
+      },
+      "single_input_mean_abs_deltas": {
+        "bass": 0.04956679791212082,
+        "mid": 0.0,
+        "high": 0.0069539290852844715,
+        "energy": 0.014000258408486843,
+        "kick": 0.0,
+        "camera_speed": 0.02020733803510666,
+        "symmetry": 0.03497868776321411
+      }
+    }
+  ],
+  "limitations": [
+    "No TouchDesigner runtime, Metal compiler, saved .toe or Mac GPU was used.",
+    "No GPU/60 fps/long-duration performance claim; llvmpipe is software rendering.",
+    "No audio device, OSC wiring, transitions, feedback or external projectM input validation.",
+    "projectm_blend here is the shader's native analytic fallback branch.",
+    "Mid and kick uniforms are wired by the builder but unused by this fragment shader.",
+    "particle_field with particle mode none intentionally yields a uniform dark background."
+  ]
+}

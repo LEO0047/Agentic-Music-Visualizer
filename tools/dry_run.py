@@ -468,9 +468,9 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         type=float,
         default=1.0,
         help=(
-            "sidecar status lines per show second (default 1.0). The director only "
-            "gets to fire on a status tick, so lowering this quantises the decision "
-            "gaps and makes them read longer than --period"
+            "sidecar status lines per show second (default 1.0). This only changes "
+            "console output; director and outage watchdog keep running at the "
+            "detection tick rate even when status output is disabled"
         ),
     )
     parser.add_argument("--quiet", action="store_true", help="hide the children's output")

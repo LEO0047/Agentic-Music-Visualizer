@@ -307,6 +307,9 @@ class TestChecklist:
     def test_main_json_exits_zero_without_failures(self, monkeypatch, tmp_path, capsys):
         monkeypatch.setenv("AMV_CODEX_BIN", str(FAKE_CODEX))
         monkeypatch.setenv("AMV_FAKE_CODEX_DELAY", "0")
+        # This tests the all-green report, not the host's available storage.
+        # Keep the independent disk-space checks above testing the boundary.
+        monkeypatch.setattr(preflight, "_gb_free", lambda _path: 10.0)
         monkeypatch.setattr(
             preflight.check_env, "CHECKS", [("python", lambda: "3.11.9 (ok)")]
         )

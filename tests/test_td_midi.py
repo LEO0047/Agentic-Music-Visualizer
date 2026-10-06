@@ -395,7 +395,7 @@ def test_the_midi_in_chop_is_set_to_one_device_and_one_channel(midi_rig):
     assert build_network.MIDI_IN_CHANNEL == midi.MIDI_CHANNEL, (
         "the CHOP channel filter and the ch1c* names midi_override parses must agree"
     )
-    assert midi_rig.par("midi_in", "active") is True
+    assert midi_rig.par("midi_in", "active") is False
 
 
 def test_the_exec_dat_watches_the_midi_chop_from_inside_the_director(midi_rig):

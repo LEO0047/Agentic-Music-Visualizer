@@ -1,3 +1,7 @@
+> 2026-09-08 實機更新：根目錄已有可直接開啟的 `Agentic-Music-Visualizer.toe`。
+> 五個場景改用原生 GLSL；音訊與 OSC 已在 TD 驗證。下文部分 Phase 設計說明保留作歷史，
+> 當前結果與限制以 [實機驗收紀錄](../docs/runtime-verification-2026-09-08.md) 為準。
+
 # `td/` · 反射層（TouchDesigner）· Phase 2 + Phase 5 + Phase 6
 
 > **這份程式沒有在 TouchDesigner 裡跑過。** 本機沒有安裝 TD（SPEC Phase 0 的
@@ -28,7 +32,7 @@
 3. 貼上並執行：
 
 ```python
-exec(open('/Users/leohuang/Repos/Agentic-Music-Visualizer/td/build_network.py').read())
+exec(open('/Users/leohuang/Repos/Agentic-Music-Visualizer/td/build_network.py', encoding='utf-8').read())
 ```
 
 腳本會：先 `destroy()` 既有的 `/project1/amv`（**冪等**：改完程式直接再跑一次就好），

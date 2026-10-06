@@ -1,0 +1,3419 @@
+{
+  "status": "passed",
+  "passed": true,
+  "full_hour": false,
+  "started_utc": "2026-10-06T09:07:32.762338+00:00",
+  "duration_s": 220.0,
+  "profile": {
+    "name": "production-timing",
+    "period_s": 18.0,
+    "min_interval_s": 6.0,
+    "watchdog_s": 25.0,
+    "subprocess_timeout_s": 30.0,
+    "phase_scale": 1.0,
+    "status_hz": 1.0,
+    "ok_delay_s": 13.0
+  },
+  "production_timing": true,
+  "width": 320,
+  "height": 180,
+  "target_fps": 30,
+  "errors": [],
+  "scope": "simulated AI subprocess; actual PCM extraction, loopback OSC, sidecar and EGL/GL pixels",
+  "audio_fixture": "steady 48 kHz diagnostic tones and bass transients; two-second same-source calibration",
+  "scene_provenance": "Frame state is the logical control request; effective_render_layers records the actual drawn GLSL branch. particle_field/none preserves particles-off but uses the declared kaleido_mesh safety fallback.",
+  "credentials_accessed": false,
+  "real_model_calls": 0,
+  "audio_device_playback": false,
+  "touchdesigner_runtime": false,
+  "native_projectm": false,
+  "watchdog_timing": "25 s production threshold, sampled by a 10 Hz hook then next render frame; exact observed delays are recorded",
+  "subprocess_timeout_completion_tolerance_s": 0.5,
+  "code_start": {
+    "sha256": "f9a621cdd0d0f75a1ea996c0a44136e3163fe35fbfcd727221bdd4575a2f1723",
+    "git_head": "92ecff5265e1b131d706666a4cc6ea9910125674",
+    "files": {
+      "amv/__init__.py": "ab0a90835767a3235b9c9a7146dcb37c20c47e7ddb11017109946eeac6036651",
+      "amv/audio_features.py": "48609704187af0b12937700fe23d925b817aa2d0652227bd0d8342e23b79961c",
+      "amv/codex_client.py": "8938f41a221cb185137f424e81ba3df71326023576c671c7c27480fdcac1096d",
+      "amv/director.py": "1fb0dfc8c1430af5bfda12d485e3e80c130d42a6f9bfabed4873976059b22184",
+      "amv/features.py": "e0780769f43f82c84a1dda590ec067da8c778d3852c5d3ae0f0148295fd58395",
+      "amv/launcher.py": "d6242107a8aab78854c1f03aa39236996d2a1fc57bda8270071a539c066080dc",
+      "amv/linux_controls.py": "f8fd1fe50229864aade7291e8831bf433a8fa74ffe211197d740b4b72ab1e82e",
+      "amv/osc_io.py": "c797103ba8991c7f6f39d4fecf6efa0c01ac20b37133439bc5990ebe26b9372b",
+      "amv/schema.py": "7ec280da3e824398eeb3570edca00b5509d1deb44a733fcaef80ce80189461e9",
+      "amv/sections.py": "ea13a33598a1c4aa4cc6018b9acbffa101828c060d5dcc843e80ce9ae1e2f2cc",
+      "amv/sidecar.py": "f9ee620a35a324999134d0629f327c5cdf56735bb3a4544cee7a703296383727",
+      "amv/smoke.py": "92ec1dbeed542606d0d923e9f439d7b8fcaa0f3237993f6737906720739ec5ca",
+      "director_schema.json": "d96029a78e1ce963d49fb8f7cf0ddaeddd37f94d5312347dd7770d5bc6baf838",
+      "pyproject.toml": "7e72e24cbf50c30066f7699d719fea660a1f2441b56140e296565fcdbb4b27dc",
+      "td/build_network.py": "109f10d9f86a6d893df27ded9b8b7407a99bef274b3920ddaaa7f12ef153d9f0",
+      "td/drop_executor.py": "15d82c4dd27f2c1f5b3574abd2f9b785ccf411755807c08f5b525820d6e7e20d",
+      "td/midi_override.py": "e9fa4a306e35ffb794b593ed3a0bd13dd0565c65366a18bea1c9129fff7da18d",
+      "td/osc_in_callbacks.py": "54ae28d6977428d02b0a9e7f45cb98e148d8c8b1219c1bc0b2cc5193c85184b7",
+      "td/parspec.py": "43441bf73ddc4755e20e640c65c2a2328c6c48bbedded1aa65b68d86f5d0d94e",
+      "td/shaders/visualizer.frag": "fe5024d3e181dcc9dd6d2a51c2560bd9fbdeac968a7c1723e961f7c7e370bdb0",
+      "td/td_stub.py": "21df84dd4ded83600581743b14669c5a66b86a1b348c626073086df105c1ef14",
+      "td/verify_runtime.py": "a1ba58c2ae707d4dc28e43779b2abe969d779c2431f226ed231be3c3903d3ee4",
+      "tests/test_audio_features.py": "52659ad6a1dbba4c2bef6ac4b605a06c04cc4db6444c9337940ccc14d90f78c8",
+      "tests/test_cloud_endurance.py": "1ec31db8dbbc906d4fc6f93349278c370870cd99d803eda87781975d9485720e",
+      "tests/test_cloud_shaders.py": "2febde501ce4d5ccaadf0a6be559adf2e73a618939ec244748e7989760ef3ca3",
+      "tests/test_codex_client.py": "97440e1fbda722d2ce05b7af4899c21b3f54826b89704cbf2b4b0f01fd75b8d3",
+      "tests/test_director.py": "71feba0f9d584b4142afde6af60026b77d6eeaadac7f3fb09431242401425540",
+      "tests/test_fake_td.py": "83f8ddb214d23b5ba3f06ebd8ed33da2f693953527180e264dfcf6f491a6c294",
+      "tests/test_features.py": "50c84c0262113a70144c833560da5f9e3dbc0aacd093e9f05a1ece66e048faa3",
+      "tests/test_launcher.py": "08f976a89cb8d219c40cc579b96c11cc24b395098f34611f2281f370b7229267",
+      "tests/test_linux_ai_integration.py": "5010c656b5d681531e1f1acc6b0f9e8fcca4f0cdac1c267b43ac470f19479d6a",
+      "tests/test_linux_controls.py": "2919640279f3a66605f5029b7312954e01cad21108e8860420b38bb87f148586",
+      "tests/test_linux_visualizer.py": "1d8e7c50d67cf8cf4aacf07c1bc555ba017fdec6d2bdfd85a8877c1537cee1ad",
+      "tests/test_osc_io.py": "7ea11dc66c0575f17f81d578579a478fa7f6e6e9ef7074652965f45bc9554fd9",
+      "tests/test_phase6_tools.py": "c42a98701ede4affddb74b2cdde00e5a1912166c1615e3354b7b9948c952b76b",
+      "tests/test_schema.py": "f1267d05db839af70a7b070046b43a13f96cb2e1efa34a54c738669803ee469e",
+      "tests/test_sections.py": "ee6fd9c9ac3328080ca38d688d2598a57453ea3f76ad7d26b98451197629f30f",
+      "tests/test_sidecar.py": "106e3deab2b4656466dbda2b3bd5ea376e3f925d377f8b10d02ec468aec52230",
+      "tests/test_td_build_compiles.py": "0a5f342c749f6a5a6ddecb4ed96bb03b867c14db6c1dea74db2db6cc6b4ef1f3",
+      "tests/test_td_callbacks.py": "ccb34dd5d19e8c34501273f60be51cf592c25971aa351b6e3c0d4c46fc4795f9",
+      "tests/test_td_drop_executor.py": "093de0d3d01fb9967d599590aaf10e08580d34589ba32656a3c17206aa6d9e07",
+      "tests/test_td_midi.py": "b953c8a77ae3b3eb40b51f38335b2cbe1aba9f8f71f288670bf24ccefb361502",
+      "tests/test_td_parspec.py": "5b5da1f499acc3d11175f6f127f370d3538051b36a4633d16061c9dd223d9d67",
+      "tests/test_td_projectm.py": "5172dc7d87d4be6f83b23064efa4885487837fe3b0bdae95178015453af6c6b3",
+      "tests/test_verify_linux_video.py": "39d5c2cdfcd981f2cd0a37821310c0364e559b6a498236eb039f1b5ced4fc5cd",
+      "tools/audio_check.py": "b79dcade0815e90f0379567a87253f41f47be6ea1cde977d9a8271ba06633f42",
+      "tools/check_env.py": "0574929a7642f952f0245ce8ff8e873addb82f53cbefa87ce72bc94e1a885a67",
+      "tools/cloud_endurance.py": "0919b1e403f8fe336852e6d4e27007c6958ce9005de1bc4e3392091886b0465f",
+      "tools/codex_sessions.py": "86c9f6579b04dce8a3c2d65dc35570e53fd59b40fc94cca7044934a1ba2ea06d",
+      "tools/dry_run.py": "44486c13270a75f1bbdc3a251a1aa9c5d01bfa53786242964b5d49986c8294af",
+      "tools/fake_codex.py": "3770ddaafb372d7c4a33ae499c17e1ad7427bfa45bdb52bd75dd2deac486ff76",
+      "tools/fake_td.py": "de561a431c88e01eddcc318842dab0d1e3182aae4b2376de7c8eee0a40aaa0f3",
+      "tools/linux_ai_integration.py": "e9af9188dd3d8dc23ed4b21b21144a495934109bcff49f0b4c26724b8cc0783a",
+      "tools/linux_visualizer.py": "ed58c92642b7d92e7c4fc0e7e1c550eb87a246f13327a58f75869a148e1bc27c",
+      "tools/preflight.py": "c1265a52b4c13713942a69e3f2aa202f9a784401690c6396bc438502673c4dcf",
+      "tools/projectm_check.py": "275b9f58fa28485ba31f27e2b0db6333312065989af332e73711cbec50add9fc",
+      "tools/render_shaders.py": "2b6911ba7ec2166876d8f9b29c2c53a426d1f9b2ad3ee4407c5b9c62f6625789",
+      "tools/verify_linux_video.py": "04be36649b551a4e9ec5a421f68ac640f6bddc2ec8561a2ed314c62ed0117030",
+      "uv.lock": "8f553a7448e4e9505150d9fec33014800a79d3a5d1a4e48b479fec6c8f81ffc1"
+    }
+  },
+  "renderer": {
+    "egl_version": "1.5",
+    "egl_vendor": "Mesa Project",
+    "gl_vendor": "Mesa",
+    "gl_renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "gl_version": "4.5 (Core Profile) Mesa 25.0.7-2+deb13u1",
+    "glsl_version": "4.50"
+  },
+  "execution_completed": true,
+  "control_sent": 364,
+  "control_received": 364,
+  "control_rejected": 0,
+  "control_batches_applied": 12,
+  "osc_send_errors": 0,
+  "feature_sent": 13200,
+  "feature_received": 13200,
+  "phase_events": [
+    {
+      "elapsed_s": 0.0304865539947059,
+      "phase": "gpt_success",
+      "director_mode": "gpt",
+      "fake_mode": "ok",
+      "set_mode_returned_s": 0.030503879999741912,
+      "inflight_fake_subprocesses": 0
+    },
+    {
+      "elapsed_s": 32.00013467599638,
+      "phase": "process_failure",
+      "director_mode": "gpt",
+      "fake_mode": "fail",
+      "set_mode_returned_s": 32.000161856005434,
+      "inflight_fake_subprocesses": 0
+    },
+    {
+      "elapsed_s": 54.00012874799722,
+      "phase": "malformed_output",
+      "director_mode": "gpt",
+      "fake_mode": "garbage",
+      "set_mode_returned_s": 54.000199464004254,
+      "inflight_fake_subprocesses": 0
+    },
+    {
+      "elapsed_s": 76.00013213300554,
+      "phase": "hung_subprocess",
+      "director_mode": "gpt",
+      "fake_mode": "hang",
+      "set_mode_returned_s": 76.00015414600784,
+      "inflight_fake_subprocesses": 0
+    },
+    {
+      "elapsed_s": 118.00011779500346,
+      "phase": "gpt_same_mode_recovery",
+      "director_mode": "gpt",
+      "fake_mode": "ok",
+      "set_mode_returned_s": 118.00014185100736,
+      "inflight_fake_subprocesses": 1
+    },
+    {
+      "elapsed_s": 174.5668581009959,
+      "phase": "manual_takeover",
+      "director_mode": "manual",
+      "fake_mode": "ok",
+      "set_mode_returned_s": 174.56693717000599,
+      "inflight_fake_subprocesses": 1
+    },
+    {
+      "elapsed_s": 194.00016384200717,
+      "phase": "explicit_rule",
+      "director_mode": "rule",
+      "fake_mode": "ok",
+      "set_mode_returned_s": 194.0002714840084,
+      "inflight_fake_subprocesses": 0
+    }
+  ],
+  "snapshots": [
+    {
+      "file": "snapshots/000000-gpt_success.png",
+      "keys": [
+        "phase:gpt_success"
+      ],
+      "index": 0,
+      "elapsed_s": 0.036855006008408964,
+      "phase": "gpt_success",
+      "mode": "gpt",
+      "source": "initial defaults",
+      "heartbeat": null,
+      "state": {
+        "scene_from": "tunnel",
+        "scene_to": "tunnel",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "tunnel",
+            1.0
+          ]
+        ],
+        "palette_from": "violet_cyan",
+        "palette_to": "violet_cyan",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "violet_cyan",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "spiral",
+        "particle_mode_to": "spiral",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "spiral",
+            1.0
+          ]
+        ],
+        "symmetry_from": 6,
+        "symmetry_to": 6,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            6,
+            1.0
+          ]
+        ],
+        "feedback": 0.0,
+        "camera_speed": 0.25,
+        "projectm_mix": 0.0,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": null,
+        "heartbeat_age": 0.0,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": false,
+        "drop_count": 0
+      },
+      "control_sha256": "1341aaf0544fb0279f60f132e15261ebc6c2b9ce7dab62b484d7cef59098dfd4",
+      "rgb24_sha256": "40454bcf903af4b5a5fe6106622f5973829e9ec2510678ff2d3120a4fa24c42c",
+      "motion_mean_abs_rgb24": 0.0,
+      "rgb_mean": 0.054236676543951035,
+      "rgb_max": 0.824760377407074,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "tunnel",
+          "effective_scene": "tunnel",
+          "particle_mode": "spiral",
+          "palette": "violet_cyan",
+          "symmetry": 6,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 0.0304865539947059
+    },
+    {
+      "file": "snapshots/000470-gpt_success.png",
+      "keys": [
+        "endpoint:1"
+      ],
+      "index": 470,
+      "elapsed_s": 15.706736210995587,
+      "phase": "gpt_success",
+      "mode": "gpt",
+      "source": "gpt",
+      "heartbeat": 1,
+      "state": {
+        "scene_from": "fractal_temple",
+        "scene_to": "fractal_temple",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "fractal_temple",
+            1.0
+          ]
+        ],
+        "palette_from": "violet_cyan",
+        "palette_to": "violet_cyan",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "violet_cyan",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "spiral",
+        "particle_mode_to": "spiral",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "spiral",
+            1.0
+          ]
+        ],
+        "symmetry_from": 2,
+        "symmetry_to": 2,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            2,
+            1.0
+          ]
+        ],
+        "feedback": 0.8259999752044678,
+        "camera_speed": 0.5569999814033508,
+        "projectm_mix": 0.6349999904632568,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 1,
+        "heartbeat_age": 2.500015637007891,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "951e6cdd08d760130315cf8261f09910332559384896603921ddae1a24ce1a33",
+      "rgb24_sha256": "635a50485144c8e09e4f829e4c19f431ca2488526fe4997bd4a64dd0a0c9e888",
+      "motion_mean_abs_rgb24": 10.708695411682129,
+      "rgb_mean": 0.125804603099823,
+      "rgb_max": 0.9486982822418213,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "fractal_temple",
+          "effective_scene": "fractal_temple",
+          "particle_mode": "spiral",
+          "palette": "violet_cyan",
+          "symmetry": 2,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 15.700138543004869
+    },
+    {
+      "file": "snapshots/000957-process_failure.png",
+      "keys": [
+        "phase:process_failure"
+      ],
+      "index": 957,
+      "elapsed_s": 32.010610943994834,
+      "phase": "process_failure",
+      "mode": "gpt",
+      "source": "gpt",
+      "heartbeat": 2,
+      "state": {
+        "scene_from": "fractal_temple",
+        "scene_to": "projectm_blend",
+        "scene_mix": 0.011512679766593651,
+        "scene_weights": [
+          [
+            "fractal_temple",
+            0.9884873202334064
+          ],
+          [
+            "projectm_blend",
+            0.011512679766593651
+          ]
+        ],
+        "palette_from": "violet_cyan",
+        "palette_to": "amber_dusk",
+        "palette_mix": 0.011512679766593651,
+        "palette_weights": [
+          [
+            "violet_cyan",
+            0.9884873202334064
+          ],
+          [
+            "amber_dusk",
+            0.011512679766593651
+          ]
+        ],
+        "particle_mode_from": "spiral",
+        "particle_mode_to": "orbit",
+        "particle_mode_mix": 0.011512679766593651,
+        "particle_mode_weights": [
+          [
+            "spiral",
+            0.9884873202334064
+          ],
+          [
+            "orbit",
+            0.011512679766593651
+          ]
+        ],
+        "symmetry_from": 2,
+        "symmetry_to": 8,
+        "symmetry_mix": 0.011512679766593651,
+        "symmetry_weights": [
+          [
+            2,
+            0.9884873202334064
+          ],
+          [
+            8,
+            0.011512679766593651
+          ]
+        ],
+        "feedback": 0.8128386931741582,
+        "camera_speed": 0.5367958712221608,
+        "projectm_mix": 0.6313905407038739,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 2,
+        "heartbeat_age": 0.7333472460013581,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "69fd8e609fcf5d52f830bba002007c822b80b531452730c92e9ddc834b524057",
+      "rgb24_sha256": "a4a18b6554333648a25a3ba3b286c2be9524c141e21ffcc5a0fd2d71ade07caa",
+      "motion_mean_abs_rgb24": 7.090941905975342,
+      "rgb_mean": 0.11361932009458542,
+      "rgb_max": 0.9207803010940552,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "fractal_temple",
+          "effective_scene": "fractal_temple",
+          "particle_mode": "spiral",
+          "palette": "violet_cyan",
+          "symmetry": 2,
+          "weight": 0.9884873202334064,
+          "fallback_reason": null
+        },
+        {
+          "requested_scene": "projectm_blend",
+          "effective_scene": "projectm_blend",
+          "particle_mode": "orbit",
+          "palette": "amber_dusk",
+          "symmetry": 8,
+          "weight": 0.011512679766593648,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 32.00013467599638
+    },
+    {
+      "file": "snapshots/001240-process_failure.png",
+      "keys": [
+        "endpoint:3"
+      ],
+      "index": 1240,
+      "elapsed_s": 41.43869470299978,
+      "phase": "process_failure",
+      "mode": "gpt",
+      "source": "rule (CodexError)",
+      "heartbeat": 3,
+      "state": {
+        "scene_from": "fractal_temple",
+        "scene_to": "fractal_temple",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "fractal_temple",
+            1.0
+          ]
+        ],
+        "palette_from": "acid_lime",
+        "palette_to": "acid_lime",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "acid_lime",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "spiral",
+        "particle_mode_to": "spiral",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "spiral",
+            1.0
+          ]
+        ],
+        "symmetry_from": 6,
+        "symmetry_to": 6,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            6,
+            1.0
+          ]
+        ],
+        "feedback": 0.4399999976158142,
+        "camera_speed": 0.33799999952316284,
+        "projectm_mix": 0.028999999165534973,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 3,
+        "heartbeat_age": 5.133308072996442,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "f90a75c1c7f6342eb36b25d7b77858c0edc6dad6e2e5712c45921edada7f5a1e",
+      "rgb24_sha256": "eee7493f84997ec863dede00e0a73470ac5f32b847c7ce05c11013a8a2130317",
+      "motion_mean_abs_rgb24": 16.267391204833984,
+      "rgb_mean": 0.10347799956798553,
+      "rgb_max": 0.9709203243255615,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "fractal_temple",
+          "effective_scene": "fractal_temple",
+          "particle_mode": "spiral",
+          "palette": "acid_lime",
+          "symmetry": 6,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 41.43342325100093
+    },
+    {
+      "file": "snapshots/001617-malformed_output.png",
+      "keys": [
+        "phase:malformed_output"
+      ],
+      "index": 1617,
+      "elapsed_s": 54.00649000900739,
+      "phase": "malformed_output",
+      "mode": "gpt",
+      "source": "rule (CodexError)",
+      "heartbeat": 3,
+      "state": {
+        "scene_from": "fractal_temple",
+        "scene_to": "fractal_temple",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "fractal_temple",
+            1.0
+          ]
+        ],
+        "palette_from": "acid_lime",
+        "palette_to": "acid_lime",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "acid_lime",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "spiral",
+        "particle_mode_to": "spiral",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "spiral",
+            1.0
+          ]
+        ],
+        "symmetry_from": 6,
+        "symmetry_to": 6,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            6,
+            1.0
+          ]
+        ],
+        "feedback": 0.4399999976158142,
+        "camera_speed": 0.33799999952316284,
+        "projectm_mix": 0.028999999165534973,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 3,
+        "heartbeat_age": 17.700013569992734,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "f90a75c1c7f6342eb36b25d7b77858c0edc6dad6e2e5712c45921edada7f5a1e",
+      "rgb24_sha256": "ecdbbf88b6e4165780fce1fc0a7bd0aaf3e66fe3c829219fcbc06f9c6734927d",
+      "motion_mean_abs_rgb24": 12.834420204162598,
+      "rgb_mean": 0.10005651414394379,
+      "rgb_max": 0.9671927690505981,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "fractal_temple",
+          "effective_scene": "fractal_temple",
+          "particle_mode": "spiral",
+          "palette": "acid_lime",
+          "symmetry": 6,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 54.00012874799722
+    },
+    {
+      "file": "snapshots/001779-malformed_output.png",
+      "keys": [
+        "endpoint:4"
+      ],
+      "index": 1779,
+      "elapsed_s": 59.40528532999451,
+      "phase": "malformed_output",
+      "mode": "gpt",
+      "source": "rule (CodexError)",
+      "heartbeat": 4,
+      "state": {
+        "scene_from": "tunnel",
+        "scene_to": "tunnel",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "tunnel",
+            1.0
+          ]
+        ],
+        "palette_from": "acid_lime",
+        "palette_to": "acid_lime",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "acid_lime",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "orbit",
+        "particle_mode_to": "orbit",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "orbit",
+            1.0
+          ]
+        ],
+        "symmetry_from": 7,
+        "symmetry_to": 7,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            7,
+            1.0
+          ]
+        ],
+        "feedback": 0.5960000157356262,
+        "camera_speed": 0.335999995470047,
+        "projectm_mix": 0.08699999749660492,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 4,
+        "heartbeat_age": 5.033351115998812,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "6b07bdc261912797f01b3ec7bf3bd1db4132e21703e98e239371ed311e2a82c6",
+      "rgb24_sha256": "6f75fc4f95920edb514ad4e06e3402828e4ff05a87870e3df9afdcda68c60bac",
+      "motion_mean_abs_rgb24": 5.276086807250977,
+      "rgb_mean": 0.08041530847549438,
+      "rgb_max": 0.9254080057144165,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "tunnel",
+          "effective_scene": "tunnel",
+          "particle_mode": "orbit",
+          "palette": "acid_lime",
+          "symmetry": 7,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 59.40014412399614
+    },
+    {
+      "file": "snapshots/002275-hung_subprocess.png",
+      "keys": [
+        "phase:hung_subprocess"
+      ],
+      "index": 2275,
+      "elapsed_s": 76.02010949299438,
+      "phase": "hung_subprocess",
+      "mode": "gpt",
+      "source": "rule (CodexError)",
+      "heartbeat": 5,
+      "state": {
+        "scene_from": "tunnel",
+        "scene_to": "particle_field",
+        "scene_mix": 0.8066217775108739,
+        "scene_weights": [
+          [
+            "tunnel",
+            0.19337822248912606
+          ],
+          [
+            "particle_field",
+            0.8066217775108739
+          ]
+        ],
+        "palette_from": "acid_lime",
+        "palette_to": "amber_dusk",
+        "palette_mix": 0.8066217775108739,
+        "palette_weights": [
+          [
+            "acid_lime",
+            0.19337822248912606
+          ],
+          [
+            "amber_dusk",
+            0.8066217775108739
+          ]
+        ],
+        "particle_mode_from": "orbit",
+        "particle_mode_to": "rain",
+        "particle_mode_mix": 0.8066217775108739,
+        "particle_mode_weights": [
+          [
+            "orbit",
+            0.19337822248912606
+          ],
+          [
+            "rain",
+            0.8066217775108739
+          ]
+        ],
+        "symmetry_from": 7,
+        "symmetry_to": 8,
+        "symmetry_mix": 0.8066217775108739,
+        "symmetry_weights": [
+          [
+            7,
+            0.19337822248912606
+          ],
+          [
+            8,
+            0.8066217775108739
+          ]
+        ],
+        "feedback": 0.6155532971809791,
+        "camera_speed": 0.5087207129854927,
+        "projectm_mix": 0.0291548494460536,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 5,
+        "heartbeat_age": 3.6000069840083597,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "24949aa4da7172f65e29410dd2d46d8e97f98a07d115aa2ab4ea4ccfdf23e58d",
+      "rgb24_sha256": "91945b7a1ab395122099546c23bd865a1a89b22ea93c4757da058543d5700f45",
+      "motion_mean_abs_rgb24": 2.715942144393921,
+      "rgb_mean": 0.050041984766721725,
+      "rgb_max": 0.7827149033546448,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "tunnel",
+          "effective_scene": "tunnel",
+          "particle_mode": "orbit",
+          "palette": "acid_lime",
+          "symmetry": 7,
+          "weight": 0.19337822248912606,
+          "fallback_reason": null
+        },
+        {
+          "requested_scene": "particle_field",
+          "effective_scene": "particle_field",
+          "particle_mode": "rain",
+          "palette": "amber_dusk",
+          "symmetry": 8,
+          "weight": 0.8066217775108739,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 76.00013213300554
+    },
+    {
+      "file": "snapshots/002316-hung_subprocess.png",
+      "keys": [
+        "endpoint:5"
+      ],
+      "index": 2316,
+      "elapsed_s": 77.41263707799953,
+      "phase": "hung_subprocess",
+      "mode": "gpt",
+      "source": "rule (CodexError)",
+      "heartbeat": 5,
+      "state": {
+        "scene_from": "particle_field",
+        "scene_to": "particle_field",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "particle_field",
+            1.0
+          ]
+        ],
+        "palette_from": "amber_dusk",
+        "palette_to": "amber_dusk",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "amber_dusk",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "rain",
+        "particle_mode_to": "rain",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "rain",
+            1.0
+          ]
+        ],
+        "symmetry_from": 8,
+        "symmetry_to": 8,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            8,
+            1.0
+          ]
+        ],
+        "feedback": 0.6200000047683716,
+        "camera_speed": 0.5479999780654907,
+        "projectm_mix": 0.01600000075995922,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 5,
+        "heartbeat_age": 4.99999357300112,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "67e8186625dbf4a184ebaaf2f0028ebc86d7ea5377f9a62c7a9cb07d48992b8a",
+      "rgb24_sha256": "231be8bd6ebf7ed90eda258b6432085e0baf2f14c6c4f81cac7f9570ffb921cd",
+      "motion_mean_abs_rgb24": 0.7775362133979797,
+      "rgb_mean": 0.042651060968637466,
+      "rgb_max": 0.9804641604423523,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "particle_field",
+          "effective_scene": "particle_field",
+          "particle_mode": "rain",
+          "palette": "amber_dusk",
+          "symmetry": 8,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 77.4001187219983
+    },
+    {
+      "file": "snapshots/002702-hung_subprocess.png",
+      "keys": [
+        "hung:6"
+      ],
+      "index": 2702,
+      "elapsed_s": 90.44651166499534,
+      "phase": "hung_subprocess",
+      "mode": "gpt",
+      "source": "rule (CodexError)",
+      "heartbeat": 5,
+      "state": {
+        "scene_from": "particle_field",
+        "scene_to": "particle_field",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "particle_field",
+            1.0
+          ]
+        ],
+        "palette_from": "amber_dusk",
+        "palette_to": "amber_dusk",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "amber_dusk",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "rain",
+        "particle_mode_to": "rain",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "rain",
+            1.0
+          ]
+        ],
+        "symmetry_from": 8,
+        "symmetry_to": 8,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            8,
+            1.0
+          ]
+        ],
+        "feedback": 0.6200000047683716,
+        "camera_speed": 0.5479999780654907,
+        "projectm_mix": 0.01600000075995922,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 5,
+        "heartbeat_age": 18.033323691997794,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "67e8186625dbf4a184ebaaf2f0028ebc86d7ea5377f9a62c7a9cb07d48992b8a",
+      "rgb24_sha256": "c1f9062d7ee15049c8f1ba4c39e775cab6c4eb4948116b19e094322457313b17",
+      "motion_mean_abs_rgb24": 1.191304326057434,
+      "rgb_mean": 0.04546695202589035,
+      "rgb_max": 0.906609058380127,
+      "black": false,
+      "inflight_fake_modes": [
+        "hang"
+      ],
+      "effective_render_layers": [
+        {
+          "requested_scene": "particle_field",
+          "effective_scene": "particle_field",
+          "particle_mode": "rain",
+          "palette": "amber_dusk",
+          "symmetry": 8,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 90.43344884099497
+    },
+    {
+      "file": "snapshots/003053-hung_subprocess.png",
+      "keys": [
+        "endpoint:6"
+      ],
+      "index": 3053,
+      "elapsed_s": 102.61219048600469,
+      "phase": "hung_subprocess",
+      "mode": "gpt",
+      "source": "rule (AI freshness watchdog)",
+      "heartbeat": 6,
+      "state": {
+        "scene_from": "kaleido_mesh",
+        "scene_to": "kaleido_mesh",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "kaleido_mesh",
+            1.0
+          ]
+        ],
+        "palette_from": "mono_white",
+        "palette_to": "mono_white",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "mono_white",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "spiral",
+        "particle_mode_to": "spiral",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "spiral",
+            1.0
+          ]
+        ],
+        "symmetry_from": 7,
+        "symmetry_to": 7,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            7,
+            1.0
+          ]
+        ],
+        "feedback": 0.5730000138282776,
+        "camera_speed": 0.3479999899864197,
+        "projectm_mix": 0.02500000037252903,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 6,
+        "heartbeat_age": 5.100004531006562,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "5a70afcf6b11e63fc74fa68db05488b879d4f4c563338336d65c2e1543e7eea3",
+      "rgb24_sha256": "fba90b568e4495aed6c73913a695582df9ddeafb7367f73d9eaaa966b9096aa0",
+      "motion_mean_abs_rgb24": 14.649999618530273,
+      "rgb_mean": 0.12606602907180786,
+      "rgb_max": 0.9184305667877197,
+      "black": false,
+      "inflight_fake_modes": [
+        "hang"
+      ],
+      "effective_render_layers": [
+        {
+          "requested_scene": "kaleido_mesh",
+          "effective_scene": "kaleido_mesh",
+          "particle_mode": "spiral",
+          "palette": "mono_white",
+          "symmetry": 7,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 102.60012263800309
+    },
+    {
+      "file": "snapshots/003500-gpt_same_mode_recovery.png",
+      "keys": [
+        "phase:gpt_same_mode_recovery"
+      ],
+      "index": 3500,
+      "elapsed_s": 118.0128639350005,
+      "phase": "gpt_same_mode_recovery",
+      "mode": "gpt",
+      "source": "rule (AI freshness watchdog)",
+      "heartbeat": 6,
+      "state": {
+        "scene_from": "kaleido_mesh",
+        "scene_to": "kaleido_mesh",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "kaleido_mesh",
+            1.0
+          ]
+        ],
+        "palette_from": "mono_white",
+        "palette_to": "mono_white",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "mono_white",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "spiral",
+        "particle_mode_to": "spiral",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "spiral",
+            1.0
+          ]
+        ],
+        "symmetry_from": 7,
+        "symmetry_to": 7,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            7,
+            1.0
+          ]
+        ],
+        "feedback": 0.5730000138282776,
+        "camera_speed": 0.3479999899864197,
+        "projectm_mix": 0.02500000037252903,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 6,
+        "heartbeat_age": 20.499999688006938,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "5a70afcf6b11e63fc74fa68db05488b879d4f4c563338336d65c2e1543e7eea3",
+      "rgb24_sha256": "96b659a8ffbf34d5c7f908b7c1178ed002e3bae1a8e9ae3d0088cb797e82793f",
+      "motion_mean_abs_rgb24": 15.315579414367676,
+      "rgb_mean": 0.1162576973438263,
+      "rgb_max": 0.9153319597244263,
+      "black": false,
+      "inflight_fake_modes": [
+        "hang"
+      ],
+      "effective_render_layers": [
+        {
+          "requested_scene": "kaleido_mesh",
+          "effective_scene": "kaleido_mesh",
+          "particle_mode": "spiral",
+          "palette": "mono_white",
+          "symmetry": 7,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 118.00011779500346
+    },
+    {
+      "file": "snapshots/003793-gpt_same_mode_recovery.png",
+      "keys": [
+        "endpoint:7"
+      ],
+      "index": 3793,
+      "elapsed_s": 127.80696158199862,
+      "phase": "gpt_same_mode_recovery",
+      "mode": "gpt",
+      "source": "rule (AI freshness watchdog)",
+      "heartbeat": 7,
+      "state": {
+        "scene_from": "fractal_temple",
+        "scene_to": "fractal_temple",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "fractal_temple",
+            1.0
+          ]
+        ],
+        "palette_from": "violet_cyan",
+        "palette_to": "violet_cyan",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "violet_cyan",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "rain",
+        "particle_mode_to": "rain",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "rain",
+            1.0
+          ]
+        ],
+        "symmetry_from": 7,
+        "symmetry_to": 7,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            7,
+            1.0
+          ]
+        ],
+        "feedback": 0.546999990940094,
+        "camera_speed": 0.38499999046325684,
+        "projectm_mix": 0.009999999776482582,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 7,
+        "heartbeat_age": 5.266634913001326,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "043e25174a4b8e81e859a5805536c17202b9b37d4a66bb27d5c03ba395b6fc33",
+      "rgb24_sha256": "1fe74ca5a49a573d8c1b26777d0c6e2527b3833bae90fc02f7f7462156c2c389",
+      "motion_mean_abs_rgb24": 17.236955642700195,
+      "rgb_mean": 0.12208491563796997,
+      "rgb_max": 0.9483805298805237,
+      "black": false,
+      "inflight_fake_modes": [
+        "ok"
+      ],
+      "effective_render_layers": [
+        {
+          "requested_scene": "fractal_temple",
+          "effective_scene": "fractal_temple",
+          "particle_mode": "rain",
+          "palette": "violet_cyan",
+          "symmetry": 7,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 127.80011362300138
+    },
+    {
+      "file": "snapshots/004018-gpt_same_mode_recovery.png",
+      "keys": [
+        "endpoint:8"
+      ],
+      "index": 4018,
+      "elapsed_s": 135.30553029100702,
+      "phase": "gpt_same_mode_recovery",
+      "mode": "gpt",
+      "source": "gpt",
+      "heartbeat": 8,
+      "state": {
+        "scene_from": "projectm_blend",
+        "scene_to": "projectm_blend",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "projectm_blend",
+            1.0
+          ]
+        ],
+        "palette_from": "amber_dusk",
+        "palette_to": "amber_dusk",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "amber_dusk",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "rain",
+        "particle_mode_to": "rain",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "rain",
+            1.0
+          ]
+        ],
+        "symmetry_from": 3,
+        "symmetry_to": 3,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            3,
+            1.0
+          ]
+        ],
+        "feedback": 0.7110000252723694,
+        "camera_speed": 0.13300000131130219,
+        "projectm_mix": 0.25099998712539673,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 8,
+        "heartbeat_age": 1.7659780480025802,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "2ddc56322a7022eb64d6f0fff42dd6e5d4226992b9629203e8e2d1a10e7f54ad",
+      "rgb24_sha256": "b36bb24ed22388a3ae3e6b668e79b193d6afb572c00b5e0cc885f6260d07eac8",
+      "motion_mean_abs_rgb24": 6.479710102081299,
+      "rgb_mean": 0.12066029757261276,
+      "rgb_max": 0.9249206781387329,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "projectm_blend",
+          "effective_scene": "projectm_blend",
+          "particle_mode": "rain",
+          "palette": "amber_dusk",
+          "symmetry": 3,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 135.30011007499706
+    },
+    {
+      "file": "snapshots/004507-gpt_same_mode_recovery.png",
+      "keys": [
+        "endpoint:9"
+      ],
+      "index": 4507,
+      "elapsed_s": 151.60678599400853,
+      "phase": "gpt_same_mode_recovery",
+      "mode": "gpt",
+      "source": "gpt",
+      "heartbeat": 9,
+      "state": {
+        "scene_from": "tunnel",
+        "scene_to": "tunnel",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "tunnel",
+            1.0
+          ]
+        ],
+        "palette_from": "infrared",
+        "palette_to": "infrared",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "infrared",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "spiral",
+        "particle_mode_to": "spiral",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "spiral",
+            1.0
+          ]
+        ],
+        "symmetry_from": 15,
+        "symmetry_to": 15,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            15,
+            1.0
+          ]
+        ],
+        "feedback": 0.5270000100135803,
+        "camera_speed": 0.11800000071525574,
+        "projectm_mix": 0.4000000059604645,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 9,
+        "heartbeat_age": 0.0,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "cbb1547ff989d000aa20e99dd692979041318396b584f511402f476011ebd17c",
+      "rgb24_sha256": "ff864c00e535a35bd292a2b122f4d99f28130235163f899b7bbea57c51a91f15",
+      "motion_mean_abs_rgb24": 16.019203186035156,
+      "rgb_mean": 0.07987750321626663,
+      "rgb_max": 0.9201800227165222,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "tunnel",
+          "effective_scene": "tunnel",
+          "particle_mode": "spiral",
+          "palette": "infrared",
+          "symmetry": 15,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 151.60012986800575
+    },
+    {
+      "file": "snapshots/005179-manual_takeover.png",
+      "keys": [
+        "phase:manual_takeover"
+      ],
+      "index": 5179,
+      "elapsed_s": 174.01209914499486,
+      "phase": "manual_takeover",
+      "mode": "gpt",
+      "source": "gpt",
+      "heartbeat": 10,
+      "state": {
+        "scene_from": "kaleido_mesh",
+        "scene_to": "kaleido_mesh",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "kaleido_mesh",
+            1.0
+          ]
+        ],
+        "palette_from": "infrared",
+        "palette_to": "infrared",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "infrared",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "burst",
+        "particle_mode_to": "burst",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "burst",
+            1.0
+          ]
+        ],
+        "symmetry_from": 11,
+        "symmetry_to": 11,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            11,
+            1.0
+          ]
+        ],
+        "feedback": 0.47189453828525113,
+        "camera_speed": 0.5469290761525598,
+        "projectm_mix": 0.24808761814115318,
+        "mode": "gpt",
+        "section": "steady",
+        "heartbeat": 10,
+        "heartbeat_age": 4.4333401339972625,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "0d390d77c66aec60eb88bb829138e68bdccf96d051b5f134341a9d54edca94ba",
+      "rgb24_sha256": "919784625b2107d6bbdf49b58d2c3e85d70509633528c75c944b77a4b2cb89d5",
+      "motion_mean_abs_rgb24": 15.824637413024902,
+      "rgb_mean": 0.10616488754749298,
+      "rgb_max": 0.9746411442756653,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "kaleido_mesh",
+          "effective_scene": "kaleido_mesh",
+          "particle_mode": "burst",
+          "palette": "infrared",
+          "symmetry": 11,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 174.00013396500435
+    },
+    {
+      "file": "snapshots/005196-manual_takeover.png",
+      "keys": [
+        "manual"
+      ],
+      "index": 5196,
+      "elapsed_s": 174.57731324799533,
+      "phase": "manual_takeover",
+      "mode": "manual",
+      "source": "manual",
+      "heartbeat": 10,
+      "state": {
+        "scene_from": "particle_field",
+        "scene_to": "particle_field",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "particle_field",
+            1.0
+          ]
+        ],
+        "palette_from": "infrared",
+        "palette_to": "infrared",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "infrared",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "none",
+        "particle_mode_to": "none",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "none",
+            1.0
+          ]
+        ],
+        "symmetry_from": 9,
+        "symmetry_to": 9,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            9,
+            1.0
+          ]
+        ],
+        "feedback": 0.18000000715255737,
+        "camera_speed": 0.699999988079071,
+        "projectm_mix": 0.0,
+        "mode": "manual",
+        "section": "steady",
+        "heartbeat": 10,
+        "heartbeat_age": 5.000064269988798,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [
+          "scene",
+          "palette",
+          "feedback",
+          "symmetry",
+          "camera_speed",
+          "particle_mode",
+          "projectm_mix"
+        ],
+        "drop_armed": false,
+        "drop_count": 0
+      },
+      "control_sha256": "97a867001e5a381058ce6a8a87a3aba069e71e09784324ad4cd38c88520a5118",
+      "rgb24_sha256": "4d5524be48684f126a1c272085c622152321f2eb1528639c71751199c05a4140",
+      "motion_mean_abs_rgb24": 17.446739196777344,
+      "rgb_mean": 0.10686107724905014,
+      "rgb_max": 0.9933614730834961,
+      "black": false,
+      "inflight_fake_modes": [
+        "ok"
+      ],
+      "effective_render_layers": [
+        {
+          "requested_scene": "particle_field",
+          "effective_scene": "kaleido_mesh",
+          "particle_mode": "none",
+          "palette": "infrared",
+          "symmetry": 9,
+          "weight": 1.0,
+          "fallback_reason": "particle_field_none_has_no_animated_geometry"
+        }
+      ],
+      "safety_fallback_applied": true,
+      "control_timestamp_s": 174.5668581009959
+    },
+    {
+      "file": "snapshots/005779-explicit_rule.png",
+      "keys": [
+        "phase:explicit_rule"
+      ],
+      "index": 5779,
+      "elapsed_s": 194.00663435799652,
+      "phase": "explicit_rule",
+      "mode": "rule",
+      "source": "gpt",
+      "heartbeat": 11,
+      "state": {
+        "scene_from": "particle_field",
+        "scene_to": "particle_field",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "particle_field",
+            1.0
+          ]
+        ],
+        "palette_from": "infrared",
+        "palette_to": "infrared",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "infrared",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "none",
+        "particle_mode_to": "none",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "none",
+            1.0
+          ]
+        ],
+        "symmetry_from": 9,
+        "symmetry_to": 9,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            9,
+            1.0
+          ]
+        ],
+        "feedback": 0.18000000715255737,
+        "camera_speed": 0.699999988079071,
+        "projectm_mix": 0.0,
+        "mode": "rule",
+        "section": "steady",
+        "heartbeat": 11,
+        "heartbeat_age": 1.4332632320001721,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [
+          "scene",
+          "palette",
+          "feedback",
+          "symmetry",
+          "camera_speed",
+          "particle_mode",
+          "projectm_mix"
+        ],
+        "drop_armed": false,
+        "drop_count": 0
+      },
+      "control_sha256": "97a867001e5a381058ce6a8a87a3aba069e71e09784324ad4cd38c88520a5118",
+      "rgb24_sha256": "a38dccab4bb3f2848fec9fed855ec122f29af93526b77fcdfc42633bb235144f",
+      "motion_mean_abs_rgb24": 18.11739158630371,
+      "rgb_mean": 0.09850945323705673,
+      "rgb_max": 0.9955548644065857,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "particle_field",
+          "effective_scene": "kaleido_mesh",
+          "particle_mode": "none",
+          "palette": "infrared",
+          "symmetry": 9,
+          "weight": 1.0,
+          "fallback_reason": "particle_field_none_has_no_animated_geometry"
+        }
+      ],
+      "safety_fallback_applied": true,
+      "control_timestamp_s": 194.00016384200717
+    },
+    {
+      "file": "snapshots/006481-explicit_rule.png",
+      "keys": [
+        "endpoint:13"
+      ],
+      "index": 6481,
+      "elapsed_s": 217.41389365399664,
+      "phase": "explicit_rule",
+      "mode": "rule",
+      "source": "rule",
+      "heartbeat": 13,
+      "state": {
+        "scene_from": "particle_field",
+        "scene_to": "particle_field",
+        "scene_mix": 1.0,
+        "scene_weights": [
+          [
+            "particle_field",
+            1.0
+          ]
+        ],
+        "palette_from": "amber_dusk",
+        "palette_to": "amber_dusk",
+        "palette_mix": 1.0,
+        "palette_weights": [
+          [
+            "amber_dusk",
+            1.0
+          ]
+        ],
+        "particle_mode_from": "orbit",
+        "particle_mode_to": "orbit",
+        "particle_mode_mix": 1.0,
+        "particle_mode_weights": [
+          [
+            "orbit",
+            1.0
+          ]
+        ],
+        "symmetry_from": 3,
+        "symmetry_to": 3,
+        "symmetry_mix": 1.0,
+        "symmetry_weights": [
+          [
+            3,
+            1.0
+          ]
+        ],
+        "feedback": 0.4909999966621399,
+        "camera_speed": 0.5920000076293945,
+        "projectm_mix": 0.09300000220537186,
+        "mode": "rule",
+        "section": "steady",
+        "heartbeat": 13,
+        "heartbeat_age": 5.233338994992664,
+        "heartbeat_stale": false,
+        "pending_fields": [],
+        "frozen_fields": [],
+        "drop_armed": true,
+        "drop_count": 0
+      },
+      "control_sha256": "4b40626f78fb478fa62974ee1df47f82c0a847197a905c7a31f113d4cb3baaa7",
+      "rgb24_sha256": "ae72a2301717f7ce9de80e179b819e0771e5d50071946dd0ac903b8105dd3bdb",
+      "motion_mean_abs_rgb24": 0.25652173161506653,
+      "rgb_mean": 0.043215565383434296,
+      "rgb_max": 0.9997318387031555,
+      "black": false,
+      "inflight_fake_modes": [],
+      "effective_render_layers": [
+        {
+          "requested_scene": "particle_field",
+          "effective_scene": "particle_field",
+          "particle_mode": "orbit",
+          "palette": "amber_dusk",
+          "symmetry": 3,
+          "weight": 1.0,
+          "fallback_reason": null
+        }
+      ],
+      "safety_fallback_applied": false,
+      "control_timestamp_s": 217.40010669799813
+    }
+  ],
+  "active_wall_seconds": 220.000125741004,
+  "rendered_frames": 6559,
+  "black_frames": 0,
+  "max_frame_gap_s": 0.2785878120048437,
+  "longest_exact_repeat_s": 0.0,
+  "frame_groups": {
+    "gpt_success": {
+      "frames": 957,
+      "changed_frames": 956,
+      "motion_total_rgb24": 7200.211952924728,
+      "first_elapsed_s": 0.036855006008408964,
+      "last_elapsed_s": 31.97852798399981,
+      "first_sha256": "40454bcf903af4b5a5fe6106622f5973829e9ec2510678ff2d3120a4fa24c42c",
+      "last_sha256": "99d25558f84b24c34c91ea35881aac0f5c8b080de27959b5ca3e20ccd8570115"
+    },
+    "process_failure": {
+      "frames": 660,
+      "changed_frames": 660,
+      "motion_total_rgb24": 8728.756508350372,
+      "first_elapsed_s": 32.010610943994834,
+      "last_elapsed_s": 53.97286800800066,
+      "first_sha256": "a4a18b6554333648a25a3ba3b286c2be9524c141e21ffcc5a0fd2d71ade07caa",
+      "last_sha256": "83ac606e23836a0fc89e70c9cb1edaceba86aa849e743e96297f1893d5a4a05b"
+    },
+    "malformed_output": {
+      "frames": 658,
+      "changed_frames": 658,
+      "motion_total_rgb24": 3674.5963695049286,
+      "first_elapsed_s": 54.00649000900739,
+      "last_elapsed_s": 75.98616572200262,
+      "first_sha256": "ecdbbf88b6e4165780fce1fc0a7bd0aaf3e66fe3c829219fcbc06f9c6734927d",
+      "last_sha256": "09338e6ed8217c559968ad89e2e9ff31bd6cc4a3845915b8f69269611720a01e"
+    },
+    "hung_subprocess": {
+      "frames": 1225,
+      "changed_frames": 1225,
+      "motion_total_rgb24": 8180.619212269783,
+      "first_elapsed_s": 76.02010949299438,
+      "last_elapsed_s": 117.98014069300552,
+      "first_sha256": "91945b7a1ab395122099546c23bd865a1a89b22ea93c4757da058543d5700f45",
+      "last_sha256": "644b8db1c7b83d6bd4b71ed8ceda3b9c6c673829a2ef2fd7d54a68fdc5254c6f"
+    },
+    "actual_hang_inflight": {
+      "frames": 872,
+      "changed_frames": 872,
+      "motion_total_rgb24": 9066.265586167574,
+      "first_elapsed_s": 90.44651166499534,
+      "last_elapsed_s": 120.44493305400829,
+      "first_sha256": "c1f9062d7ee15049c8f1ba4c39e775cab6c4eb4948116b19e094322457313b17",
+      "last_sha256": "6e2b427faac83a3ef50f30293c716dad6f8c312449a1a1adfec144eeea84fa2e"
+    },
+    "gpt_same_mode_recovery": {
+      "frames": 1679,
+      "changed_frames": 1679,
+      "motion_total_rgb24": 14439.592769086361,
+      "first_elapsed_s": 118.0128639350005,
+      "last_elapsed_s": 173.9786101040081,
+      "first_sha256": "96b659a8ffbf34d5c7f908b7c1178ed002e3bae1a8e9ae3d0088cb797e82793f",
+      "last_sha256": "e735d0e010759e371303441ea9742a59b6c6ab583e6ac25fb3755e5e17ebd9fd"
+    },
+    "manual_takeover": {
+      "frames": 600,
+      "changed_frames": 600,
+      "motion_total_rgb24": 10682.669574737549,
+      "first_elapsed_s": 174.01209914499486,
+      "last_elapsed_s": 193.97212501600734,
+      "first_sha256": "919784625b2107d6bbdf49b58d2c3e85d70509633528c75c944b77a4b2cb89d5",
+      "last_sha256": "141f47472457b341da507986aaa7793e1755741ab36a1521327214506f3d3bee"
+    },
+    "actual_manual_mode": {
+      "frames": 583,
+      "changed_frames": 583,
+      "motion_total_rgb24": 10428.647833824158,
+      "first_elapsed_s": 174.57731324799533,
+      "last_elapsed_s": 193.97212501600734,
+      "first_sha256": "4d5524be48684f126a1c272085c622152321f2eb1528639c71751199c05a4140",
+      "last_sha256": "141f47472457b341da507986aaa7793e1755741ab36a1521327214506f3d3bee"
+    },
+    "empty_particle_safety_fallback": {
+      "frames": 1285,
+      "changed_frames": 1285,
+      "motion_total_rgb24": 21107.033693768084,
+      "first_elapsed_s": 174.57731324799533,
+      "last_elapsed_s": 217.38670279999496,
+      "first_sha256": "4d5524be48684f126a1c272085c622152321f2eb1528639c71751199c05a4140",
+      "last_sha256": "032e187d567eae2cbcb86f6cffea3376834118a524f58f37c9b11f0c1b75d481"
+    },
+    "explicit_rule": {
+      "frames": 780,
+      "changed_frames": 780,
+      "motion_total_rgb24": 10697.971729516983,
+      "first_elapsed_s": 194.00663435799652,
+      "last_elapsed_s": 219.98033984799986,
+      "first_sha256": "a38dccab4bb3f2848fec9fed855ec122f29af93526b77fcdfc42633bb235144f",
+      "last_sha256": "199a2c98b02582baaa7065f9da1a39a57e349c9cf44df1ee61fb13d7f7a36c5b"
+    }
+  },
+  "manual_control_signatures": 1,
+  "manual_values_match": true,
+  "render_layers_validated": 6559,
+  "requested_scene_draws": {
+    "tunnel": 1622,
+    "fractal_temple": 1981,
+    "projectm_blend": 903,
+    "particle_field": 2393,
+    "kaleido_mesh": 1026
+  },
+  "effective_scene_draws": {
+    "tunnel": 1622,
+    "fractal_temple": 1981,
+    "projectm_blend": 903,
+    "particle_field": 1108,
+    "kaleido_mesh": 2311
+  },
+  "renderer_effective_scene_draws": {
+    "tunnel": 1622,
+    "fractal_temple": 1981,
+    "projectm_blend": 903,
+    "particle_field": 1108,
+    "kaleido_mesh": 2311
+  },
+  "empty_particle_fallback_draws": 1285,
+  "empty_particle_fallback_frames": 1285,
+  "raw_draws": 7925,
+  "raw_validated": 7925,
+  "render_p95_upper_ms": 20.0,
+  "decisions": [
+    {
+      "t": 13.171,
+      "wall": "2026-10-06T17:07:46",
+      "section": "steady",
+      "source": "gpt",
+      "latency_s": 13.039,
+      "heartbeat": 1,
+      "decision": {
+        "scene": "fractal_temple",
+        "palette": "violet_cyan",
+        "feedback": 0.826,
+        "symmetry": 2,
+        "camera_speed": 0.557,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.635,
+        "transition": {
+          "mode": "on_next_kick",
+          "beats": 6
+        },
+        "on_drop": {
+          "scene": "fractal_temple",
+          "palette": "amber_dusk",
+          "particle_mode": "none"
+        },
+        "intent": "fake codex #30：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "t": 31.243,
+      "wall": "2026-10-06T17:08:04",
+      "section": "steady",
+      "source": "gpt",
+      "latency_s": 13.037,
+      "heartbeat": 2,
+      "decision": {
+        "scene": "projectm_blend",
+        "palette": "amber_dusk",
+        "feedback": 0.527,
+        "symmetry": 8,
+        "camera_speed": 0.098,
+        "particle_mode": "orbit",
+        "projectm_mix": 0.553,
+        "transition": {
+          "mode": "glide",
+          "beats": 14
+        },
+        "on_drop": {
+          "scene": "particle_field",
+          "palette": "infrared",
+          "particle_mode": "none"
+        },
+        "intent": "fake codex #30：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "t": 36.286,
+      "wall": "2026-10-06T17:08:09",
+      "section": "steady",
+      "source": "rule (CodexError)",
+      "latency_s": 0.055,
+      "heartbeat": 3,
+      "decision": {
+        "scene": "fractal_temple",
+        "palette": "acid_lime",
+        "feedback": 0.44,
+        "symmetry": 6,
+        "camera_speed": 0.338,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.029,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "fractal_temple",
+          "palette": "amber_dusk",
+          "particle_mode": "burst"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      },
+      "error": "codex exec exited 1. stderr tail: fake_codex: stream error: exceeded retry limit (simulated Codex failure, AMV_FAKE_CODEX_MODE=fail)"
+    },
+    {
+      "t": 54.348,
+      "wall": "2026-10-06T17:08:27",
+      "section": "steady",
+      "source": "rule (CodexError)",
+      "latency_s": 0.056,
+      "heartbeat": 4,
+      "decision": {
+        "scene": "tunnel",
+        "palette": "acid_lime",
+        "feedback": 0.596,
+        "symmetry": 7,
+        "camera_speed": 0.336,
+        "particle_mode": "orbit",
+        "projectm_mix": 0.087,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "particle_field",
+          "palette": "mono_white",
+          "particle_mode": "spiral"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      },
+      "error": "codex output was not valid JSON: Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "t": 72.392,
+      "wall": "2026-10-06T17:08:45",
+      "section": "steady",
+      "source": "rule (CodexError)",
+      "latency_s": 0.051,
+      "heartbeat": 5,
+      "decision": {
+        "scene": "particle_field",
+        "palette": "amber_dusk",
+        "feedback": 0.62,
+        "symmetry": 8,
+        "camera_speed": 0.548,
+        "particle_mode": "rain",
+        "projectm_mix": 0.016,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "tunnel",
+          "palette": "infrared",
+          "particle_mode": "orbit"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      },
+      "error": "codex output was not valid JSON: Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "t": 97.482,
+      "wall": "2026-10-06T17:09:11",
+      "section": "steady",
+      "source": "rule (AI freshness watchdog)",
+      "latency_s": 25.09,
+      "heartbeat": 6,
+      "decision": {
+        "scene": "kaleido_mesh",
+        "palette": "mono_white",
+        "feedback": 0.573,
+        "symmetry": 7,
+        "camera_speed": 0.348,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.025,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "kaleido_mesh",
+          "palette": "violet_cyan",
+          "particle_mode": "burst"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "t": 122.526,
+      "wall": "2026-10-06T17:09:36",
+      "section": "steady",
+      "source": "rule (AI freshness watchdog)",
+      "latency_s": 25.042,
+      "heartbeat": 7,
+      "decision": {
+        "scene": "fractal_temple",
+        "palette": "violet_cyan",
+        "feedback": 0.547,
+        "symmetry": 7,
+        "camera_speed": 0.385,
+        "particle_mode": "rain",
+        "projectm_mix": 0.01,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "particle_field",
+          "palette": "amber_dusk",
+          "particle_mode": "orbit"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "t": 133.533,
+      "wall": "2026-10-06T17:09:47",
+      "section": "steady",
+      "source": "gpt",
+      "latency_s": 13.034,
+      "heartbeat": 8,
+      "decision": {
+        "scene": "projectm_blend",
+        "palette": "amber_dusk",
+        "feedback": 0.711,
+        "symmetry": 3,
+        "camera_speed": 0.133,
+        "particle_mode": "rain",
+        "projectm_mix": 0.251,
+        "transition": {
+          "mode": "glide",
+          "beats": 4
+        },
+        "on_drop": {
+          "scene": "tunnel",
+          "palette": "infrared",
+          "particle_mode": "rain"
+        },
+        "intent": "fake codex #80：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "t": 151.566,
+      "wall": "2026-10-06T17:10:05",
+      "section": "steady",
+      "source": "gpt",
+      "latency_s": 13.044,
+      "heartbeat": 9,
+      "decision": {
+        "scene": "tunnel",
+        "palette": "infrared",
+        "feedback": 0.527,
+        "symmetry": 15,
+        "camera_speed": 0.118,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.4,
+        "transition": {
+          "mode": "cut",
+          "beats": 10
+        },
+        "on_drop": {
+          "scene": "kaleido_mesh",
+          "palette": "amber_dusk",
+          "particle_mode": "rain"
+        },
+        "intent": "fake codex #f5：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "t": 169.565,
+      "wall": "2026-10-06T17:10:23",
+      "section": "steady",
+      "source": "gpt",
+      "latency_s": 13.039,
+      "heartbeat": 10,
+      "decision": {
+        "scene": "kaleido_mesh",
+        "palette": "infrared",
+        "feedback": 0.453,
+        "symmetry": 11,
+        "camera_speed": 0.694,
+        "particle_mode": "burst",
+        "projectm_mix": 0.196,
+        "transition": {
+          "mode": "on_next_kick",
+          "beats": 16
+        },
+        "on_drop": {
+          "scene": "kaleido_mesh",
+          "palette": "mono_white",
+          "particle_mode": "rain"
+        },
+        "intent": "fake codex #37：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "t": 194.062,
+      "wall": "2026-10-06T17:10:47",
+      "section": "steady",
+      "source": "rule",
+      "latency_s": 0.001,
+      "heartbeat": 12,
+      "decision": {
+        "scene": "tunnel",
+        "palette": "acid_lime",
+        "feedback": 0.485,
+        "symmetry": 4,
+        "camera_speed": 0.559,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.111,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "tunnel",
+          "palette": "mono_white",
+          "particle_mode": "burst"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "t": 212.16,
+      "wall": "2026-10-06T17:11:05",
+      "section": "steady",
+      "source": "rule",
+      "latency_s": 0.001,
+      "heartbeat": 13,
+      "decision": {
+        "scene": "particle_field",
+        "palette": "amber_dusk",
+        "feedback": 0.491,
+        "symmetry": 3,
+        "camera_speed": 0.592,
+        "particle_mode": "orbit",
+        "projectm_mix": 0.093,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "kaleido_mesh",
+          "palette": "infrared",
+          "particle_mode": "spiral"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    }
+  ],
+  "publications": [
+    {
+      "elapsed_s": 13.170695642998908,
+      "mode": "gpt",
+      "heartbeat": 1
+    },
+    {
+      "elapsed_s": 31.242522483997163,
+      "mode": "gpt",
+      "heartbeat": 2
+    },
+    {
+      "elapsed_s": 36.28642944400781,
+      "mode": "gpt",
+      "heartbeat": 3
+    },
+    {
+      "elapsed_s": 54.347601589994156,
+      "mode": "gpt",
+      "heartbeat": 4
+    },
+    {
+      "elapsed_s": 72.39210447500227,
+      "mode": "gpt",
+      "heartbeat": 5
+    },
+    {
+      "elapsed_s": 97.48350994200155,
+      "mode": "gpt",
+      "heartbeat": 6
+    },
+    {
+      "elapsed_s": 122.52677237300668,
+      "mode": "gpt",
+      "heartbeat": 7
+    },
+    {
+      "elapsed_s": 133.53393817599863,
+      "mode": "gpt",
+      "heartbeat": 8
+    },
+    {
+      "elapsed_s": 151.56564750500547,
+      "mode": "gpt",
+      "heartbeat": 9
+    },
+    {
+      "elapsed_s": 169.56497654599661,
+      "mode": "gpt",
+      "heartbeat": 10
+    },
+    {
+      "elapsed_s": 194.0627551350044,
+      "mode": "rule",
+      "heartbeat": 12
+    },
+    {
+      "elapsed_s": 212.16044859999965,
+      "mode": "rule",
+      "heartbeat": 13
+    }
+  ],
+  "calls": [
+    {
+      "start_elapsed_s": 0.13151481699605938,
+      "cycle": 0,
+      "phase": "gpt_success",
+      "fake_mode": "ok",
+      "configured_delay_s": 13.0,
+      "outcome": "ok",
+      "end_elapsed_s": 13.169609878998017
+    },
+    {
+      "start_elapsed_s": 18.20605783299834,
+      "cycle": 0,
+      "phase": "gpt_success",
+      "fake_mode": "ok",
+      "configured_delay_s": 13.0,
+      "outcome": "ok",
+      "end_elapsed_s": 31.2414527140063
+    },
+    {
+      "start_elapsed_s": 36.231446831006906,
+      "cycle": 0,
+      "phase": "process_failure",
+      "fake_mode": "fail",
+      "configured_delay_s": 0.02,
+      "outcome": "expected_injected_error",
+      "error_type": "CodexError",
+      "error": "codex exec exited 1. stderr tail: fake_codex: stream error: exceeded retry limit (simulated Codex failure, AMV_FAKE_CODEX_MODE=fail)",
+      "end_elapsed_s": 36.28521606899449
+    },
+    {
+      "start_elapsed_s": 54.29140988300787,
+      "cycle": 0,
+      "phase": "malformed_output",
+      "fake_mode": "garbage",
+      "configured_delay_s": 0.02,
+      "outcome": "expected_injected_error",
+      "error_type": "CodexError",
+      "error": "codex output was not valid JSON: Expecting value: line 1 column 1 (char 0)",
+      "end_elapsed_s": 54.34650253600557
+    },
+    {
+      "start_elapsed_s": 72.34089458899689,
+      "cycle": 0,
+      "phase": "malformed_output",
+      "fake_mode": "garbage",
+      "configured_delay_s": 0.02,
+      "outcome": "expected_injected_error",
+      "error_type": "CodexError",
+      "error": "codex output was not valid JSON: Expecting value: line 1 column 1 (char 0)",
+      "end_elapsed_s": 72.39078369700292
+    },
+    {
+      "start_elapsed_s": 90.44205419599894,
+      "cycle": 0,
+      "phase": "hung_subprocess",
+      "fake_mode": "hang",
+      "configured_delay_s": 0.02,
+      "outcome": "expected_injected_error",
+      "error_type": "CodexError",
+      "error": "codex exec timed out after 30s. stderr tail: ",
+      "end_elapsed_s": 120.46750211699691
+    },
+    {
+      "start_elapsed_s": 120.49927190500603,
+      "cycle": 0,
+      "phase": "gpt_same_mode_recovery",
+      "fake_mode": "ok",
+      "configured_delay_s": 13.0,
+      "outcome": "ok",
+      "end_elapsed_s": 133.53218482800003
+    },
+    {
+      "start_elapsed_s": 138.5213103950082,
+      "cycle": 0,
+      "phase": "gpt_same_mode_recovery",
+      "fake_mode": "ok",
+      "configured_delay_s": 13.0,
+      "outcome": "ok",
+      "end_elapsed_s": 151.56460691899701
+    },
+    {
+      "start_elapsed_s": 156.5262960980035,
+      "cycle": 0,
+      "phase": "gpt_same_mode_recovery",
+      "fake_mode": "ok",
+      "configured_delay_s": 13.0,
+      "outcome": "ok",
+      "end_elapsed_s": 169.56398066799738
+    },
+    {
+      "start_elapsed_s": 174.54280064700288,
+      "cycle": 0,
+      "phase": "manual_takeover",
+      "fake_mode": "ok",
+      "configured_delay_s": 13.0,
+      "outcome": "ok",
+      "end_elapsed_s": 187.58223670900043
+    }
+  ],
+  "peak_fake_subprocesses": 1,
+  "feature_buffer_metrics": {
+    "counts": {
+      "bass": 2200,
+      "mid": 2200,
+      "high": 2200,
+      "energy": 2200,
+      "centroid": 2200,
+      "kick": 2200
+    },
+    "max_gaps_s": {
+      "bass": 0.12040218399488367,
+      "mid": 0.12040971100213937,
+      "high": 0.12043486500624567,
+      "energy": 0.12047474399150815,
+      "centroid": 0.1204192609875463,
+      "kick": 0.12041982600931078
+    }
+  },
+  "pcm_peak": 0.5590758323669434,
+  "audio_analysis_blocks": 2200,
+  "audio_analysis_samples": 10560000,
+  "sidecar_sections": [],
+  "decision_provenance": [
+    {
+      "heartbeat": 1,
+      "source": "gpt",
+      "error": null,
+      "published_elapsed_s": 13.171,
+      "decision_latency_s": 13.039,
+      "since_previous_publication_s": 13.171,
+      "wire_received_elapsed_s": 13.201736914998037,
+      "first_frame": {
+        "elapsed_s": 13.206737318003434,
+        "frame_index": 395,
+        "rgb24_sha256": "5f497d84e288797e23f3f79768e31dbf0e40d49f43da7b673c846a5a02ad7495",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "spiral",
+            "palette": "violet_cyan",
+            "symmetry": 6,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": {
+        "elapsed_s": 15.706736210995587,
+        "frame_index": 470,
+        "rgb24_sha256": "635a50485144c8e09e4f829e4c19f431ca2488526fe4997bd4a64dd0a0c9e888",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "violet_cyan",
+            "symmetry": 2,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 13.238589425003738,
+        "frame_index": 396,
+        "rgb24_sha256": "8c176505335958a1feebad3a5af159c74ef9899d787f0ad46ed31ec52cd29135",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "violet_cyan",
+            "symmetry": 2,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.03573731800343438,
+      "decision": {
+        "scene": "fractal_temple",
+        "palette": "violet_cyan",
+        "feedback": 0.826,
+        "symmetry": 2,
+        "camera_speed": 0.557,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.635,
+        "transition": {
+          "mode": "on_next_kick",
+          "beats": 6
+        },
+        "on_drop": {
+          "scene": "fractal_temple",
+          "palette": "amber_dusk",
+          "particle_mode": "none"
+        },
+        "intent": "fake codex #30：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "heartbeat": 2,
+      "source": "gpt",
+      "error": null,
+      "published_elapsed_s": 31.243,
+      "decision_latency_s": 13.037,
+      "since_previous_publication_s": 18.072,
+      "wire_received_elapsed_s": 31.268401709006866,
+      "first_frame": {
+        "elapsed_s": 31.279162456004997,
+        "frame_index": 935,
+        "rgb24_sha256": "56ee9c289f9bc36ba8fdf4bbe40a02c6850a68a1ad37ca4430392de11b93671e",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "violet_cyan",
+            "symmetry": 2,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": null,
+      "first_changed_frame": {
+        "elapsed_s": 31.306842846999643,
+        "frame_index": 936,
+        "rgb24_sha256": "8757508dfe13970f8cde14d61d655a70250698888310d3271d167919a5d95c49",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "violet_cyan",
+            "symmetry": 2,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.036162456004998234,
+      "decision": {
+        "scene": "projectm_blend",
+        "palette": "amber_dusk",
+        "feedback": 0.527,
+        "symmetry": 8,
+        "camera_speed": 0.098,
+        "particle_mode": "orbit",
+        "projectm_mix": 0.553,
+        "transition": {
+          "mode": "glide",
+          "beats": 14
+        },
+        "on_drop": {
+          "scene": "particle_field",
+          "palette": "infrared",
+          "particle_mode": "none"
+        },
+        "intent": "fake codex #30：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "heartbeat": 3,
+      "source": "rule (CodexError)",
+      "error": "codex exec exited 1. stderr tail: fake_codex: stream error: exceeded retry limit (simulated Codex failure, AMV_FAKE_CODEX_MODE=fail)",
+      "published_elapsed_s": 36.286,
+      "decision_latency_s": 0.055,
+      "since_previous_publication_s": 5.043000000000003,
+      "wire_received_elapsed_s": 36.302001867006766,
+      "first_frame": {
+        "elapsed_s": 36.31284690600296,
+        "frame_index": 1086,
+        "rgb24_sha256": "ad55ace5862e57bf37c823e077fa0d16de928a3a865e93b704a3aaaa761f4e3d",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "violet_cyan",
+            "symmetry": 2,
+            "weight": 0.09872165791530063,
+            "fallback_reason": null
+          },
+          {
+            "requested_scene": "projectm_blend",
+            "effective_scene": "projectm_blend",
+            "particle_mode": "orbit",
+            "palette": "amber_dusk",
+            "symmetry": 8,
+            "weight": 0.9012783420846994,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": {
+        "elapsed_s": 41.43869470299978,
+        "frame_index": 1240,
+        "rgb24_sha256": "eee7493f84997ec863dede00e0a73470ac5f32b847c7ce05c11013a8a2130317",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "acid_lime",
+            "symmetry": 6,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 36.31284690600296,
+        "frame_index": 1086,
+        "rgb24_sha256": "ad55ace5862e57bf37c823e077fa0d16de928a3a865e93b704a3aaaa761f4e3d",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "violet_cyan",
+            "symmetry": 2,
+            "weight": 0.09872165791530063,
+            "fallback_reason": null
+          },
+          {
+            "requested_scene": "projectm_blend",
+            "effective_scene": "projectm_blend",
+            "particle_mode": "orbit",
+            "palette": "amber_dusk",
+            "symmetry": 8,
+            "weight": 0.9012783420846994,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.026846906002958804,
+      "decision": {
+        "scene": "fractal_temple",
+        "palette": "acid_lime",
+        "feedback": 0.44,
+        "symmetry": 6,
+        "camera_speed": 0.338,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.029,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "fractal_temple",
+          "palette": "amber_dusk",
+          "particle_mode": "burst"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "heartbeat": 4,
+      "source": "rule (CodexError)",
+      "error": "codex output was not valid JSON: Expecting value: line 1 column 1 (char 0)",
+      "published_elapsed_s": 54.348,
+      "decision_latency_s": 0.056,
+      "since_previous_publication_s": 18.061999999999998,
+      "wire_received_elapsed_s": 54.36824635400262,
+      "first_frame": {
+        "elapsed_s": 54.37391291100357,
+        "frame_index": 1628,
+        "rgb24_sha256": "e9f4ec566ce5f8afd33068ce416a64ef6e0ddceedec302b354a7da0fbd2f3f49",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "acid_lime",
+            "symmetry": 6,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": {
+        "elapsed_s": 59.40528532999451,
+        "frame_index": 1779,
+        "rgb24_sha256": "6f75fc4f95920edb514ad4e06e3402828e4ff05a87870e3df9afdcda68c60bac",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "orbit",
+            "palette": "acid_lime",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 54.406713787000626,
+        "frame_index": 1629,
+        "rgb24_sha256": "3f6941f8dd1bdccb188654e35a61f309d760e073918fc7d8abd4c7ac1262cba3",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "spiral",
+            "palette": "acid_lime",
+            "symmetry": 6,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.025912911003572958,
+      "decision": {
+        "scene": "tunnel",
+        "palette": "acid_lime",
+        "feedback": 0.596,
+        "symmetry": 7,
+        "camera_speed": 0.336,
+        "particle_mode": "orbit",
+        "projectm_mix": 0.087,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "particle_field",
+          "palette": "mono_white",
+          "particle_mode": "spiral"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "heartbeat": 5,
+      "source": "rule (CodexError)",
+      "error": "codex output was not valid JSON: Expecting value: line 1 column 1 (char 0)",
+      "published_elapsed_s": 72.392,
+      "decision_latency_s": 0.051,
+      "since_previous_publication_s": 18.043999999999997,
+      "wire_received_elapsed_s": 72.40158289199462,
+      "first_frame": {
+        "elapsed_s": 72.40677030800725,
+        "frame_index": 2169,
+        "rgb24_sha256": "16c05f028d627bacfeb96f4ed75697ead7076e8a8125734ad3e25d553f83b712",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "orbit",
+            "palette": "acid_lime",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": {
+        "elapsed_s": 77.41263707799953,
+        "frame_index": 2316,
+        "rgb24_sha256": "231be8bd6ebf7ed90eda258b6432085e0baf2f14c6c4f81cac7f9570ffb921cd",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "particle_field",
+            "effective_scene": "particle_field",
+            "particle_mode": "rain",
+            "palette": "amber_dusk",
+            "symmetry": 8,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 72.44313776999479,
+        "frame_index": 2170,
+        "rgb24_sha256": "8c8fbe6fa0fedea704d4d72df169388aa0e2c8e04fe2784cb0edc629aa290152",
+        "source": "rule (CodexError)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "orbit",
+            "palette": "acid_lime",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.014770308007257427,
+      "decision": {
+        "scene": "particle_field",
+        "palette": "amber_dusk",
+        "feedback": 0.62,
+        "symmetry": 8,
+        "camera_speed": 0.548,
+        "particle_mode": "rain",
+        "projectm_mix": 0.016,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "tunnel",
+          "palette": "infrared",
+          "particle_mode": "orbit"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "heartbeat": 6,
+      "source": "rule (AI freshness watchdog)",
+      "error": null,
+      "published_elapsed_s": 97.482,
+      "decision_latency_s": 25.09,
+      "since_previous_publication_s": 25.090000000000003,
+      "wire_received_elapsed_s": 97.5017526360025,
+      "first_frame": {
+        "elapsed_s": 97.51415393600473,
+        "frame_index": 2910,
+        "rgb24_sha256": "f076358c5122ed5a652a5a47c67389167c480d33fb25f3344f98966eda37629a",
+        "source": "rule (AI freshness watchdog)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "particle_field",
+            "effective_scene": "particle_field",
+            "particle_mode": "rain",
+            "palette": "amber_dusk",
+            "symmetry": 8,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": {
+        "elapsed_s": 102.61219048600469,
+        "frame_index": 3053,
+        "rgb24_sha256": "fba90b568e4495aed6c73913a695582df9ddeafb7367f73d9eaaa966b9096aa0",
+        "source": "rule (AI freshness watchdog)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "kaleido_mesh",
+            "effective_scene": "kaleido_mesh",
+            "particle_mode": "spiral",
+            "palette": "mono_white",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 97.54561144100444,
+        "frame_index": 2911,
+        "rgb24_sha256": "28b8b0dfb41e63543f3de7fce6ebadcd8d5b8837c49df1fa0054a5bf445dcd7b",
+        "source": "rule (AI freshness watchdog)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "particle_field",
+            "effective_scene": "particle_field",
+            "particle_mode": "rain",
+            "palette": "amber_dusk",
+            "symmetry": 8,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.032153936004732486,
+      "decision": {
+        "scene": "kaleido_mesh",
+        "palette": "mono_white",
+        "feedback": 0.573,
+        "symmetry": 7,
+        "camera_speed": 0.348,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.025,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "kaleido_mesh",
+          "palette": "violet_cyan",
+          "particle_mode": "burst"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "heartbeat": 7,
+      "source": "rule (AI freshness watchdog)",
+      "error": null,
+      "published_elapsed_s": 122.526,
+      "decision_latency_s": 25.042,
+      "since_previous_publication_s": 25.043999999999997,
+      "wire_received_elapsed_s": 122.53494046900596,
+      "first_frame": {
+        "elapsed_s": 122.54630871600239,
+        "frame_index": 3635,
+        "rgb24_sha256": "34697b9bbdeafa18f34b805caadff2d3723708162bdd415d9427131fb52f402c",
+        "source": "rule (AI freshness watchdog)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "kaleido_mesh",
+            "effective_scene": "kaleido_mesh",
+            "particle_mode": "spiral",
+            "palette": "mono_white",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": {
+        "elapsed_s": 127.80696158199862,
+        "frame_index": 3793,
+        "rgb24_sha256": "1fe74ca5a49a573d8c1b26777d0c6e2527b3833bae90fc02f7f7462156c2c389",
+        "source": "rule (AI freshness watchdog)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "rain",
+            "palette": "violet_cyan",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 122.58002806500008,
+        "frame_index": 3636,
+        "rgb24_sha256": "d5ee0beb85bdfa34344982e3592c14648afe07450251a445d0c0419c8f40ab2b",
+        "source": "rule (AI freshness watchdog)",
+        "effective_render_layers": [
+          {
+            "requested_scene": "kaleido_mesh",
+            "effective_scene": "kaleido_mesh",
+            "particle_mode": "spiral",
+            "palette": "mono_white",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.020308716002389815,
+      "decision": {
+        "scene": "fractal_temple",
+        "palette": "violet_cyan",
+        "feedback": 0.547,
+        "symmetry": 7,
+        "camera_speed": 0.385,
+        "particle_mode": "rain",
+        "projectm_mix": 0.01,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "particle_field",
+          "palette": "amber_dusk",
+          "particle_mode": "orbit"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "heartbeat": 8,
+      "source": "gpt",
+      "error": null,
+      "published_elapsed_s": 133.533,
+      "decision_latency_s": 13.034,
+      "since_previous_publication_s": 11.00699999999999,
+      "wire_received_elapsed_s": 133.5364405910077,
+      "first_frame": {
+        "elapsed_s": 133.54288722100318,
+        "frame_index": 3965,
+        "rgb24_sha256": "2574228a7f6791f2165934521a5e320ae7bf62e3383c157801e56ed1986edad2",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "rain",
+            "palette": "violet_cyan",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": {
+        "elapsed_s": 135.30553029100702,
+        "frame_index": 4018,
+        "rgb24_sha256": "b36bb24ed22388a3ae3e6b668e79b193d6afb572c00b5e0cc885f6260d07eac8",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "projectm_blend",
+            "effective_scene": "projectm_blend",
+            "particle_mode": "rain",
+            "palette": "amber_dusk",
+            "symmetry": 3,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 133.57292895800492,
+        "frame_index": 3966,
+        "rgb24_sha256": "4b91a16d5c157c3a9391cb96ae19d44a7da56f0d5afd3498d16f69cab8fedf19",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "fractal_temple",
+            "effective_scene": "fractal_temple",
+            "particle_mode": "rain",
+            "palette": "violet_cyan",
+            "symmetry": 7,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.009887221003197055,
+      "decision": {
+        "scene": "projectm_blend",
+        "palette": "amber_dusk",
+        "feedback": 0.711,
+        "symmetry": 3,
+        "camera_speed": 0.133,
+        "particle_mode": "rain",
+        "projectm_mix": 0.251,
+        "transition": {
+          "mode": "glide",
+          "beats": 4
+        },
+        "on_drop": {
+          "scene": "tunnel",
+          "palette": "infrared",
+          "particle_mode": "rain"
+        },
+        "intent": "fake codex #80：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "heartbeat": 9,
+      "source": "gpt",
+      "error": null,
+      "published_elapsed_s": 151.566,
+      "decision_latency_s": 13.044,
+      "since_previous_publication_s": 18.033000000000015,
+      "wire_received_elapsed_s": 151.60158674999548,
+      "first_frame": {
+        "elapsed_s": 151.60678599400853,
+        "frame_index": 4507,
+        "rgb24_sha256": "ff864c00e535a35bd292a2b122f4d99f28130235163f899b7bbea57c51a91f15",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "spiral",
+            "palette": "infrared",
+            "symmetry": 15,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": {
+        "elapsed_s": 151.60678599400853,
+        "frame_index": 4507,
+        "rgb24_sha256": "ff864c00e535a35bd292a2b122f4d99f28130235163f899b7bbea57c51a91f15",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "spiral",
+            "palette": "infrared",
+            "symmetry": 15,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 151.60678599400853,
+        "frame_index": 4507,
+        "rgb24_sha256": "ff864c00e535a35bd292a2b122f4d99f28130235163f899b7bbea57c51a91f15",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "spiral",
+            "palette": "infrared",
+            "symmetry": 15,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.040785994008530224,
+      "decision": {
+        "scene": "tunnel",
+        "palette": "infrared",
+        "feedback": 0.527,
+        "symmetry": 15,
+        "camera_speed": 0.118,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.4,
+        "transition": {
+          "mode": "cut",
+          "beats": 10
+        },
+        "on_drop": {
+          "scene": "kaleido_mesh",
+          "palette": "amber_dusk",
+          "particle_mode": "rain"
+        },
+        "intent": "fake codex #f5：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "heartbeat": 10,
+      "source": "gpt",
+      "error": null,
+      "published_elapsed_s": 169.565,
+      "decision_latency_s": 13.039,
+      "since_previous_publication_s": 17.998999999999995,
+      "wire_received_elapsed_s": 169.56822918100806,
+      "first_frame": {
+        "elapsed_s": 169.57561109800008,
+        "frame_index": 5046,
+        "rgb24_sha256": "bd1c0abb7947fa49cf719063b323fe78f639b501d08767806dc5b2b5fbc097a8",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "spiral",
+            "palette": "infrared",
+            "symmetry": 15,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "endpoint_frame": null,
+      "first_changed_frame": {
+        "elapsed_s": 169.605461019004,
+        "frame_index": 5047,
+        "rgb24_sha256": "04b8264bd70da417f2313334a81d23bd9da5b42295491197cbc1d9c9f714d009",
+        "source": "gpt",
+        "effective_render_layers": [
+          {
+            "requested_scene": "tunnel",
+            "effective_scene": "tunnel",
+            "particle_mode": "spiral",
+            "palette": "infrared",
+            "symmetry": 15,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "publication_to_first_frame_s": 0.01061109800008353,
+      "decision": {
+        "scene": "kaleido_mesh",
+        "palette": "infrared",
+        "feedback": 0.453,
+        "symmetry": 11,
+        "camera_speed": 0.694,
+        "particle_mode": "burst",
+        "projectm_mix": 0.196,
+        "transition": {
+          "mode": "on_next_kick",
+          "beats": 16
+        },
+        "on_drop": {
+          "scene": "kaleido_mesh",
+          "palette": "mono_white",
+          "particle_mode": "rain"
+        },
+        "intent": "fake codex #37：依 prompt hash 產生的假決策，用來測 failover 與節奏"
+      }
+    },
+    {
+      "heartbeat": 12,
+      "source": "rule",
+      "error": null,
+      "published_elapsed_s": 194.062,
+      "decision_latency_s": 0.001,
+      "since_previous_publication_s": 24.497000000000014,
+      "wire_received_elapsed_s": 194.06825776500045,
+      "first_frame": {
+        "elapsed_s": 194.07377212299616,
+        "frame_index": 5781,
+        "rgb24_sha256": "2a662f7b000a8a12650d17bace7b2df4028ff12a76243e046b78eadf30a765e1",
+        "source": "rule",
+        "effective_render_layers": [
+          {
+            "requested_scene": "particle_field",
+            "effective_scene": "kaleido_mesh",
+            "particle_mode": "none",
+            "palette": "infrared",
+            "symmetry": 9,
+            "weight": 1.0,
+            "fallback_reason": "particle_field_none_has_no_animated_geometry"
+          }
+        ],
+        "safety_fallback_applied": true
+      },
+      "endpoint_frame": null,
+      "first_changed_frame": null,
+      "publication_to_first_frame_s": 0.011772122996148937,
+      "decision": {
+        "scene": "tunnel",
+        "palette": "acid_lime",
+        "feedback": 0.485,
+        "symmetry": 4,
+        "camera_speed": 0.559,
+        "particle_mode": "spiral",
+        "projectm_mix": 0.111,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "tunnel",
+          "palette": "mono_white",
+          "particle_mode": "burst"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    },
+    {
+      "heartbeat": 13,
+      "source": "rule",
+      "error": null,
+      "published_elapsed_s": 212.16,
+      "decision_latency_s": 0.001,
+      "since_previous_publication_s": 18.097999999999985,
+      "wire_received_elapsed_s": 212.1681626119971,
+      "first_frame": {
+        "elapsed_s": 212.1730966460018,
+        "frame_index": 6324,
+        "rgb24_sha256": "837eeb456e6c8b197c4a0e8d1687e4bdb3748e823e4387e3786527ec9b8f3f10",
+        "source": "rule",
+        "effective_render_layers": [
+          {
+            "requested_scene": "particle_field",
+            "effective_scene": "kaleido_mesh",
+            "particle_mode": "none",
+            "palette": "infrared",
+            "symmetry": 9,
+            "weight": 1.0,
+            "fallback_reason": "particle_field_none_has_no_animated_geometry"
+          }
+        ],
+        "safety_fallback_applied": true
+      },
+      "endpoint_frame": {
+        "elapsed_s": 217.41389365399664,
+        "frame_index": 6481,
+        "rgb24_sha256": "ae72a2301717f7ce9de80e179b819e0771e5d50071946dd0ac903b8105dd3bdb",
+        "source": "rule",
+        "effective_render_layers": [
+          {
+            "requested_scene": "particle_field",
+            "effective_scene": "particle_field",
+            "particle_mode": "orbit",
+            "palette": "amber_dusk",
+            "symmetry": 3,
+            "weight": 1.0,
+            "fallback_reason": null
+          }
+        ],
+        "safety_fallback_applied": false
+      },
+      "first_changed_frame": {
+        "elapsed_s": 212.20540587800497,
+        "frame_index": 6325,
+        "rgb24_sha256": "0045848603c8f0de93209ec8eb0febf80c30fc405d1c57e6b74de8c1fc5bc78c",
+        "source": "rule",
+        "effective_render_layers": [
+          {
+            "requested_scene": "particle_field",
+            "effective_scene": "kaleido_mesh",
+            "particle_mode": "none",
+            "palette": "infrared",
+            "symmetry": 9,
+            "weight": 1.0,
+            "fallback_reason": "particle_field_none_has_no_animated_geometry"
+          }
+        ],
+        "safety_fallback_applied": true
+      },
+      "publication_to_first_frame_s": 0.013096646001798717,
+      "decision": {
+        "scene": "particle_field",
+        "palette": "amber_dusk",
+        "feedback": 0.491,
+        "symmetry": 3,
+        "camera_speed": 0.592,
+        "particle_mode": "orbit",
+        "projectm_mix": 0.093,
+        "transition": {
+          "mode": "glide",
+          "beats": 12
+        },
+        "on_drop": {
+          "scene": "kaleido_mesh",
+          "palette": "infrared",
+          "particle_mode": "spiral"
+        },
+        "intent": "steady：輪替場景與色盤維持新鮮度，參數留在中段等下一個段落"
+      }
+    }
+  ],
+  "fault_timings": [
+    {
+      "fake_mode": "fail",
+      "call_start_elapsed_s": 36.231446831006906,
+      "call_end_elapsed_s": 36.28521606899449,
+      "outcome": "expected_injected_error",
+      "error": "codex exec exited 1. stderr tail: fake_codex: stream error: exceeded retry limit (simulated Codex failure, AMV_FAKE_CODEX_MODE=fail)",
+      "fallback_heartbeat": 3,
+      "fallback_source": "rule (CodexError)",
+      "fresh_age_at_fallback_s": 5.043000000000003,
+      "call_to_rule_publication_s": 0.05455316899309537,
+      "call_to_rule_wire_s": 0.07055503599985968,
+      "call_to_rule_first_frame_s": 0.08140007499605417,
+      "call_to_rule_endpoint_frame_s": 5.207247871992877
+    },
+    {
+      "fake_mode": "garbage",
+      "call_start_elapsed_s": 54.29140988300787,
+      "call_end_elapsed_s": 54.34650253600557,
+      "outcome": "expected_injected_error",
+      "error": "codex output was not valid JSON: Expecting value: line 1 column 1 (char 0)",
+      "fallback_heartbeat": 4,
+      "fallback_source": "rule (CodexError)",
+      "fresh_age_at_fallback_s": 18.061999999999998,
+      "call_to_rule_publication_s": 0.05659011699212613,
+      "call_to_rule_wire_s": 0.0768364709947491,
+      "call_to_rule_first_frame_s": 0.08250302799569909,
+      "call_to_rule_endpoint_frame_s": 5.11387544698664
+    },
+    {
+      "fake_mode": "garbage",
+      "call_start_elapsed_s": 72.34089458899689,
+      "call_end_elapsed_s": 72.39078369700292,
+      "outcome": "expected_injected_error",
+      "error": "codex output was not valid JSON: Expecting value: line 1 column 1 (char 0)",
+      "fallback_heartbeat": 5,
+      "fallback_source": "rule (CodexError)",
+      "fresh_age_at_fallback_s": 18.043999999999997,
+      "call_to_rule_publication_s": 0.05110541100310684,
+      "call_to_rule_wire_s": 0.060688302997732535,
+      "call_to_rule_first_frame_s": 0.06587571901036426,
+      "call_to_rule_endpoint_frame_s": 5.071742489002645
+    },
+    {
+      "fake_mode": "hang",
+      "call_start_elapsed_s": 90.44205419599894,
+      "call_end_elapsed_s": 120.46750211699691,
+      "outcome": "expected_injected_error",
+      "error": "codex exec timed out after 30s. stderr tail: ",
+      "fallback_heartbeat": 6,
+      "fallback_source": "rule (AI freshness watchdog)",
+      "fresh_age_at_fallback_s": 25.090000000000003,
+      "call_to_rule_publication_s": 7.039945804001064,
+      "call_to_rule_wire_s": 7.059698440003558,
+      "call_to_rule_first_frame_s": 7.072099740005797,
+      "call_to_rule_endpoint_frame_s": 12.170136290005757
+    }
+  ],
+  "alive_threads": [],
+  "resources_released": true,
+  "source_unchanged_during_run": true,
+  "checks": {
+    "execution_completed": true,
+    "requested_wall_duration": true,
+    "never_claims_full_hour": true,
+    "source_bytes_unchanged": true,
+    "no_errors": true,
+    "no_real_model_or_audio_device": true,
+    "real_egl_renderer": true,
+    "all_raw_float_draws_validated": true,
+    "every_frame_has_valid_requested_vs_effective_scene_trace": true,
+    "actual_scene_draw_totals_match_renderer": true,
+    "formerly_empty_particle_pair_exercised": true,
+    "no_black_frames": true,
+    "no_one_second_exact_freeze": true,
+    "no_half_second_frame_gap": true,
+    "at_least_95_percent_render_slots": true,
+    "feature_udp_complete": true,
+    "control_udp_complete": true,
+    "all_control_batches_applied": true,
+    "no_rejected_controls": true,
+    "no_osc_send_errors": true,
+    "all_decisions_reach_real_frames": true,
+    "healthy_startup_reaches_pixels": true,
+    "healthy_subprocess_latency_observed": true,
+    "exit_fault_reaches_rule_pixels": true,
+    "malformed_fault_reaches_rule_pixels": true,
+    "hang_times_out_at_configured_deadline": true,
+    "watchdog_publishes_while_ai_hung": true,
+    "watchdog_bounded_with_declared_tick_quantization": true,
+    "watchdog_rule_changes_rendered_state_while_hung": true,
+    "watchdog_first_render_under_30_second_outage_budget": true,
+    "watchdog_changes_render_controls_under_30_second_outage_budget": true,
+    "same_mode_gpt_recovery_reaches_pixels": true,
+    "manual_takes_over_active_call": true,
+    "late_healthy_reply_completes_during_manual": true,
+    "no_late_manual_publications": true,
+    "manual_values_remain_fixed": true,
+    "explicit_rule_reaches_pixels": true,
+    "resources_released": true,
+    "single_fake_subprocess_inflight": true,
+    "actual_hang_inflight_visuals_keep_moving": true,
+    "actual_manual_mode_visuals_keep_moving": true,
+    "empty_particle_safety_fallback_visuals_keep_moving": true
+  },
+  "finished_utc": "2026-10-06T09:11:13.715855+00:00"
+}

@@ -5,8 +5,8 @@ Two one-way UDP links, both on localhost, both fire-and-forget:
 * **In** — TouchDesigner sends ``/feat/*`` at 10 Hz to port 9000.
   :class:`FeatureReceiver` runs a threaded OSC server and drops every numeric
   argument into a :class:`~amv.features.FeatureBuffer`. It is deliberately
-  incurious: the key is the last path segment, so a TD patch can add
-  ``/feat/whatever`` and the sidecar starts buffering it with no code change.
+  restricted to the six finite numeric feature streams in SPEC §3.1, so
+  malformed UDP cannot poison summaries or allocate unbounded feature keys.
 * **Out** — :class:`TDClient` sends the section back on ``/feat/section`` and,
   once the director exists, one message per decision field on ``/director/*``.
 
@@ -23,8 +23,11 @@ bigger problems, and the director must never be stalled by the transport.
 from __future__ import annotations
 
 import json
+import logging
+import math
 import socket
 import threading
+import time
 from typing import Any, Callable
 
 from pythonosc.dispatcher import Dispatcher
@@ -44,10 +47,14 @@ __all__ = [
 
 FEATURE_PREFIX = "/feat"
 SECTION_ADDRESS = "/feat/section"
+FEATURE_KEYS = frozenset({"bass", "mid", "high", "energy", "kick", "centroid"})
+_LOG = logging.getLogger(__name__)
 
 #: Every address one director decision produces, in send order (SPEC §3.3).
 #: ``heartbeat`` is last so TD can treat it as "the decision is complete".
 DIRECTOR_ADDRESSES: tuple[str, ...] = (
+    "/director/transition_mode",
+    "/director/transition_beats",
     "/director/scene",
     "/director/palette",
     "/director/feedback",
@@ -55,8 +62,6 @@ DIRECTOR_ADDRESSES: tuple[str, ...] = (
     "/director/camera_speed",
     "/director/particle_mode",
     "/director/projectm_mix",
-    "/director/transition_mode",
-    "/director/transition_beats",
     "/director/on_drop",
     "/director/heartbeat",
 )
@@ -114,6 +119,7 @@ class FeatureReceiver:
         self.buffer = buffer if buffer is not None else FeatureBuffer()
         self.received = 0
         self.ignored = 0
+        self._counter_lock = threading.Lock()
         dispatcher = Dispatcher()
         dispatcher.map(f"{FEATURE_PREFIX}/*", self._on_feature)
         self._server = ThreadingOSCUDPServer((host, port), dispatcher)
@@ -167,15 +173,25 @@ class FeatureReceiver:
 
     def _on_feature(self, address: str, *args: Any) -> None:
         key = address.rsplit("/", 1)[-1]
-        if not key or not args:
-            self.ignored += 1
-            return
-        value = args[0]
-        if isinstance(value, bool) or not isinstance(value, (int, float)):
-            self.ignored += 1
-            return
-        self.buffer.push(key, float(value))
-        self.received += 1
+        value = args[0] if args else None
+        valid = (key in FEATURE_KEYS and address == f"{FEATURE_PREFIX}/{key}"
+                 and not isinstance(value, bool) and isinstance(value, (int, float)))
+        if valid:
+            try:
+                value = float(value)
+                valid = math.isfinite(value) and value >= 0
+                if key == "kick":
+                    valid = valid and value in (0.0, 1.0)
+                elif key != "centroid":
+                    valid = valid and value <= 1.0
+            except (ValueError, OverflowError):
+                valid = False
+        with self._counter_lock:
+            if not valid:
+                self.ignored += 1
+                return
+            self.buffer.push(key, value)
+            self.received += 1
 
 
 class TDClient:
@@ -186,14 +202,34 @@ class TDClient:
         self.port = int(port)
         self._client = SimpleUDPClient(self.host, self.port)
         self.sent = 0
+        self.send_errors = 0
+        self.last_error: str | None = None
+        self._last_warning: float | None = None
+        self._send_lock = threading.RLock()
         self._heartbeat = 0
 
     # -- primitives ---------------------------------------------------------
 
-    def send(self, address: str, value: Any) -> None:
-        """Send one message; never raises on a dead listener (UDP)."""
-        self._client.send_message(address, value)
-        self.sent += 1
+    def send(self, address: str, value: Any) -> bool:
+        """Best-effort UDP send, with observable errors and bounded warnings.
+
+        A successful send means the local socket accepted it, not that TD
+        acknowledged delivery. Socket pressure must not stop the audio loop.
+        """
+        with self._send_lock:
+            try:
+                self._client.send_message(address, value)
+            except OSError as exc:
+                self.send_errors += 1
+                self.last_error = f"{type(exc).__name__}: {exc}"
+                now = time.monotonic()
+                if self._last_warning is None or now - self._last_warning >= 5.0:
+                    _LOG.warning("OSC send failed to %s:%s (%s); %s send errors",
+                                 self.host, self.port, self.last_error, self.send_errors)
+                    self._last_warning = now
+                return False
+            self.sent += 1
+            return True
 
     def close(self) -> None:
         sock = getattr(self._client, "_sock", None)
@@ -208,16 +244,18 @@ class TDClient:
 
     # -- the contract -------------------------------------------------------
 
-    def send_section(self, name: str) -> None:
+    def send_section(self, name: str) -> bool:
         """Echo the detected section back to TD on ``/feat/section``."""
-        self.send(SECTION_ADDRESS, str(name))
+        return self.send(SECTION_ADDRESS, str(name))
 
-    def send_heartbeat(self, n: int) -> None:
+    def send_heartbeat(self, n: int) -> bool:
         """``/director/heartbeat`` — TD warns if this stops for 45 s."""
+        if not self.send("/director/heartbeat", int(n)):
+            return False
         self._heartbeat = int(n)
-        self.send("/director/heartbeat", int(n))
+        return True
 
-    def send_director(self, decision: dict, heartbeat: int | None = None) -> int:
+    def send_director(self, decision: dict, heartbeat: int | None = None) -> int | None:
         """Publish one validated decision as the full ``/director/*`` set.
 
         Sends exactly the addresses in :data:`DIRECTOR_ADDRESSES`, in order.
@@ -225,14 +263,20 @@ class TDClient:
         :func:`amv.schema.validate_and_clamp` already; the coercions here are
         about OSC wire types (int32 vs float32), not about trusting the LLM.
 
-        Returns the heartbeat value that was sent.
+        Returns the heartbeat value, or None on a socket error. A partial
+        decision never gets a completion heartbeat. Transition controls come
+        first because TD applies each target using its current transition mode.
         """
-        for address, field, cast in _SCALAR_FIELDS:
-            self.send(address, cast(decision[field]))
         transition = decision.get("transition") or {}
-        self.send("/director/transition_mode", str(transition.get("mode", "glide")))
-        self.send("/director/transition_beats", int(transition.get("beats", 1)))
-        self.send("/director/on_drop", json.dumps(decision.get("on_drop", {}), sort_keys=True))
-        beat = self._heartbeat + 1 if heartbeat is None else int(heartbeat)
-        self.send_heartbeat(beat)
-        return beat
+        messages = [
+            ("/director/transition_mode", str(transition.get("mode", "glide"))),
+            ("/director/transition_beats", int(transition.get("beats", 1))),
+            *((address, cast(decision[field])) for address, field, cast in _SCALAR_FIELDS),
+            ("/director/on_drop", json.dumps(decision.get("on_drop", {}), sort_keys=True)),
+        ]
+        with self._send_lock:
+            for address, value in messages:
+                if not self.send(address, value):
+                    return None
+            beat = self._heartbeat + 1 if heartbeat is None else int(heartbeat)
+            return beat if self.send_heartbeat(beat) else None
